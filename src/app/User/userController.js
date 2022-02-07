@@ -4,6 +4,8 @@ const userService = require("../../app/User/userService");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
 const passport = require("passport");
+const axios = require("axios");
+const crypto = require("crypto");
 //카카오 로그인
 const kakao_key = require("../../../config/kakao_config").restApiKey;
 const KakaoStrategy = require("passport-kakao").Strategy;
@@ -14,7 +16,7 @@ const { emit } = require("nodemon");
 /**
  * API No. 0
  * API Name : 테스트 API, RDS 연결 확인
- * [GET] /app/test
+ * [GET] /test
  */
 exports.getTest = async function (req, res) {
     const userListResult = await userProvider.retrieveUserList();
@@ -46,9 +48,8 @@ exports.kakaoLogin = async function (req, res) {
         } catch (err) {
             return res.send(errResponse(baseResponse.ACCESS_TOKEN_IS_NOT_VALID)); // 2085
         }
-
-        const uuid = kakao_profile.id;
-        const kakao_nickname = kakao_profile.name;
+        //const uuid = kakao_profile.id; - wrong
+        const uuid = kakao_profile.data.id.toString();
 
         const checkUuid = await userProvider.checkUuidExist(uuid);
 
@@ -66,19 +67,17 @@ exports.kakaoLogin = async function (req, res) {
                 }
             );
             return res.send(
-                response(baseResponse.SUCCESS, {
+                response(baseResponse.SUCCESS_MEMBER, {
                     userId: selectUserId,
                     jwt: token,
                     message: "소셜로그인에 성공하셨습니다.",
                 })
             );
         } else {
-            const result = { uuid: uuid };
-
             return res.send(
-                response(baseResponse.SUCCESS, {
+                response(baseResponse.SUCCESS_NON_MEMBER, {
                     message: "회원가입이 가능합니다.",
-                    result,
+                    uuid,
                 })
             );
         }
@@ -110,7 +109,9 @@ exports.naverLogin = async function (req, res) {
         } catch (err) {
             return res.send(errResponse(baseResponse.ACCESS_TOKEN_IS_NOT_VALID)); // 2085
         }
-        const uuid = naver_profile.id;
+
+        //const uuid = naver_profile.id - wrong..
+        const uuid = naver_profile.data.response.id;
         const checkUuid = await userProvider.checkUuidExist(uuid);
 
         if (checkUuid === 1) {
@@ -134,12 +135,10 @@ exports.naverLogin = async function (req, res) {
                 })
             );
         } else {
-            const result = { uuid: uuid };
-
             return res.send(
                 response(baseResponse.SUCCESS, {
                     message: "회원가입이 가능합니다.",
-                    result,
+                    uuid,
                 })
             );
         }
@@ -152,7 +151,7 @@ exports.naverLogin = async function (req, res) {
 /**
  * API No. 3
  * API Name : 유저 생성 (회원가입) API // 이메일, 비밀번호, 전화번호, 이름(실명)
- * [POST] /app/users
+ * [POST] /users
  */
 exports.postUsers = async function (req, res) {
     /**
@@ -185,4 +184,25 @@ exports.postUsers = async function (req, res) {
         idCardImageUrl
     );
     return res.send(signUpResponse);
+};
+
+/**
+ * API No. 4
+ * API Name : (인증을 위한) 이메일 중복확인 API
+ * [GET] /users/email/check/:officeEmail
+ * Path variable: officeEmail
+ */
+exports.checkUserEmail = async function (req, res) {
+    const officeEmail = req.params.officeEmail;
+
+    const hashedEmail = await crypto
+        .createHash("sha512")
+        .update(officeEmail)
+        .digest("hex");
+
+    const emailRows = await userProvider.emailCheck(hashedEmail); // emailCheck
+    if (emailRows.length > 0) {
+        return res.send(errResponse(baseResponse.SIGNUP_REDUNDANT_EMAIL));
+    }
+    return res.send(response(baseResponse.SUCCESS));
 };

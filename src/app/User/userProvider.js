@@ -13,11 +13,9 @@ exports.retrieveUserList = async function () {
 exports.checkUuidExist = async function (uuid) {
   try {
     const connection = await pool.getConnection(async (conn) => conn);
-
-    const result = await userDao.checkUuidExist(connection, uuid);
+    const uuidCheckResult = await userDao.selectUuid(connection, uuid);
     connection.release();
-
-    return result;
+    return uuidCheckResult;
   } catch (err) {
     logger.error(`User-checkUuidExist Provider error: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
@@ -46,11 +44,11 @@ exports.uuidCheck = async function (uuid) {
 };
 
 //이메일 체크
-exports.emailCheck = async function (officeEmail) {
+exports.emailCheck = async function (hashedEmail) {
   const connection = await pool.getConnection(async (conn) => conn);
   const emailCheckResult = await userDao.selectUseremail(
       connection,
-      officeEmail
+      hashedEmail
   );
   connection.release();
 

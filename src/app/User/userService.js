@@ -25,15 +25,16 @@ exports.createUser = async function (
         const uuidRows = await userProvider.uuidCheck(uuid);
         if (uuidRows.length > 0)
             return errResponse(baseResponse.SIGNUP_REDUNDANT_UUID);
-        //이메일 중복 확인
-        const emailRows = await userProvider.emailCheck(officeEmail); // emailCheck
-        if (emailRows.length > 0)
-            return errResponse(baseResponse.SIGNUP_REDUNDANT_EMAIL);
         // 이메일 암호화
         const hashedEmail = await crypto
             .createHash("sha512")
             .update(officeEmail)
             .digest("hex");
+        //이메일 중복 확인
+        const emailRows = await userProvider.emailCheck(hashedEmail); // emailCheck
+        if (emailRows.length > 0)
+            return errResponse(baseResponse.SIGNUP_REDUNDANT_EMAIL);
+
         // 직군코드 유효 확인
         const checkJob = await userProvider.checkJobExist(job);
         if (checkJob === 0)

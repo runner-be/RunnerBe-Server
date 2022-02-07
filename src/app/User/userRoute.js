@@ -13,4 +13,7 @@ module.exports = function (app) {
 
     // 3. 회원가입 API
     app.post("/users", user.postUsers);
+
+    // 4. (가입 인증을 위한) 이메일 중복확인 API
+    app.get("/users/email/check/:officeEmail", user.checkUserEmail);
 };

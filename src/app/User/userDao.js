@@ -46,7 +46,18 @@ async function selectUuid(connection, uuid) {
 }
 
 //이메일 체크
-async function selectUseremail(connection, officeEmail) {
+async function selectUseremail(connection, hashedEmail) {
+    const selectUseremailQuery = `
+              SELECT officeEmail, userId
+              FROM User
+              WHERE officeEmail = ?;
+              `;
+    const [emailRows] = await connection.query(selectUseremailQuery, hashedEmail);
+    return emailRows;
+}
+
+//인증을 위한 이메일 체크
+async function selectUseremailForAuth(connection, officeEmail) {
     const selectUseremailQuery = `
               SELECT officeEmail, userId
               FROM User
@@ -90,4 +101,5 @@ module.exports = {
     selectUseremail,
     insertUserInfo,
     checkJobExist,
+    selectUseremailForAuth,
 };
