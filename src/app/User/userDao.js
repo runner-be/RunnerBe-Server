@@ -45,6 +45,16 @@ async function selectUuid(connection, uuid) {
     return uuidRows;
 }
 
+// nickName 체크
+async function selectNickName(connection, nickName) {
+    const selectNickNameQuery = `
+                SELECT nickName
+                FROM User
+                WHERE nickName = ?;
+                `;
+    const [nickNameRows] = await connection.query(selectNickNameQuery, nickName);
+    return nickNameRows;
+}
 //이메일 체크
 async function selectUseremail(connection, hashedEmail) {
     const selectUseremailQuery = `
@@ -70,9 +80,9 @@ async function selectUseremailForAuth(connection, officeEmail) {
 // 유저 생성
 async function insertUserInfo(connection, insertUserInfoParams) {
     const insertUserInfoQuery = `
-  INSERT INTO User(uuid, birthday, gender, job, idCardImageUrl, officeEmail)
-  VALUES (?, ?, ?, ?, ?, ?);
-  `;
+              INSERT INTO User(uuid, nickName, birthday, gender, job, idCardImageUrl, officeEmail)
+              VALUES (?, ?, ?, ?, ?, ?, ?);
+               `;
     const insertUserInfoRow = await connection.query(
         insertUserInfoQuery,
         insertUserInfoParams
@@ -93,13 +103,42 @@ async function checkJobExist(connection, job) {
 
     return row[0][0]["exist"];
 }
+
+async function patchUserName(connection, patchUserNameList) {
+    const patchUserNameQuery = `
+              UPDATE User
+              SET nickName = ? , nameChanged = 'Y'
+              WHERE userId = ?;
+               `;
+    const patchUserNameRow = await connection.query(
+        patchUserNameQuery,
+        patchUserNameList
+    );
+
+    return patchUserNameRow;
+}
+
+// 닉네임 변경이력 확인 -> Y이면 변경한 적이 있음
+async function checkRecord(connection, userId) {
+    const checkRecordQuery = `
+                SELECT nameChanged
+                FROM User
+                WHERE userId = ? AND nameChanged = 'Y';
+                `;
+    const [recordRows] = await connection.query(checkRecordQuery, userId);
+    return recordRows;
+}
+
 module.exports = {
     selectUser,
     checkUuidExist,
     selectUserId,
     selectUuid,
+    selectNickName,
     selectUseremail,
     insertUserInfo,
     checkJobExist,
     selectUseremailForAuth,
+    patchUserName,
+    checkRecord,
 };

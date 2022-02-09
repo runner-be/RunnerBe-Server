@@ -1,7 +1,6 @@
 module.exports = function (app) {
     const user = require("./userController");
     const jwtMiddleware = require("../../../config/jwtMiddleware");
-    const passport = require("passport");
     // 0. 테스트 API
     app.get("/test", user.getTest);
 
@@ -16,4 +15,7 @@ module.exports = function (app) {
 
     // 4. (가입 인증을 위한) 이메일 중복확인 API
     app.get("/users/email/check/:officeEmail", user.checkUserEmail);
+
+    // 5. (최초 1회만 가능) 닉네임 변경 API
+    app.patch("/users/:userId/name", jwtMiddleware, user.patchUserName);
 };

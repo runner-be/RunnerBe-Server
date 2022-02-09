@@ -6,9 +6,9 @@ const { response, errResponse } = require("../../../config/response");
 const passport = require("passport");
 const axios = require("axios");
 const crypto = require("crypto");
-//카카오 로그인
-const kakao_key = require("../../../config/kakao_config").restApiKey;
-const KakaoStrategy = require("passport-kakao").Strategy;
+//카카오 로그인 - XXXX  방식 변경
+// const kakao_key = require("../../../config/kakao_config").restApiKey;
+// const KakaoStrategy = require("passport-kakao").Strategy;
 
 const regexEmail = require("regex-email");
 const { emit } = require("nodemon");
@@ -128,7 +128,7 @@ exports.naverLogin = async function (req, res) {
                 }
             );
             return res.send(
-                response(baseResponse.SUCCESS, {
+                response(baseResponse.SUCCESS_MEMBER, {
                     userId: selectUserId,
                     jwt: token,
                     message: "소셜로그인에 성공하셨습니다.",
@@ -136,7 +136,7 @@ exports.naverLogin = async function (req, res) {
             );
         } else {
             return res.send(
-                response(baseResponse.SUCCESS, {
+                response(baseResponse.SUCCESS_NON_MEMBER, {
                     message: "회원가입이 가능합니다.",
                     uuid,
                 })
@@ -150,22 +150,26 @@ exports.naverLogin = async function (req, res) {
 
 /**
  * API No. 3
- * API Name : 유저 생성 (회원가입) API // 이메일, 비밀번호, 전화번호, 이름(실명)
+ * API Name : 유저 생성 (회원가입) API // 이메일, 비밀번호, 전화번호, 닉네임
  * [POST] /users
  */
 exports.postUsers = async function (req, res) {
     /**
      * Body: userEmail, password, phoneNumber, userName
      */
-    const { uuid, birthday, gender, job, officeEmail, idCardImageUrl } = req.body;
+    const { uuid, nickName, birthday, gender, job, officeEmail, idCardImageUrl } =
+        req.body;
 
     // 필수 값 : 빈 값 체크
     if (!uuid) return res.send(response(baseResponse.SIGNUP_UUID_EMPTY));
+    if (!nickName) return res.send(response(baseResponse.SIGNUP_NICKNAME_EMPTY));
     if (!birthday) return res.send(response(baseResponse.SIGNUP_BIRTHDAY_EMPTY));
     if (!gender) return res.send(response(baseResponse.SIGNUP_GENDER_EMPTY));
     if (!job) return res.send(response(baseResponse.SIGNUP_JOB_EMPTY));
 
     // 길이 체크
+    if (nickName.length > 10)
+        return res.send(response(baseResponse.SIGNUP_NICKNAME_LENGTH));
     if (gender.length != 1)
         return res.send(response(baseResponse.SIGNUP_GENDER_LENGTH));
     if (job.length != 3)
@@ -177,6 +181,7 @@ exports.postUsers = async function (req, res) {
 
     const signUpResponse = await userService.createUser(
         uuid,
+        nickName,
         birthday,
         gender,
         job,
@@ -205,4 +210,41 @@ exports.checkUserEmail = async function (req, res) {
         return res.send(errResponse(baseResponse.SIGNUP_REDUNDANT_EMAIL));
     }
     return res.send(response(baseResponse.SUCCESS));
+};
+
+/**
+ * API No. 5
+ * API Name : (최초 1회만 가능) 닉네임 변경 API
+ * [PATCH] /users/:userId/name
+ * Path variable: userId
+ * Header : jwt
+ * body : nickName
+ */
+exports.patchUserName = async function (req, res) {
+    const userId = req.params.userId;
+    const userIdFromJWT = req.verifiedToken.userId;
+    const changedNickName = req.body.nickName;
+
+    // 빈 값 체크
+    if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+    if (!changedNickName)
+        return res.send(response(baseResponse.USER_NICKNAME_EMPTY));
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.USER_USERID_NOTNUM));
+    //jwt로 userId 확인
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        const patchUserNameResult = await userService.patchUserName(
+            changedNickName,
+            userId
+        );
+        return res.send(response(baseResponse.SUCCESS, patchUserNameResult));
+    }
+    const patchUserNameResponse = await userService.patchUserName(
+        changedNickName,
+        userId
+    );
+    return res.send(patchUserNameResponse);
 };

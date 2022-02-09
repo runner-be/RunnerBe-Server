@@ -43,6 +43,18 @@ exports.uuidCheck = async function (uuid) {
   return uuidCheckResult;
 };
 
+//닉네임 중복확인
+exports.nickNameCheck = async function (nickName) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const nickNameCheckResult = await userDao.selectNickName(
+      connection,
+      nickName
+  );
+  connection.release();
+
+  return nickNameCheckResult;
+};
+
 //이메일 체크
 exports.emailCheck = async function (hashedEmail) {
   const connection = await pool.getConnection(async (conn) => conn);
@@ -68,4 +80,13 @@ exports.checkJobExist = async function (job) {
     logger.error(`User-checkUuidExist Provider error: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   }
+};
+
+//닉네임 변경이력 확인
+exports.checkRecord = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const checkRecordResult = await userDao.checkRecord(connection, userId);
+  connection.release();
+
+  return checkRecordResult;
 };

@@ -59,13 +59,43 @@ module.exports = {
         message: "이메일 형식을 정확하게 입력해주세요",
     },
 
-    // ----------------------------
+    SIGNUP_NICKNAME_EMPTY: {
+        isSuccess: false,
+        code: 2008,
+        message: "기본 닉네임 값을 입력해주세요",
+    },
+
+    SIGNUP_NICKNAME_LENGTH: {
+        isSuccess: false,
+        code: 2009,
+        message: "기본 닉네임의 길이를 확인해주세요. 10자 이하",
+    },
+
+    USER_ID_NOT_MATCH: {
+        isSuccess: false,
+        code: 2010,
+        message: "jwt의 userId와 userId가 일치하지 않습니다.",
+    },
 
     USER_USERID_EMPTY: {
         isSuccess: false,
-        code: 2012,
-        message: "userId를 입력해주세요.",
+        code: 2011,
+        message: "userId 값을 입력해주세요.",
     },
+
+    USER_USERID_NOTNUM: {
+        isSuccess: false,
+        code: 2012,
+        message: "userId는 숫자로 입력해주세요.",
+    },
+
+    USER_NICKNAME_EMPTY: {
+        isSuccess: false,
+        code: 2013,
+        message: "닉네임을 입력해주세요.",
+    },
+    // ----------------------------
+
     USER_USERID_NOT_EXIST: {
         isSuccess: false,
         code: 2013,
@@ -77,20 +107,11 @@ module.exports = {
         code: 2014,
         message: "이메일을 입력해주세요.",
     },
+
     USER_USEREMAIL_NOT_EXIST: {
         isSuccess: false,
         code: 2015,
         message: "해당 이메일을 가진 회원이 존재하지 않습니다.",
-    },
-    USER_ID_NOT_MATCH: {
-        isSuccess: false,
-        code: 2016,
-        message: "유저 아이디 값을 확인해주세요",
-    },
-    USER_NICKNAME_EMPTY: {
-        isSuccess: false,
-        code: 2017,
-        message: "변경할 닉네임 값을 입력해주세요",
     },
 
     USER_STATUS_EMPTY: {
@@ -127,6 +148,17 @@ module.exports = {
         message: "유효한 직군코드가 아닙니다.",
     },
 
+    SIGNUP_REDUNDANT_NICKNAME: {
+        isSuccess: false,
+        code: 3004,
+        message: "중복된 닉네임입니다.",
+    },
+
+    CANNOT_CHANGE_NICKNAME: {
+        isSuccess: false,
+        code: 3005,
+        message: "이미 닉네임을 변경했던 유저입니다.",
+    },
     // -----------------
 
     SIGNIN_EMAIL_WRONG: {

@@ -14,6 +14,7 @@ const { connect } = require("http2");
 // 유저 생성
 exports.createUser = async function (
     uuid,
+    nickName,
     birthday,
     gender,
     job,
@@ -25,6 +26,10 @@ exports.createUser = async function (
         const uuidRows = await userProvider.uuidCheck(uuid);
         if (uuidRows.length > 0)
             return errResponse(baseResponse.SIGNUP_REDUNDANT_UUID);
+        //nickName 중복 확인
+        const nickNameRows = await userProvider.nickNameCheck(nickName);
+        if (nickNameRows.length > 0)
+            return errResponse(baseResponse.SIGNUP_REDUNDANT_NICKNAME);
         // 이메일 암호화
         const hashedEmail = await crypto
             .createHash("sha512")
@@ -42,6 +47,7 @@ exports.createUser = async function (
 
         const insertUserInfoParams = [
             uuid,
+            nickName,
             birthday,
             gender,
             job,
@@ -51,15 +57,46 @@ exports.createUser = async function (
 
         const connection = await pool.getConnection(async (conn) => conn);
 
-        const userIdResult = await userDao.insertUserInfo(
+        const userResult = await userDao.insertUserInfo(
             connection,
             insertUserInfoParams
         );
-        console.log(`추가된 회원 : ${userIdResult[0].insertId}`);
+        console.log(`추가된 회원 : ${userResult[0].insertId}`);
         connection.release();
         return response(baseResponse.SUCCESS);
     } catch (err) {
         logger.error(`App - createUser Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};
+
+//user의 nickname 변경
+exports.patchUserName = async function (changedNickName, userId) {
+    try {
+        //변경이력 확인
+        const checkRecordRows = await userProvider.checkRecord(userId);
+        if (checkRecordRows.length > 0)
+            return errResponse(baseResponse.CANNOT_CHANGE_NICKNAME);
+
+        //nickName 중복 확인
+        const nickNameRows = await userProvider.nickNameCheck(changedNickName);
+        if (nickNameRows.length > 0)
+            return errResponse(baseResponse.SIGNUP_REDUNDANT_NICKNAME);
+
+        const connection = await pool.getConnection(async (conn) => conn);
+        const patchUserNameList = [changedNickName, userId];
+        const patchUserNameResult = await userDao.patchUserName(
+            connection,
+            patchUserNameList
+        );
+
+        connection.release();
+
+        // console.log(`닉네임 변경 유저 ID : ${userId}`);
+
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - patchUserName Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }
 };
