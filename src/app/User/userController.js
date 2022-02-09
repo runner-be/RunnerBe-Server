@@ -240,11 +240,6 @@ exports.patchUserName = async function (req, res) {
             changedNickName,
             userId
         );
-        return res.send(response(baseResponse.SUCCESS, patchUserNameResult));
+        return res.send(patchUserNameResponse);
     }
-    const patchUserNameResponse = await userService.patchUserName(
-        changedNickName,
-        userId
-    );
-    return res.send(patchUserNameResponse);
 };
