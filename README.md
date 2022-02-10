@@ -24,15 +24,15 @@ URL : https://docs.google.com/spreadsheets/d/1K3yR4ns25_ptuY9xEEvGObWE6k3PbYczia
 ├── src
 │   ├── app
 │ 	│   ├── User
-│   │     ├── userDao.js
-│ 	│ 	│   ├── userController.js
-│ 	│ 	│   ├── userProvider.js
-│ 	│ 	│   ├── userService.js
+│     │   │   ├── userDao.js
+│ 	│   │   ├── userController.js
+│ 	│   │   ├── userProvider.js
+│ 	│   │   ├── userService.js
 │ 	│   ├── Posting
-│   │     ├── postingDao.js
-│ 	│ 	│   ├── postingController.js
-│ 	│ 	│   ├── postingProvider.js
-│ 	│ 	│   ├── postingService.js
+│     │   │   ├── postingDao.js
+│ 	│   │   ├── postingController.js
+│ 	│   │   ├── postingProvider.js
+│ 	│   │   ├── postingService.js
 
 ├── .gitignore
 ├── index.js
