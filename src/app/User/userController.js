@@ -236,7 +236,7 @@ exports.patchUserName = async function (req, res) {
     if (userIdFromJWT != userId) {
         res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
     } else {
-        const patchUserNameResult = await userService.patchUserName(
+        const patchUserNameResponse = await userService.patchUserName(
             changedNickName,
             userId
         );
