@@ -12,26 +12,31 @@ URL : https://docs.google.com/spreadsheets/d/1K3yR4ns25_ptuY9xEEvGObWE6k3PbYczia
 ## 📁Structure
 앞에 (*)이 붙어있는 파일(or 폴더)은 추가적인 과정 이후에 생성된다.
 ```
-├── config                              
-│   ├── baseResponseStatus.js            
-│   ├── database.js                     
-│   ├── express.js                      
-│   ├── jwtMiddleware.js                
-│   ├── secret.js                       
-│   ├── winston.js                      
-├── * log                               
-├── * node_modules                    	
-├── src                     			
-│   ├── app              				
-│ 	│   ├── User            		
-│   │ 	│   ├── userDao.js          	
-│ 	│ 	│   ├── userController.js 		
-│ 	│ 	│   ├── userProvider.js   		
-│ 	│ 	│   ├── userService.js   	 
-├── .gitignore                     		
-├── index.js                                              		
-├── * package-lock.json              	 
-├── package.json                       
+├── config
+│   ├── baseResponseStatus.js
+│   ├── database.js
+│   ├── express.js
+│   ├── jwtMiddleware.js
+│   ├── secret.js
+│   ├── winston.js
+├── * log
+├── * node_modules
+├── src
+│   ├── app
+│ 	│   ├── User
+│   │ 	│   ├── userDao.js
+│ 	│ 	│   ├── userController.js
+│ 	│ 	│   ├── userProvider.js
+│ 	│ 	│   ├── userService.js
+│ 	│   ├── Posting
+│   │ 	│   ├── postingDao.js
+│ 	│ 	│   ├── postingController.js
+│ 	│ 	│   ├── postingProvider.js
+│ 	│ 	│   ├── postingService.js
+├── .gitignore
+├── index.js
+├── * package-lock.json
+├── package.json
 └── README.md
 ```
 ## ✨License
