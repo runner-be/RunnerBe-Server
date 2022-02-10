@@ -22,16 +22,14 @@ URL : https://docs.google.com/spreadsheets/d/1K3yR4ns25_ptuY9xEEvGObWE6k3PbYczia
 ├── * log
 ├── * node_modules
 ├── src
-
 │   ├── app
-
 │ 	│   ├── User
-│   │ 	│   ├── userDao.js
+│   │   ├── userDao.js
 │ 	│ 	│   ├── userController.js
 │ 	│ 	│   ├── userProvider.js
 │ 	│ 	│   ├── userService.js
 │ 	│   ├── Posting
-│   │ 	│   ├── postingDao.js
+│   │   ├── postingDao.js
 │ 	│ 	│   ├── postingController.js
 │ 	│ 	│   ├── postingProvider.js
 │ 	│ 	│   ├── postingService.js
