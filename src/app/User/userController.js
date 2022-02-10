@@ -3,13 +3,12 @@ const userProvider = require("../../app/User/userProvider");
 const userService = require("../../app/User/userService");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
+const secret = require("../../../config/secret");
+
 const passport = require("passport");
 const axios = require("axios");
 const crypto = require("crypto");
-//카카오 로그인 - XXXX  방식 변경
-// const kakao_key = require("../../../config/kakao_config").restApiKey;
-// const KakaoStrategy = require("passport-kakao").Strategy;
-
+const jwt = require("jsonwebtoken");
 const regexEmail = require("regex-email");
 const { emit } = require("nodemon");
 
@@ -21,6 +20,25 @@ const { emit } = require("nodemon");
 exports.getTest = async function (req, res) {
     const userListResult = await userProvider.retrieveUserList();
     return res.send(response(baseResponse.SUCCESS, userListResult));
+};
+/**
+ * API No. 0
+ * API Name : 테스트용 jwt 발급 API
+ * [GET] /jwtTest/:userId
+ */
+exports.getJwt = async function (req, res) {
+    const jwtuserId = req.params.userId;
+    let token = await jwt.sign(
+        {
+            userId: jwtuserId,
+        },
+        secret.jwtsecret,
+        {
+            expiresIn: "365d",
+            subject: "userInfo",
+        }
+    );
+    return res.send(response(baseResponse.SUCCESS, token));
 };
 
 /**
@@ -60,7 +78,7 @@ exports.kakaoLogin = async function (req, res) {
                 {
                     userId: selectUserId,
                 },
-                secret_config.jwtsecret,
+                secret.jwtsecret,
                 {
                     expiresIn: "365d",
                     subject: "userInfo",
@@ -121,7 +139,7 @@ exports.naverLogin = async function (req, res) {
                 {
                     userId: selectUserId,
                 },
-                secret_config.jwtsecret,
+                secret.jwtsecret,
                 {
                     expiresIn: "365d",
                     subject: "userInfo",

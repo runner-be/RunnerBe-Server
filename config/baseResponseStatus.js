@@ -17,9 +17,9 @@ module.exports = {
     },
     TOKEN_VERIFICATION_SUCCESS: {
         isSuccess: true,
-        code: 1001,
+        code: 1100,
         message: "JWT 토큰 검증 성공",
-    }, // ?
+    },
 
     //Request error
     SIGNUP_UUID_EMPTY: {
@@ -94,42 +94,128 @@ module.exports = {
         code: 2013,
         message: "닉네임을 입력해주세요.",
     },
-    // ----------------------------
 
-    USER_USERID_NOT_EXIST: {
-        isSuccess: false,
-        code: 2013,
-        message: "해당 회원이 존재하지 않습니다.",
-    },
-
-    USER_USEREMAIL_EMPTY: {
+    POSTING_TITLE_EMPTY: {
         isSuccess: false,
         code: 2014,
-        message: "이메일을 입력해주세요.",
+        message: "글제목을 입력해주세요.",
     },
 
-    USER_USEREMAIL_NOT_EXIST: {
+    POSTING_GATHERINGTIME_EMPTY: {
         isSuccess: false,
         code: 2015,
-        message: "해당 이메일을 가진 회원이 존재하지 않습니다.",
+        message: "모이는 시간을 입력해주세요.",
     },
 
-    USER_STATUS_EMPTY: {
+    POSTING_RUNNINGTIME_EMPTY: {
+        isSuccess: false,
+        code: 2016,
+        message: "러닝 소요 시간을 입력해주세요.",
+    },
+
+    POSTING_LONGITUDE_EMPTY: {
+        isSuccess: false,
+        code: 2017,
+        message: "모임 장소의 경도를 입력해주세요.",
+    },
+
+    POSTING_LATITUDE_EMPTY: {
         isSuccess: false,
         code: 2018,
-        message: "회원 상태값을 입력해주세요",
+        message: "모임 장소의 위도를 입력해주세요.",
     },
 
+    POSTING_LOCATION_EMPTY: {
+        isSuccess: false,
+        code: 2019,
+        message: "모임 장소의 이름(행정구역)을 입력해주세요.",
+    },
+
+    POSTING_WHEN_EMPTY: {
+        isSuccess: false,
+        code: 2020,
+        message: "모임 장소의 tag(출근 전, 퇴근 후, 휴일)을 입력해주세요.",
+    },
+
+    POSTING_AGEMIN_EMPTY: {
+        isSuccess: false,
+        code: 2021,
+        message: "최소 연령대를 입력해주세요.",
+    },
+
+    POSTING_AGEMAX_EMPTY: {
+        isSuccess: false,
+        code: 2022,
+        message: "최대 연령대를 입력해주세요.",
+    },
+
+    POSTING_PEOPLENUM_EMPTY: {
+        isSuccess: false,
+        code: 2023,
+        message: "최대 모임 인원을 입력해주세요.",
+    },
+
+    POSTING_GENDER_EMPTY: {
+        isSuccess: false,
+        code: 2024,
+        message: "성별 기준을 입력해주세요.",
+    },
+
+    POSTING_TITLE_LENGTH: {
+        isSuccess: false,
+        code: 2025,
+        message: "글제목은 30자 이내로 입력해주세요.",
+    },
+
+    POSTING_TEXT_LENGTH: {
+        isSuccess: false,
+        code: 2026,
+        message: "자유 내용은 500자 이내로 입력해주세요.",
+    },
+
+    USER_AGEMIN_NOTNUM: {
+        isSuccess: false,
+        code: 2027,
+        message: "최소 연령은 숫자로 입력해주세요.",
+    },
+
+    USER_AGEMAX_NOTNUM: {
+        isSuccess: false,
+        code: 2028,
+        message: "최대 연령은 숫자로 입력해주세요.",
+    },
+
+    USER_PEOPLENUM_NOTNUM: {
+        isSuccess: false,
+        code: 2029,
+        message: "최대 인원수는 숫자로 입력해주세요.",
+    },
+
+    WHEN_IS_NOT_VALID: {
+        isSuccess: false,
+        code: 2030,
+        message:
+            "runningTag는 (A : 퇴근 후, B : 출근 전, H : 휴일)로 입력해주세요.",
+    },
+
+    GENDER_IS_NOT_VALID: {
+        isSuccess: false,
+        code: 2031,
+        message: "runnerGender는 (A : 전체, M : 남성, F : 여성)로 입력해주세요.",
+    },
+    // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,
         code: 2084,
         message: "accessToken 값을 입력해주세요.",
     },
+
     ACCESS_TOKEN_IS_NOT_VALID: {
         isSuccess: false,
         code: 2085,
         message: "유효하지 않는 Access Token 입니다.",
     },
+    // ----------------------------
 
     // Response error
     SIGNUP_REDUNDANT_UUID: {
@@ -159,28 +245,13 @@ module.exports = {
         code: 3005,
         message: "이미 닉네임을 변경했던 유저입니다.",
     },
-    // -----------------
 
-    SIGNIN_EMAIL_WRONG: {
-        isSuccess: false,
-        code: 3004,
-        message: "아이디가 잘못 되었습니다.",
-    },
-    SIGNIN_PASSWORD_WRONG: {
-        isSuccess: false,
-        code: 3004,
-        message: "비밀번호가 잘못 되었습니다.",
-    },
-    SIGNIN_INACTIVE_ACCOUNT: {
-        isSuccess: false,
-        code: 3005,
-        message: "비활성화 된 계정입니다. 고객센터에 문의해주세요.",
-    },
-    SIGNIN_WITHDRAWAL_ACCOUNT: {
+    POSTING_NOT_VALID_USERID: {
         isSuccess: false,
         code: 3006,
-        message: "탈퇴 된 계정입니다. 고객센터에 문의해주세요.",
+        message: "없는 유저의 userId입니다.",
     },
+    // -----------------
 
     //Connection, Transaction 등의 서버 오류
     DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },
