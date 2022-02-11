@@ -92,11 +92,11 @@ exports.createPosting = async function (req, res) {
             gahterLongitude,
             gatherLatitude,
             locationInfo,
-            when,
+            runningTag,
             ageMin,
             ageMax,
             peopleNum,
-            text,
+            contents,
             runnerGender
         );
         return res.send(postingResponse);
