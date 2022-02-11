@@ -1,4 +1,4 @@
-## ✨ERD 
+## 💻ERD 
 URL : https://aquerytool.com/aquerymain/index/?rurl=e5d20677-5c8a-4c70-a285-85b0c89572bd&
 
 Password : a2ia76
