@@ -90,3 +90,27 @@ exports.checkRecord = async function (userId) {
 
   return checkRecordResult;
 };
+
+//메인 페이지
+exports.getMain = async function (
+    userLongitude,
+    userLatitude,
+    runningTag,
+    whetherEndCondition,
+    sortCondition
+) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const postingResult = await userDao.getMain(
+      connection,
+      userLongitude,
+      userLatitude,
+      runningTag,
+      whetherEndCondition,
+      sortCondition
+  );
+  const jobResult = await userDao.getJob(connection);
+  connection.release();
+
+  const mainResult = { postingResult, jobResult };
+  return mainResult;
+};

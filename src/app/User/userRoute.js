@@ -20,4 +20,7 @@ module.exports = function (app) {
 
     // 5. (최초 1회만 가능) 닉네임 변경 API
     app.patch("/users/:userId/name", jwtMiddleware, user.patchUserName);
+
+    // 7. 메인페이지 API
+    app.get("/users/main/:runningTag", user.main);
 };

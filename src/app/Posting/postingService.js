@@ -62,6 +62,14 @@ exports.createPosting = async function (
             createRunningParams
         );
 
+        //방장 모임 인원에 추가
+        const insertRunningId = createRunning[0].insertId;
+        const insertRunningPeopleParams = [insertRunningId, userId];
+        const creaetRunningPeople = await postingDao.creaetRunningPeople(
+            connection,
+            insertRunningPeopleParams
+        );
+
         console.log(`추가된 게시글 : ${createPostingResult[0].insertId}`);
         connection.release();
         return response(baseResponse.SUCCESS);

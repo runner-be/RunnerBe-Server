@@ -193,9 +193,15 @@ exports.postUsers = async function (req, res) {
     if (job.length != 3)
         return res.send(response(baseResponse.SIGNUP_JOB_LENGTH));
 
-    // 이메일 형식 체크 (by 정규표현식)
-    if (!regexEmail.test(officeEmail))
-        return res.send(response(baseResponse.SIGNUP_EMAIL_ERROR_TYPE));
+    if (!officeEmail) {
+        //신분증 사진 필요
+        if (!idCardImageUrl) return res.send(response(baseResponse.ID_CARD_EMPTY));
+    } else {
+        // 이메일 필수
+        // 이메일 형식 체크 (by 정규표현식)
+        if (!regexEmail.test(officeEmail))
+            return res.send(response(baseResponse.SIGNUP_EMAIL_ERROR_TYPE));
+    }
 
     const signUpResponse = await userService.createUser(
         uuid,
@@ -223,7 +229,7 @@ exports.checkUserEmail = async function (req, res) {
         .update(officeEmail)
         .digest("hex");
 
-    const emailRows = await userProvider.emailCheck(hashedEmail); // emailCheck
+    const emailRows = await userProvider.emailCheck(hashedEmail);
     if (emailRows.length > 0) {
         return res.send(errResponse(baseResponse.SIGNUP_REDUNDANT_EMAIL));
     }
@@ -260,4 +266,64 @@ exports.patchUserName = async function (req, res) {
         );
         return res.send(patchUserNameResponse);
     }
+};
+
+/**
+ * API No. 7
+ * API Name : 메인페이지 API
+ * [GET] /users/main/:runningTag
+ * Body : userLongitude, userLatitude
+ * Path variable : runningTag
+ * Query string : whetherEnd(Y, N), filter(D,R,B) 거리순 : D, 최신순 : R, 찜많은순 : B
+ */
+exports.main = async function (req, res) {
+    // Body 값
+    const userLongitude = req.body.userLongitude;
+    const userLatitude = req.body.userLatitude;
+    // Path variable 값
+    const runningTag = req.params.runningTag;
+    // Query String 값
+    const whetherEnd = req.query.whetherEnd; // Y, N
+    const filter = req.query.filter; // 거리순 : D, 최신순 : R, 찜많은순 : B
+
+    // 빈 값 체크
+    if (!userLongitude) return res.send(response(baseResponse.LONGITUDE_EMPTY));
+    if (!userLatitude) return res.send(response(baseResponse.LATITUDE_EMPTY));
+    if (!runningTag) return res.send(response(baseResponse.RUNNONGTAG_EMPTY));
+    if (!whetherEnd) return res.send(response(baseResponse.WHETHEREND_EMPTY));
+    if (!filter) return res.send(response(baseResponse.FILTER_EMPTY));
+
+    // 유효성 검사
+    const runningTagList = ["A", "B", "H"];
+    const whetherEndList = ["Y", "N"];
+    const filterList = ["D", "R", "B"];
+    if (!runningTag.includes(runningTag))
+        return res.send(response(baseResponse.RUNNONGTAG_IS_NOT_VALID));
+    if (!whetherEndList.includes(whetherEnd))
+        return res.send(response(baseResponse.END_IS_NOT_VALID));
+    if (!filterList.includes(filter))
+        return res.send(response(baseResponse.FILTER_IS_NOT_VALID));
+
+    // 필터 조건 설정
+    let whetherEndCondition = "";
+    if (whetherEnd === "N") {
+        whetherEndCondition += "AND whetherEnd = 'N'";
+    }
+    let sortCondition;
+    if (filter === "D") {
+        sortCondition += "DISTANCE";
+    } else if (filter === "R") {
+        sortCondition += "postingTime";
+    } else if (filter === "B") {
+        sortCondition += "bookMarkNumber";
+    }
+
+    const mainResult = await userProvider.getMain(
+        userLongitude,
+        userLatitude,
+        runningTag,
+        whetherEndCondition,
+        sortCondition
+    );
+    return res.send(response(baseResponse.SUCCESS, mainResult));
 };

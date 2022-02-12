@@ -129,6 +129,73 @@ async function checkRecord(connection, userId) {
     return recordRows;
 }
 
+// 메인 페이지
+async function getMain(
+    connection,
+    userLongitude,
+    userLatitude,
+    runningTag,
+    whetherEndCondition,
+    sortCondition
+) {
+    const getMainQuery = `
+  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
+          case when date_format(gatheringTime, '%w') = 0
+          then date_format(gatheringTime,'%m/%d(일) %p%l:%i')
+          else
+          case when date_format(gatheringTime, '%w') = 1
+          then date_format(gatheringTime,'%m/%d(월) %p%l:%i')
+          else
+          case when date_format(gatheringTime, '%w') = 2
+          then date_format(gatheringTime,'%m/%d(화) %p%l:%i')
+          else
+          case when date_format(gatheringTime, '%w') = 3
+          then date_format(gatheringTime,'%m/%d(수) %p%l:%i')
+          else
+          case when date_format(gatheringTime, '%w') = 4
+          then date_format(gatheringTime,'%m/%d(목) %p%l:%i')
+          else
+          case when date_format(gatheringTime, '%w') = 5
+          then date_format(gatheringTime,'%m/%d(금) %p%l:%i')
+          else
+          case when date_format(gatheringTime, '%w') = 6
+          then date_format(gatheringTime,'%m/%d(토) %p%l:%i')
+          end end end end end end end as gatheringTime,
+         gatherLongitude, gatherLatitude, locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
+         case when runnerGender='A' then '전체'
+         else
+         case when runnerGender='M' then '남성'
+         else
+         case when runnerGender='F' then '여성'
+          end end end as gender,
+          left((6371 * acos(cos(radians(${userLatitude})) * cos(radians(gatherLatitude)) *
+                              cos(radians(gatherLongitude) - radians(${userLongitude})) +
+                              sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))), 4) AS DISTANCE,
+         count(B.userId) as bookMarkNumber, whetherEnd
+  FROM Posting P
+  INNER JOIN User U on U.userId = P.postUserId
+  INNER JOIN Running R on R.postId = P.postId
+  LEFT OUTER JOIN Bookmarks B on P.postId = B.postId
+  WHERE runningTag = "${runningTag}"
+  ${whetherEndCondition}
+  GROUP BY B.postId
+  ORDER BY "${sortCondition}";
+                `;
+    const [mainRows] = await connection.query(getMainQuery);
+    return mainRows;
+}
+// 직군 코드
+async function getJob(connection) {
+    const getJobQuery = `
+  SELECT DISTINCT postId, job
+  FROM RunningPeople RP
+  inner join Running R on RP.gatheringId = R.gatheringId
+  inner join User U on RP.userId = U.userId
+  WHERE  whetherAccept = 'Y';
+                `;
+    const [getJobRows] = await connection.query(getJobQuery);
+    return getJobRows;
+}
 module.exports = {
     selectUser,
     checkUuidExist,
@@ -141,4 +208,6 @@ module.exports = {
     selectUseremailForAuth,
     patchUserName,
     checkRecord,
+    getMain,
+    getJob,
 };

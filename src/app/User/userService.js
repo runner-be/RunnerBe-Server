@@ -30,20 +30,31 @@ exports.createUser = async function (
         const nickNameRows = await userProvider.nickNameCheck(nickName);
         if (nickNameRows.length > 0)
             return errResponse(baseResponse.SIGNUP_REDUNDANT_NICKNAME);
-        // 이메일 암호화
-        const hashedEmail = await crypto
-            .createHash("sha512")
-            .update(officeEmail)
-            .digest("hex");
-        //이메일 중복 확인
-        const emailRows = await userProvider.emailCheck(hashedEmail); // emailCheck
-        if (emailRows.length > 0)
-            return errResponse(baseResponse.SIGNUP_REDUNDANT_EMAIL);
-
         // 직군코드 유효 확인
         const checkJob = await userProvider.checkJobExist(job);
         if (checkJob === 0)
             return errResponse(baseResponse.SIGNUP_JOBCODE_IS_NOT_VALID);
+
+        if (officeEmail) {
+            // 이메일 암호화
+            const hashedEmail = await crypto
+                .createHash("sha512")
+                .update(officeEmail)
+                .digest("hex");
+            //이메일 중복 확인
+            const emailRows = await userProvider.emailCheck(hashedEmail);
+            if (emailRows.length > 0)
+                return errResponse(baseResponse.SIGNUP_REDUNDANT_EMAIL);
+            const insertUserInfoParams = [
+                uuid,
+                nickName,
+                birthday,
+                gender,
+                job,
+                idCardImageUrl,
+                hashedEmail,
+            ];
+        }
 
         const insertUserInfoParams = [
             uuid,
@@ -51,8 +62,8 @@ exports.createUser = async function (
             birthday,
             gender,
             job,
+            officeEmail,
             idCardImageUrl,
-            hashedEmail,
         ];
 
         const connection = await pool.getConnection(async (conn) => conn);

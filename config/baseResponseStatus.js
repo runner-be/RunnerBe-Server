@@ -203,6 +203,60 @@ module.exports = {
         code: 2031,
         message: "runnerGender는 (A : 전체, M : 남성, F : 여성)로 입력해주세요.",
     },
+
+    ID_CARD_EMPTY: {
+        isSuccess: false,
+        code: 2032,
+        message: "신분증 사진 URL을 입력해주세요.",
+    },
+
+    LONGITUDE_EMPTY: {
+        isSuccess: false,
+        code: 2033,
+        message: "경도를 입력해주세요.",
+    },
+
+    LATITUDE_EMPTY: {
+        isSuccess: false,
+        code: 2034,
+        message: "위도를 입력해주세요.",
+    },
+
+    WHETHEREND_EMPTY: {
+        isSuccess: false,
+        code: 2035,
+        message: "마감포함 여부를 입력해주세요.",
+    },
+
+    FILTER_EMPTY: {
+        isSuccess: false,
+        code: 2036,
+        message: "필터 조건을 입력해주세요.",
+    },
+
+    END_IS_NOT_VALID: {
+        isSuccess: false,
+        code: 2037,
+        message: "마감포함 여부는 Y, N 중 하나로 입력해주세요.",
+    },
+
+    FILTER_IS_NOT_VALID: {
+        isSuccess: false,
+        code: 2038,
+        message: "필터 조건은 D, R, B 중 하나로 입력해주세요.",
+    },
+
+    RUNNONGTAG_EMPTY: {
+        isSuccess: false,
+        code: 2039,
+        message: "runningTag를 입력해주세요.",
+    },
+
+    RUNNONGTAG_IS_NOT_VALID: {
+        isSuccess: false,
+        code: 2040,
+        message: "runningTag는 A, B, H 중 하나로 입력해주세요.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,
