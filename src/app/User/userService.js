@@ -1,6 +1,6 @@
 const { logger } = require("../../../config/winston");
 const { pool } = require("../../../config/database");
-const secret_config = require("../../../config/secret");
+const secret = require("../../../config/secret");
 const userProvider = require("./userProvider");
 const userDao = require("./userDao");
 const baseResponse = require("../../../config/baseResponseStatus");
@@ -61,9 +61,23 @@ exports.createUser = async function (
             connection,
             insertUserInfoParams
         );
+        const insertedUserId = userResult[0].insertId;
         console.log(`추가된 회원 : ${userResult[0].insertId}`);
         connection.release();
-        return response(baseResponse.SUCCESS);
+
+        //jwt 발급
+        let token = await jwt.sign(
+            {
+                userId: insertedUserId,
+            },
+            secret.jwtsecret,
+            {
+                expiresIn: "365d",
+                subject: "userInfo",
+            }
+        );
+
+        return response(baseResponse.SUCCESS, token);
     } catch (err) {
         logger.error(`App - createUser Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
