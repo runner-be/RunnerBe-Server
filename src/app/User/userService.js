@@ -18,8 +18,8 @@ exports.createUser = async function (
     birthday,
     gender,
     job,
-    officeEmail,
-    idCardImageUrl
+    idCardImageUrl,
+    officeEmail
 ) {
     try {
         // uuid 중복 확인
@@ -54,41 +54,64 @@ exports.createUser = async function (
                 idCardImageUrl,
                 hashedEmail,
             ];
+            const connection = await pool.getConnection(async (conn) => conn);
+
+            const userResult = await userDao.insertUserInfo(
+                connection,
+                insertUserInfoParams
+            );
+            const insertedUserId = userResult[0].insertId;
+            console.log(`추가된 회원 : ${userResult[0].insertId}`);
+            connection.release();
+
+            //jwt 발급
+            let token = await jwt.sign(
+                {
+                    userId: insertedUserId,
+                },
+                secret.jwtsecret,
+                {
+                    expiresIn: "365d",
+                    subject: "userInfo",
+                }
+            );
+
+            return response(baseResponse.SUCCESS, token);
+        } else {
+            const hashedEmail = officeEmail;
+            const insertUserInfoParams = [
+                uuid,
+                nickName,
+                birthday,
+                gender,
+                job,
+                idCardImageUrl,
+                hashedEmail,
+            ];
+            const connection = await pool.getConnection(async (conn) => conn);
+
+            const userResult = await userDao.insertUserInfo(
+                connection,
+                insertUserInfoParams
+            );
+            const insertedUserId = userResult[0].insertId;
+            console.log(`추가된 회원 : ${userResult[0].insertId}`);
+            connection.release();
+
+            //jwt 발급
+            let token = await jwt.sign(
+                {
+                    userId: insertedUserId,
+                },
+                secret.jwtsecret,
+                {
+                    expiresIn: "365d",
+                    subject: "userInfo",
+                }
+            );
+
+            return response(baseResponse.SUCCESS, token);
         }
-
-        const insertUserInfoParams = [
-            uuid,
-            nickName,
-            birthday,
-            gender,
-            job,
-            officeEmail,
-            idCardImageUrl,
-        ];
-
-        const connection = await pool.getConnection(async (conn) => conn);
-
-        const userResult = await userDao.insertUserInfo(
-            connection,
-            insertUserInfoParams
-        );
-        const insertedUserId = userResult[0].insertId;
-        console.log(`추가된 회원 : ${userResult[0].insertId}`);
-        connection.release();
-
-        //jwt 발급
-        let token = await jwt.sign(
-            {
-                userId: insertedUserId,
-            },
-            secret.jwtsecret,
-            {
-                expiresIn: "365d",
-                subject: "userInfo",
-            }
-        );
-
-        return response(baseResponse.SUCCESS, token);
     } catch (err) {
         logger.error(`App - createUser Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);

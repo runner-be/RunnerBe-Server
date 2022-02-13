@@ -4,8 +4,8 @@ const userService = require("../../app/User/userService");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
 const secret = require("../../../config/secret");
+const { logger } = require("../../../config/winston"); // 디버깅용
 
-const passport = require("passport");
 const axios = require("axios");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
@@ -184,9 +184,9 @@ exports.naverLogin = async function (req, res) {
  */
 exports.postUsers = async function (req, res) {
     /**
-     * Body: userEmail, password, phoneNumber, userName
+     * Body: uuid, nickName, birthday, gender, job, idCardImageUrl, officeEmail
      */
-    const { uuid, nickName, birthday, gender, job, officeEmail, idCardImageUrl } =
+    const { uuid, nickName, birthday, gender, job, idCardImageUrl, officeEmail } =
         req.body;
 
     // 필수 값 : 빈 값 체크
@@ -220,8 +220,8 @@ exports.postUsers = async function (req, res) {
         birthday,
         gender,
         job,
-        officeEmail,
-        idCardImageUrl
+        idCardImageUrl,
+        officeEmail
     );
     return res.send(signUpResponse);
 };
