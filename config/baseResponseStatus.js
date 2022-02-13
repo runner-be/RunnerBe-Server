@@ -3,6 +3,12 @@ module.exports = {
     SUCCESS: { isSuccess: true, code: 1000, message: "성공" },
     SUCCESS_MEMBER: { isSuccess: true, code: 1001, message: "성공, 회원" },
     SUCCESS_NON_MEMBER: { isSuccess: true, code: 1002, message: "성공, 비회원" },
+    SUCCESS_WRITER: { isSuccess: true, code: 1003, message: "성공, 작성자" },
+    SUCCESS_NON_WRITER: {
+        isSuccess: true,
+        code: 1004,
+        message: "성공, 비작성자",
+    },
 
     // Common
     TOKEN_EMPTY: {
@@ -256,6 +262,18 @@ module.exports = {
         isSuccess: false,
         code: 2040,
         message: "runningTag는 A, B, H 중 하나로 입력해주세요.",
+    },
+
+    POSTID_EMPTY: {
+        isSuccess: false,
+        code: 2041,
+        message: "postId를 입력해주세요.",
+    },
+
+    POSTID_NOTNUM: {
+        isSuccess: false,
+        code: 2042,
+        message: "postId는 숫자로 입력해주세요.",
     },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {

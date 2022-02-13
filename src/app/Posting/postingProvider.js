@@ -11,3 +11,28 @@ exports.userIdCheck = async function (userId) {
 
     return userIdCheckResult;
 };
+
+// 게시글 상세페이지
+exports.getPosting = async function (postId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const getPostingResult = await postingDao.getPosting(connection, postId);
+    const getRunnerResult = await postingDao.getRunner(connection, postId);
+    connection.release();
+    const postingInfo = getPostingResult[0];
+    const runnerInfo = getRunnerResult[0];
+    const getPostingFinalResult = { postingInfo, runnerInfo };
+    return getPostingFinalResult;
+};
+
+// 작성자인지 체크
+exports.checkWriter = async function (postId, userId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const checkWriterParams = [postId, userId];
+    const checkWriterResult = await postingDao.checkWriter(
+        connection,
+        checkWriterParams
+    );
+    connection.release();
+
+    return checkWriterResult;
+};

@@ -102,3 +102,43 @@ exports.createPosting = async function (req, res) {
         return res.send(postingResponse);
     }
 };
+
+/**
+ * API No. 8
+ * API Name : 게시글 상세페이지 API
+ * [GET] /postings/:postId/:userId
+ */
+exports.getPosting = async function (req, res) {
+    /**
+     * Header : jwt
+     * Path Variable : postId, userId
+     */
+    const postId = req.params.postId;
+    const userId = req.params.userId;
+    const userIdFromJWT = req.verifiedToken.userId;
+
+    // 필수 값 : 빈 값 체크 (text를 제외한 나머지)
+    if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+    if (!postId) return res.send(response(baseResponse.POSTID_EMPTY));
+
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.USER_USERID_NOTNUM));
+    if (isNaN(postId) === true)
+        return res.send(response(baseResponse.POSTID_NOTNUM));
+
+    //jwt로 userId 확인
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        const getPostingResponse = await postingProvider.getPosting(postId);
+
+        // 작성자, 비작성자 구분하기
+        const checkWriter = await postingProvider.checkWriter(postId, userId);
+        if (checkWriter.length > 0) {
+            res.send(response(baseResponse.SUCCESS_WRITER, getPostingResponse));
+        } else {
+            res.send(response(baseResponse.SUCCESS_NON_WRITER, getPostingResponse));
+        }
+    }
+};
