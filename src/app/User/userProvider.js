@@ -9,6 +9,13 @@ exports.retrieveUserList = async function () {
   connection.release();
   return userListResult;
 };
+
+exports.deleteUser = async function (uuid) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const deleteResult = await userDao.deleteUser(connection, uuid);
+  connection.release();
+  return deleteResult;
+};
 // UUID 존재 여부
 exports.checkUuidExist = async function (uuid) {
   try {

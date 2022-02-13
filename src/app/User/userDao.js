@@ -8,6 +8,16 @@ async function selectUser(connection) {
     return userRows;
 }
 
+//uuid로 회원 삭제
+async function deleteUser(connection, uuid) {
+    const deleteUserQuery = `
+                DELETE FROM User 
+                Where uuid = ?;
+                `;
+    const [deleteUserRows] = await connection.query(deleteUserQuery, uuid);
+    return deleteUserRows;
+}
+
 // uuid 존재 여부 확인
 async function checkUuidExist(connection, uuid) {
     const query = `
@@ -198,6 +208,7 @@ async function getJob(connection) {
 }
 module.exports = {
     selectUser,
+    deleteUser,
     checkUuidExist,
     selectUserId,
     selectUuid,

@@ -42,6 +42,17 @@ exports.getJwt = async function (req, res) {
 };
 
 /**
+ * API No. 0
+ * API Name : 테스트용 회원 삭제 API
+ * [GET] /FORTESTdeleteUser/:uuid
+ */
+exports.deleteUser = async function (req, res) {
+    const uuid = req.params.uuid;
+    const deleteResult = await userProvider.deleteUser(uuid);
+    return res.send(response(baseResponse.SUCCESS));
+};
+
+/**
  * API No. 1
  * API Name : 카카오 로그인 API
  * [POST] /users/kakao-login
