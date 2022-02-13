@@ -197,7 +197,22 @@ async function getMain(
 // 직군 코드
 async function getJob(connection) {
     const getJobQuery = `
-  SELECT DISTINCT postId, job
+  SELECT DISTINCT postId,
+  case when job = 'PSV' then '공무원'
+      when job = 'EDU' then '교육'
+      when job = 'DEV' then '개발'
+      when job = 'PSM' then '기획/전략/경영'
+      when job = 'DES' then '디자인'
+      when job = 'MPR' then '마케팅/PR'
+      when job = 'SER' then '서비스'
+      when job = 'PRO' then '생산'
+      when job = 'RES' then '연구'
+      when job = 'SAF' then '영업/제휴'
+      when job = 'MED' then '의료'
+      when job = 'HUR' then '인사'
+      when job = 'ACC' then '제무/회계'
+      when job = 'CUS' then 'CS'
+      end as job
   FROM RunningPeople RP
   inner join Running R on RP.gatheringId = R.gatheringId
   inner join User U on RP.userId = U.userId
