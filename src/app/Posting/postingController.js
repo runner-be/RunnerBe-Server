@@ -192,7 +192,7 @@ exports.closePosting = async function (req, res) {
 
 /**
  * API No. 11
- * API Name : 게시글 작성(러닝 모임 생성) API
+ * API Name : 게시글 수정 API
  * [POST] /postings/:postId/:userId
  */
 exports.patchPosting = async function (req, res) {
