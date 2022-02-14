@@ -36,3 +36,12 @@ exports.checkWriter = async function (postId, userId) {
 
     return checkWriterResult;
 };
+
+// 마감하기
+exports.closePosting = async function (postId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const closePostingResult = await postingDao.closePosting(connection, postId);
+    connection.release();
+
+    return closePostingResult;
+};

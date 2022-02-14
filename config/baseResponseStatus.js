@@ -295,6 +295,12 @@ module.exports = {
         code: 2042,
         message: "postId는 숫자로 입력해주세요.",
     },
+
+    USER_NOT_WRITER: {
+        isSuccess: false,
+        code: 2043,
+        message: "해당 jwt를 발급받은 유저는 해당 게시글의 작성자가 아닙니다.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,

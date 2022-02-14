@@ -26,6 +26,6 @@ module.exports = function (app) {
     // 7. 메인페이지 API
     app.get("/users/main/:runningTag", user.main);
 
-    // 8. 앱 실행시 유저 인증여부 확인 API
+    // 9. 앱 실행시 유저 인증여부 확인 API
     app.get("/users/auth", jwtMiddleware, user.authCheck);
 };

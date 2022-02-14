@@ -360,7 +360,7 @@ exports.main = async function (req, res) {
 };
 
 /**
- * API No. 8
+ * API No. 9
  * API Name : jwt로 유저 인증 여부 확인API
  * [GET] /users/auth
  */
