@@ -301,6 +301,12 @@ module.exports = {
         code: 2043,
         message: "해당 jwt를 발급받은 유저는 해당 게시글의 작성자가 아닙니다.",
     },
+
+    USER_NON_AUTH: {
+        isSuccess: false,
+        code: 2044,
+        message: "아직 사원증 인증 대기중인 회원입니다.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,

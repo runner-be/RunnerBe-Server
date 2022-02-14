@@ -1,6 +1,7 @@
 const jwtMiddleware = require("../../../config/jwtMiddleware");
 const postingProvider = require("../../app/Posting/postingProvider");
 const postingService = require("../../app/Posting/postingService");
+const userProvider = require("../../app/User/userProvider");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
 const { logger } = require("../../../config/winston");
@@ -84,6 +85,11 @@ exports.createPosting = async function (req, res) {
     if (userIdFromJWT != userId) {
         res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
     } else {
+        // 인증 대기 회원 확인
+        const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+        if (checkUserAuth.length !== 0) {
+            return res.send(response(baseResponse.USER_NON_AUTH));
+        }
         const postingResponse = await postingService.createPosting(
             userId,
             title,
@@ -131,6 +137,11 @@ exports.getPosting = async function (req, res) {
     if (userIdFromJWT != userId) {
         res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
     } else {
+        // 인증 대기 회원 확인
+        const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+        if (checkUserAuth.length !== 0) {
+            return res.send(response(baseResponse.USER_NON_AUTH));
+        }
         const getPostingResponse = await postingProvider.getPosting(postId);
 
         // 작성자, 비작성자 구분하기
@@ -162,6 +173,12 @@ exports.closePosting = async function (req, res) {
     // 숫자 확인
     if (isNaN(postId) === true)
         return res.send(response(baseResponse.POSTID_NOTNUM));
+
+    // 인증 대기 회원 확인
+    const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+    if (checkUserAuth.length !== 0) {
+        return res.send(response(baseResponse.USER_NON_AUTH));
+    }
 
     //jwt로 들어온 userId가 작성자 id와 일치하는지 확인
     const checkWriter = await postingProvider.checkWriter(postId, userIdFromJWT);

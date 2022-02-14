@@ -291,6 +291,11 @@ exports.patchUserName = async function (req, res) {
     if (userIdFromJWT != userId) {
         res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
     } else {
+        // 인증 대기 회원 확인
+        const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+        if (checkUserAuth.length !== 0) {
+            return res.send(response(baseResponse.USER_NON_AUTH));
+        }
         const patchUserNameResponse = await userService.patchUserName(
             changedNickName,
             userId
