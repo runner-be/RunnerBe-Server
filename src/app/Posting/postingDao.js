@@ -168,6 +168,21 @@ async function closePosting(connection, postId) {
     return closePostingRow;
 }
 
+// 게시글 수정
+async function patchPosting(connection, patchPostingParams) {
+    const patchPostingQuery = `
+  UPDATE Posting SET title = ?, gatheringTime = ?, runningTime = ?, gatherLongitude = ?, gatherLatitude = ?, locationInfo = ?, runningTag = ?, ageMin = ?, ageMax = ?, 
+                   peopleNum = ?, contents = ?, runnerGender = ?
+  WHERE postId = ?;
+                 `;
+    const patchPostingRow = await connection.query(
+        patchPostingQuery,
+        patchPostingParams
+    );
+
+    return patchPostingRow;
+}
+
 module.exports = {
     createPosting,
     userIdCheck,
@@ -176,4 +191,5 @@ module.exports = {
     getPosting,
     getRunner,
     closePosting,
+    patchPosting,
 };

@@ -8,7 +8,7 @@ const { errResponse } = require("../../../config/response");
 
 const { connect } = require("http2");
 
-// 유저 생성
+// 게시글 생성
 exports.createPosting = async function (
     userId,
     title,
@@ -75,6 +75,54 @@ exports.createPosting = async function (
         return response(baseResponse.SUCCESS);
     } catch (err) {
         logger.error(`App - createPosting Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};
+
+// 게시글 수정
+exports.patchPosting = async function (
+    title,
+    gatheringTime,
+    runningTime,
+    gahterLongitude,
+    gatherLatitude,
+    locationInfo,
+    runningTag,
+    ageMin,
+    ageMax,
+    peopleNum,
+    contents,
+    runnerGender,
+    postId
+) {
+    try {
+        const patchPostingParams = [
+            title,
+            gatheringTime,
+            runningTime,
+            gahterLongitude,
+            gatherLatitude,
+            locationInfo,
+            runningTag,
+            ageMin,
+            ageMax,
+            peopleNum,
+            contents,
+            runnerGender,
+            postId,
+        ];
+
+        const connection = await pool.getConnection(async (conn) => conn);
+        // 게시글 수정
+        const patchPostingResult = await postingDao.patchPosting(
+            connection,
+            patchPostingParams
+        );
+
+        connection.release();
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - patchPosting Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }
 };

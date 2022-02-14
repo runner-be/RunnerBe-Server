@@ -9,4 +9,7 @@ module.exports = function (app) {
 
     // 10. 마감하기(작성자) API
     app.post("/postings/:postId/closing", jwtMiddleware, posting.closePosting);
+
+    // 11. 게시글 수정 API
+    app.patch("/postings/:postId/:userId", jwtMiddleware, posting.patchPosting);
 };
