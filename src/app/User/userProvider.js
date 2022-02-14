@@ -22,6 +22,7 @@ exports.checkUuidExist = async function (uuid) {
     const connection = await pool.getConnection(async (conn) => conn);
     const uuidCheckResult = await userDao.selectUuid(connection, uuid);
     connection.release();
+
     return uuidCheckResult;
   } catch (err) {
     logger.error(`User-checkUuidExist Provider error: ${err.message}`);
@@ -120,4 +121,30 @@ exports.getMain = async function (
 
   const mainResult = { postingResult, jobResult };
   return mainResult;
+};
+
+// 유저 인증 여부 확인
+exports.checkUserStatus = async function (selectUserId) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const result = await userDao.checkUserStatus(connection, selectUserId);
+    connection.release();
+    return result;
+  } catch (err) {
+    logger.error(`User-checkUserStatus Provider error: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+};
+
+// 유저 인증 여부 확인
+exports.checkUserAuth = async function (userIdFromJWT) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const result = await userDao.checkUserAuth(connection, userIdFromJWT);
+    connection.release();
+    return result;
+  } catch (err) {
+    logger.error(`User-checkUserAuth Provider error: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
 };

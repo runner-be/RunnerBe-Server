@@ -1,13 +1,33 @@
 module.exports = {
     // Success
     SUCCESS: { isSuccess: true, code: 1000, message: "성공" },
-    SUCCESS_MEMBER: { isSuccess: true, code: 1001, message: "성공, 회원" },
+    SUCCESS_MEMBER_AUTH: {
+        isSuccess: true,
+        code: 1001,
+        message: "성공, 인증 완료 회원",
+    },
     SUCCESS_NON_MEMBER: { isSuccess: true, code: 1002, message: "성공, 비회원" },
     SUCCESS_WRITER: { isSuccess: true, code: 1003, message: "성공, 작성자" },
     SUCCESS_NON_WRITER: {
         isSuccess: true,
         code: 1004,
         message: "성공, 비작성자",
+    },
+    SUCCESS_EMAIL: {
+        isSuccess: true,
+        code: 1005,
+        message: "성공, 이메일 인증 완료",
+    },
+    SUCCESS_PHOTO: {
+        isSuccess: true,
+        code: 1006,
+        message:
+            "성공, 사원증 인증 대기중 / 인증 대기 상태로 회원을 생성하였습니다.",
+    },
+    SUCCESS_MEMBER_NON_AUTH: {
+        isSuccess: true,
+        code: 1007,
+        message: "성공, 인증 대기 회원",
     },
 
     // Common
@@ -36,7 +56,7 @@ module.exports = {
     SIGNUP_BIRTHDAY_EMPTY: {
         isSuccess: false,
         code: 2002,
-        message: "생년월일을 입력해주세요(xxxx.01.01로 입력)",
+        message: "태어난 연도를 입력해주세요(xxxx로 입력)",
     },
     SIGNUP_GENDER_EMPTY: {
         isSuccess: false,

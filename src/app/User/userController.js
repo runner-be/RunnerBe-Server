@@ -77,14 +77,12 @@ exports.kakaoLogin = async function (req, res) {
         } catch (err) {
             return res.send(errResponse(baseResponse.ACCESS_TOKEN_IS_NOT_VALID)); // 2085
         }
-        //const uuid = kakao_profile.id; - wrong
         const uuid = kakao_profile.data.id.toString();
 
         const checkUuid = await userProvider.checkUuidExist(uuid);
 
-        if (checkUuid === 1) {
+        if (checkUuid.length > 0) {
             const selectUserId = await userProvider.selectUserId(uuid);
-
             let token = await jwt.sign(
                 {
                     userId: selectUserId,
@@ -95,13 +93,25 @@ exports.kakaoLogin = async function (req, res) {
                     subject: "userInfo",
                 }
             );
-            return res.send(
-                response(baseResponse.SUCCESS_MEMBER, {
-                    userId: selectUserId,
-                    jwt: token,
-                    message: "소셜로그인에 성공하셨습니다.",
-                })
-            );
+
+            const checkUserStatus = await userProvider.checkUserStatus(selectUserId); //Y이면 length 1이상
+            if (checkUserStatus.length > 0) {
+                return res.send(
+                    response(baseResponse.SUCCESS_MEMBER_AUTH, {
+                        userId: selectUserId,
+                        jwt: token,
+                        message: "소셜로그인에 성공하셨습니다.",
+                    })
+                );
+            } else {
+                return res.send(
+                    response(baseResponse.SUCCESS_MEMBER_NON_AUTH, {
+                        userId: selectUserId,
+                        jwt: token,
+                        message: "인증 대기 회원입니다.",
+                    })
+                );
+            }
         } else {
             return res.send(
                 response(baseResponse.SUCCESS_NON_MEMBER, {
@@ -139,11 +149,10 @@ exports.naverLogin = async function (req, res) {
             return res.send(errResponse(baseResponse.ACCESS_TOKEN_IS_NOT_VALID)); // 2085
         }
 
-        //const uuid = naver_profile.id - wrong..
         const uuid = naver_profile.data.response.id;
         const checkUuid = await userProvider.checkUuidExist(uuid);
 
-        if (checkUuid === 1) {
+        if (checkUuid.length > 0) {
             const selectUserId = await userProvider.selectUserId(uuid);
 
             let token = await jwt.sign(
@@ -156,13 +165,24 @@ exports.naverLogin = async function (req, res) {
                     subject: "userInfo",
                 }
             );
-            return res.send(
-                response(baseResponse.SUCCESS_MEMBER, {
-                    userId: selectUserId,
-                    jwt: token,
-                    message: "소셜로그인에 성공하셨습니다.",
-                })
-            );
+            const checkUserStatus = await userProvider.checkUserStatus(selectUserId); //Y이면 length 1이상
+            if (checkUserStatus.length > 0) {
+                return res.send(
+                    response(baseResponse.SUCCESS_MEMBER_AUTH, {
+                        userId: selectUserId,
+                        jwt: token,
+                        message: "소셜로그인에 성공하셨습니다.",
+                    })
+                );
+            } else {
+                return res.send(
+                    response(baseResponse.SUCCESS_MEMBER_NON_AUTH, {
+                        userId: selectUserId,
+                        jwt: token,
+                        message: "인증 대기 회원입니다.",
+                    })
+                );
+            }
         } else {
             return res.send(
                 response(baseResponse.SUCCESS_NON_MEMBER, {
@@ -337,4 +357,20 @@ exports.main = async function (req, res) {
         sortCondition
     );
     return res.send(response(baseResponse.SUCCESS, mainResult));
+};
+
+/**
+ * API No. 8
+ * API Name : jwt로 유저 인증 여부 확인API
+ * [GET] /users/auth
+ */
+exports.authCheck = async function (req, res) {
+    const userIdFromJWT = req.verifiedToken.userId;
+    const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+
+    if (checkUserAuth.length > 0) {
+        return res.send(response(baseResponse.SUCCESS_MEMBER_AUTH));
+    } else {
+        return res.send(response(baseResponse.SUCCESS_MEMBER_NON_AUTH));
+    }
 };

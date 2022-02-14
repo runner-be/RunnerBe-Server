@@ -56,7 +56,7 @@ exports.createUser = async function (
             ];
             const connection = await pool.getConnection(async (conn) => conn);
 
-            const userResult = await userDao.insertUserInfo(
+            const userResult = await userDao.insertUserInfoEmail(
                 connection,
                 insertUserInfoParams
             );
@@ -76,7 +76,7 @@ exports.createUser = async function (
                 }
             );
 
-            return response(baseResponse.SUCCESS, token);
+            return response(baseResponse.SUCCESS_EMAIL, token);
         } else {
             const hashedEmail = officeEmail;
             const insertUserInfoParams = [
@@ -90,7 +90,7 @@ exports.createUser = async function (
             ];
             const connection = await pool.getConnection(async (conn) => conn);
 
-            const userResult = await userDao.insertUserInfo(
+            const userResult = await userDao.insertUserInfoPhoto(
                 connection,
                 insertUserInfoParams
             );
@@ -110,7 +110,7 @@ exports.createUser = async function (
                 }
             );
 
-            return response(baseResponse.SUCCESS, token);
+            return response(baseResponse.SUCCESS_PHOTO, token);
         }
     } catch (err) {
         logger.error(`App - createUser Service error\n: ${err.message}`);

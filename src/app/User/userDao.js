@@ -87,8 +87,8 @@ async function selectUseremailForAuth(connection, officeEmail) {
     return emailRows;
 }
 
-// 유저 생성
-async function insertUserInfo(connection, insertUserInfoParams) {
+// 유저 생성, 이메일 인증
+async function insertUserInfoEmail(connection, insertUserInfoParams) {
     const insertUserInfoQuery = `
               INSERT INTO User(uuid, nickName, birthday, gender, job, idCardImageUrl, officeEmail)
               VALUES (?, ?, ?, ?, ?, ?, ?);
@@ -101,6 +101,19 @@ async function insertUserInfo(connection, insertUserInfoParams) {
     return insertUserInfoRow;
 }
 
+// 유저 생성, 사원증 인증
+async function insertUserInfoPhoto(connection, insertUserInfoParams) {
+    const insertUserInfoQuery = `
+              INSERT INTO User(status, uuid, nickName, birthday, gender, job, idCardImageUrl, officeEmail)
+              VALUES ('W',?, ?, ?, ?, ?, ?, ?);
+               `;
+    const insertUserInfoRow = await connection.query(
+        insertUserInfoQuery,
+        insertUserInfoParams
+    );
+
+    return insertUserInfoRow;
+}
 // job 존재 여부 확인
 async function checkJobExist(connection, job) {
     const query = `
@@ -221,6 +234,32 @@ async function getJob(connection) {
     const [getJobRows] = await connection.query(getJobQuery);
     return getJobRows;
 }
+
+// 유저 인증 여부 확인
+async function checkUserStatus(connection, selectUserId) {
+    const checkUserStatusQuery = `
+            SELECT userId FROM User
+            WHERE userId = ? AND status = 'Y';
+                `;
+    const [statusYRows] = await connection.query(
+        checkUserStatusQuery,
+        selectUserId
+    );
+    return statusYRows;
+}
+
+// 유저 인증 여부 확인
+async function checkUserAuth(connection, userIdFromJWT) {
+    const checkUserStatusQuery = `
+            SELECT userId FROM User
+            WHERE userId = ? AND status = 'Y';
+                `;
+    const [statusYRows] = await connection.query(
+        checkUserStatusQuery,
+        userIdFromJWT
+    );
+    return statusYRows;
+}
 module.exports = {
     selectUser,
     deleteUser,
@@ -229,11 +268,14 @@ module.exports = {
     selectUuid,
     selectNickName,
     selectUseremail,
-    insertUserInfo,
+    insertUserInfoEmail,
+    insertUserInfoPhoto,
     checkJobExist,
     selectUseremailForAuth,
     patchUserName,
     checkRecord,
     getMain,
     getJob,
+    checkUserStatus,
+    checkUserAuth,
 };
