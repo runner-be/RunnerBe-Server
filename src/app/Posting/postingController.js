@@ -193,14 +193,14 @@ exports.closePosting = async function (req, res) {
 /**
  * API No. 11
  * API Name : 게시글 수정 API
- * [POST] /postings/:postId/:userId
+ * [POST] /postings/:postId
  */
 exports.patchPosting = async function (req, res) {
     /**
      * Header : jwt
      * Body: title, gatheringTime, runningTime, gahterLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender
      */
-    const userId = req.params.userId;
+    const userId = req.query.userId;
     const postId = req.params.postId;
     const userIdFromJWT = req.verifiedToken.userId;
     const {
@@ -293,5 +293,42 @@ exports.patchPosting = async function (req, res) {
             postId
         );
         return res.send(patchPostingResponse);
+    }
+};
+
+/**
+ * API No. 12
+ * API Name : 게시글 삭제 API
+ * [PATCH] /postings/:postId/drop
+ */
+exports.dropPosting = async function (req, res) {
+    /**
+     * Header : jwt
+     */
+    const userId = req.query.userId;
+    const postId = req.params.postId;
+    const userIdFromJWT = req.verifiedToken.userId;
+
+    // 필수 값 : 빈 값 체크 (text를 제외한 나머지)
+    if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+    if (!postId) return res.send(response(baseResponse.POSTID_EMPTY));
+
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.USER_USERID_NOTNUM));
+    if (isNaN(postId) === true)
+        return res.send(response(baseResponse.POSTID_NOTNUM));
+
+    //jwt로 userId 확인
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        // 인증 대기 회원 확인
+        const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+        if (checkUserAuth.length !== 0) {
+            return res.send(response(baseResponse.USER_NON_AUTH));
+        }
+        const dropPostingResponse = await postingService.dropPosting(postId);
+        return res.send(dropPostingResponse);
     }
 };

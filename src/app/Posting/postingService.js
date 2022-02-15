@@ -111,6 +111,10 @@ exports.patchPosting = async function (
             runnerGender,
             postId,
         ];
+        //게시글 있는지 확인
+        const checkPostingResult = await postingProvider.checkPosting(postId);
+        if (checkPostingResult.length === 0)
+            return errResponse(baseResponse.POSTING_NOT_VALID_POSTID);
 
         const connection = await pool.getConnection(async (conn) => conn);
         // 게시글 수정
@@ -123,6 +127,25 @@ exports.patchPosting = async function (
         return response(baseResponse.SUCCESS);
     } catch (err) {
         logger.error(`App - patchPosting Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};
+
+// 게시글 삭제
+exports.dropPosting = async function (postId) {
+    try {
+        //게시글 있는지 확인
+        const checkPostingResult = await postingProvider.checkPosting(postId);
+        if (checkPostingResult.length === 0)
+            return errResponse(baseResponse.POSTING_NOT_VALID_POSTID);
+
+        const connection = await pool.getConnection(async (conn) => conn);
+        // 게시글 수정
+        const dropPostingResult = await postingDao.dropPosting(connection, postId);
+        connection.release();
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - dropPosting Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }
 };

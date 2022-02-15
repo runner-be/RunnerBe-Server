@@ -183,6 +183,24 @@ async function patchPosting(connection, patchPostingParams) {
     return patchPostingRow;
 }
 
+// 게시글 있는지 확인
+async function checkPosting(connection, postId) {
+    const checkPostingQuery = `
+              SELECT postId FROM Posting WHERE postId = ?
+                 `;
+    const checkPostingRow = await connection.query(checkPostingQuery, postId);
+
+    return checkPostingRow;
+}
+// 게시글 삭제
+async function dropPosting(connection, postId) {
+    const dropPostingQuery = `
+              DELETE FROM Posting WHERE postId=?;
+                 `;
+    const dropPostingRow = await connection.query(dropPostingQuery, postId);
+
+    return dropPostingRow;
+}
 module.exports = {
     createPosting,
     userIdCheck,
@@ -192,4 +210,6 @@ module.exports = {
     getRunner,
     closePosting,
     patchPosting,
+    checkPosting,
+    dropPosting,
 };

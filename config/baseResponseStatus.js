@@ -307,6 +307,12 @@ module.exports = {
         code: 2044,
         message: "아직 사원증 인증 대기중인 회원입니다.",
     },
+
+    POSTING_NOT_VALID_POSTID: {
+        isSuccess: false,
+        code: 2045,
+        message: "존재하지 않는 postId입니다.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,

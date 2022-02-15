@@ -45,3 +45,12 @@ exports.closePosting = async function (postId) {
 
     return closePostingResult;
 };
+
+// 게시글 있는지 확인
+exports.checkPosting = async function (postId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const checkPostingResult = await postingDao.checkPosting(connection, postId);
+    connection.release();
+
+    return checkPostingResult;
+};
