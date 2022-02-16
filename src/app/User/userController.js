@@ -365,13 +365,16 @@ exports.main = async function (req, res) {
 };
 
 /**
- * API No. 9
+ * API No.  9
  * API Name : jwt로 유저 인증 여부 확인API
  * [GET] /users/auth
  */
 exports.authCheck = async function (req, res) {
     const userIdFromJWT = req.verifiedToken.userId;
+    const checkFirst = await userProvider.checkFirst(userIdFromJWT);
     const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+    if (checkFirst.length > 0)
+        return res.send(response(baseResponse.SUCCESS_MEMBER_AUTH_FIRST));
 
     if (checkUserAuth.length > 0) {
         return res.send(response(baseResponse.SUCCESS_MEMBER_AUTH));

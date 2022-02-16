@@ -260,6 +260,24 @@ async function checkUserAuth(connection, userIdFromJWT) {
     );
     return statusYRows;
 }
+// 유저 인증 이후 최초 접속인지 확인
+async function checkFirst(connection, userIdFromJWT) {
+    const checkFirstQuery = `
+            SELECT userId FROM User
+            WHERE userId = ? AND status = 'F';
+                `;
+    const [statusFRows] = await connection.query(checkFirstQuery, userIdFromJWT);
+    return statusFRows;
+}
+// F -> Y
+async function changeStatus(connection, userIdFromJWT) {
+    const changeStatusQuery = `
+            UPDATE User SET status = 'Y' where userId = ?;
+                `;
+    const [statusRows] = await connection.query(changeStatusQuery, userIdFromJWT);
+    return statusRows;
+}
+
 module.exports = {
     selectUser,
     deleteUser,
@@ -278,4 +296,6 @@ module.exports = {
     getJob,
     checkUserStatus,
     checkUserAuth,
+    checkFirst,
+    changeStatus,
 };

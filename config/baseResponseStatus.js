@@ -30,6 +30,12 @@ module.exports = {
         message: "성공, 인증 대기 회원",
     },
 
+    SUCCESS_MEMBER_AUTH_FIRST: {
+        isSuccess: true,
+        code: 1008,
+        message: "성공, 인증 회원, 최초 접속",
+    },
+
     // Common
     TOKEN_EMPTY: {
         isSuccess: false,
