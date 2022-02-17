@@ -19,6 +19,7 @@ module.exports = function () {
     /* App (Android, iOS) */
     require("../src/app/User/userRoute")(app);
     require("../src/app/Posting/postingRoute")(app);
+    require("../src/app/Message/messageRoute")(app);
 
     return app;
 };

@@ -87,7 +87,7 @@ exports.createPosting = async function (req, res) {
     } else {
         // 인증 대기 회원 확인
         const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
-        if (checkUserAuth.length !== 0) {
+        if (checkUserAuth.length === 0) {
             return res.send(response(baseResponse.USER_NON_AUTH));
         }
         const postingResponse = await postingService.createPosting(
@@ -139,7 +139,7 @@ exports.getPosting = async function (req, res) {
     } else {
         // 인증 대기 회원 확인
         const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
-        if (checkUserAuth.length !== 0) {
+        if (checkUserAuth.length === 0) {
             return res.send(response(baseResponse.USER_NON_AUTH));
         }
         const getPostingResponse = await postingProvider.getPosting(postId);
@@ -176,7 +176,7 @@ exports.closePosting = async function (req, res) {
 
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
-    if (checkUserAuth.length !== 0) {
+    if (checkUserAuth.length === 0) {
         return res.send(response(baseResponse.USER_NON_AUTH));
     }
 
@@ -274,7 +274,7 @@ exports.patchPosting = async function (req, res) {
     } else {
         // 인증 대기 회원 확인
         const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
-        if (checkUserAuth.length !== 0) {
+        if (checkUserAuth.length === 0) {
             return res.send(response(baseResponse.USER_NON_AUTH));
         }
         const patchPostingResponse = await postingService.patchPosting(
@@ -325,7 +325,7 @@ exports.dropPosting = async function (req, res) {
     } else {
         // 인증 대기 회원 확인
         const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
-        if (checkUserAuth.length !== 0) {
+        if (checkUserAuth.length === 0) {
             return res.send(response(baseResponse.USER_NON_AUTH));
         }
         const dropPostingResponse = await postingService.dropPosting(postId);
