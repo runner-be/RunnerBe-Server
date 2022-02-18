@@ -1,6 +1,6 @@
 const { pool } = require("../../../config/database");
 const { logger } = require("../../../config/winston");
-
+const baseResponse = require("../../../config/baseResponseStatus");
 const userDao = require("./userDao");
 
 exports.retrieveUserList = async function () {
