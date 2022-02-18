@@ -56,3 +56,12 @@ exports.getReceiverId = async function (roomId, senderId) {
         return errResponse(baseResponse.DB_ERROR);
     }
 };
+
+// 쪽지 목록창 조회
+exports.getMessageList = async function (userId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const getMessageResult = await messageDao.getMessageList(connection, userId);
+    connection.release();
+
+    return getMessageResult[0];
+};

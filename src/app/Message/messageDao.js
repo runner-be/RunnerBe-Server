@@ -101,6 +101,27 @@ async function MPR(connection, MPRParams) {
     return MPRRow;
 }
 
+// 쪽지 목록창 조회
+async function getMessageList(connection, userId) {
+    const query = `
+  SELECT R.roomId, title, counterId, nickName, profileImageUrl
+  FROM Room R
+  INNER JOIN Posting P on R.postId = P.postId
+  INNER JOIN (SELECT roomId, case when receiverId = ${userId} then senderId
+              when senderId = ${userId} then receiverId
+      end as counterId
+  FROM Room R
+  INNER JOIN Posting P on R.postId = P.postId
+  WHERE senderId = ${userId} or receiverId = ${userId}) D on D.roomId = R.roomId
+  INNER JOIN User U on U.userId = D.counterId
+  WHERE senderId = ${userId} or receiverId = ${userId};
+                          `;
+
+    const row = await connection.query(query);
+
+    return row;
+}
+
 module.exports = {
     getRepUserId,
     createRoom,
@@ -111,4 +132,5 @@ module.exports = {
     getReceiver,
     sendMessage,
     MPR,
+    getMessageList,
 };

@@ -15,4 +15,7 @@ module.exports = function (app) {
         jwtMiddleware,
         message.sendMessage
     );
+
+    // 15. 쪽지 목록창 API
+    app.get("/messages/list", jwtMiddleware, message.getMessageList);
 };
