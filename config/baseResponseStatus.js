@@ -319,6 +319,42 @@ module.exports = {
         code: 2045,
         message: "존재하지 않는 postId입니다.",
     },
+
+    USER_ALREADY_DENIED: {
+        isSuccess: false,
+        code: 2046,
+        message: "이미 해당 러닝 모임에 대해서 거절된 적 있는 회원입니다.",
+    },
+
+    ROOM_ID_EMPTY: {
+        isSuccess: false,
+        code: 2047,
+        message: "roomId를 입력해주세요.",
+    },
+
+    CONTENT_EMPTY: {
+        isSuccess: false,
+        code: 2048,
+        message: "content를 입력해주세요.",
+    },
+
+    ROOM_ID_NOTNUM: {
+        isSuccess: false,
+        code: 2049,
+        message: "roomId는 숫자로 입력해주세요.",
+    },
+
+    CONTENT_LENGTH: {
+        isSuccess: false,
+        code: 2050,
+        message: "content는 100자 이내로 입력해주세요.",
+    },
+
+    MESSAGE_NOT_MATCH_USERID: {
+        isSuccess: false,
+        code: 2050,
+        message: "입력받은 userId는 해당 room에 속하지 않습니다",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,
