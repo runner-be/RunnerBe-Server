@@ -364,7 +364,7 @@ module.exports = {
 
     MESSAGE_NOT_MATCH_USERID: {
         isSuccess: false,
-        code: 2050,
+        code: 2051,
         message: "입력받은 userId는 해당 room에 속하지 않습니다",
     },
     // ----------------------------
