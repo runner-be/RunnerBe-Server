@@ -65,3 +65,45 @@ exports.getMessageList = async function (userId) {
 
     return getMessageResult[0];
 };
+
+// 대화방 상세페이지
+exports.getRoom = async function (roomId, userId) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+
+        //방정보
+        const ex_roomInfo = await messageDao.getRoomInfo(connection, roomId);
+
+        //chat
+        const getChatParams = [roomId, userId, userId];
+        const ex_ChatResult = await messageDao.getChat(connection, getChatParams);
+
+        // 읽음 처리하기
+        const reading = await messageDao.reading(connection, roomId);
+        connection.release();
+
+        const roomInfo = ex_roomInfo[0];
+        const ChatResult = ex_ChatResult[0];
+
+        const finalResult = { roomInfo, ChatResult };
+
+        return finalResult;
+    } catch (err) {
+        logger.error(`App - getRoom Provider error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};
+
+// 러닝 모임 생성자 확인
+exports.checkMaster = async function (userId) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const checkMaster = await messageDao.checkMaster(connection, userId);
+        connection.release();
+
+        return checkMaster;
+    } catch (err) {
+        logger.error(`App - getRoom Provider error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};

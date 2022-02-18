@@ -36,6 +36,18 @@ module.exports = {
         message: "성공, 인증 회원, 최초 접속",
     },
 
+    SUCCESS_MASTER: {
+        isSuccess: true,
+        code: 1009,
+        message: "성공, 모임 생성자",
+    },
+
+    SUCCESS_NON_MASTER: {
+        isSuccess: true,
+        code: 1010,
+        message: "성공, 모임 참가자",
+    },
+
     // Common
     TOKEN_EMPTY: {
         isSuccess: false,

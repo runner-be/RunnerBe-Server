@@ -18,4 +18,7 @@ module.exports = function (app) {
 
     // 15. 쪽지 목록창 API
     app.get("/messages/list", jwtMiddleware, message.getMessageList);
+
+    // 16. 대화방 상세 페이지 API
+    app.get("/messages/rooms/:roomId", jwtMiddleware, message.getRoom);
 };

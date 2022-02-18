@@ -122,6 +122,68 @@ async function getMessageList(connection, userId) {
     return row;
 }
 
+// 대화방 myChat
+async function getChat(connection, getChatParams) {
+    const query = `
+  SELECT  R.roomId, userId,nickName, profileImageUrl,DATE_FORMAT(M.createdAt, '%Y/%c/%d %p %l:%i') as sendingTime, content, M.createdAt as criterionTime
+  FROM Message M
+  INNER JOIN MessagePerRoom MPR on M.messageId = MPR.messageId
+  INNER JOIN Room R on MPR.roomId = R.roomId
+  INNER JOIN User U on U.userId = M.senderId
+  WHERE R.roomId = ? and M.senderId = ? or M.receiverId = ?;
+                            `;
+
+    const row = await connection.query(query, getChatParams);
+
+    return row;
+}
+
+// 대화방 정보
+async function getRoomInfo(connection, roomId) {
+    const query = `
+    SELECT case when runningTag = 'A'
+    then '퇴근 후'
+      else case when runningTag = 'B'
+    then '출근 전'
+      else case when runningTag = 'H'
+    then '휴일'
+    end end end as runningTag, title
+    FROM Room
+    INNER JOIN Posting P on Room.postId = P.postId
+    WHERE roomId = ?;
+                                `;
+
+    const row = await connection.query(query, roomId);
+
+    return row;
+}
+
+// 읽음 처리
+async function reading(connection, roomId) {
+    const query = `
+    UPDATE Message
+    INNER JOIN  MessagePerRoom MPR on Message.messageId = MPR.messageId
+    SET whetherRead = REPLACE(whetherRead, 'N', 'Y')
+    WHERE whetherRead = 'N' AND roomId = ?;
+                                  `;
+
+    const row = await connection.query(query, roomId);
+
+    return row;
+}
+
+// 러닝 생성자 확인
+async function checkMaster(connection, userId) {
+    const query = `
+    SELECT receiverId
+    FROM Room
+    WHERE receiverId = ?;
+                                    `;
+
+    const row = await connection.query(query, userId);
+
+    return row;
+}
 module.exports = {
     getRepUserId,
     createRoom,
@@ -133,4 +195,8 @@ module.exports = {
     sendMessage,
     MPR,
     getMessageList,
+    getChat,
+    getRoomInfo,
+    reading,
+    checkMaster,
 };
