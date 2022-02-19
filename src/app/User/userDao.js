@@ -194,11 +194,16 @@ async function getMain(
           left((6371 * acos(cos(radians(${userLatitude})) * cos(radians(gatherLatitude)) *
                               cos(radians(gatherLongitude) - radians(${userLongitude})) +
                               sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))), 4) AS DISTANCE,
-         count(B.userId) as bookMarkNumber, whetherEnd
+         count(B.userId) as bookMarkNumber, whetherEnd, J.job
   FROM Posting P
   INNER JOIN User U on U.userId = P.postUserId
   INNER JOIN Running R on R.postId = P.postId
   LEFT OUTER JOIN Bookmarks B on P.postId = B.postId
+  INNER JOIN (SELECT DISTINCT postId, GROUP_CONCAT(distinct(job)) as job
+  FROM RunningPeople RP
+  inner join Running R on RP.gatheringId = R.gatheringId
+  inner join User U on RP.userId = U.userId
+  group by postId) J on J.postId = P.postId
   WHERE runningTag = "${runningTag}"
   ${whetherEndCondition}
   GROUP BY B.postId
@@ -207,33 +212,33 @@ async function getMain(
     const [mainRows] = await connection.query(getMainQuery);
     return mainRows;
 }
-// 직군 코드
-async function getJob(connection) {
-    const getJobQuery = `
-  SELECT DISTINCT postId,
-  case when job = 'PSV' then '공무원'
-      when job = 'EDU' then '교육'
-      when job = 'DEV' then '개발'
-      when job = 'PSM' then '기획/전략/경영'
-      when job = 'DES' then '디자인'
-      when job = 'MPR' then '마케팅/PR'
-      when job = 'SER' then '서비스'
-      when job = 'PRO' then '생산'
-      when job = 'RES' then '연구'
-      when job = 'SAF' then '영업/제휴'
-      when job = 'MED' then '의료'
-      when job = 'HUR' then '인사'
-      when job = 'ACC' then '제무/회계'
-      when job = 'CUS' then 'CS'
-      end as job
-  FROM RunningPeople RP
-  inner join Running R on RP.gatheringId = R.gatheringId
-  inner join User U on RP.userId = U.userId
-  WHERE  whetherAccept = 'Y';
-                `;
-    const [getJobRows] = await connection.query(getJobQuery);
-    return getJobRows;
-}
+// // 직군 코드
+// async function getJob(connection) {
+//   const getJobQuery = `
+//   SELECT DISTINCT postId,
+//   case when job = 'PSV' then '공무원'
+//       when job = 'EDU' then '교육'
+//       when job = 'DEV' then '개발'
+//       when job = 'PSM' then '기획/전략/경영'
+//       when job = 'DES' then '디자인'
+//       when job = 'MPR' then '마케팅/PR'
+//       when job = 'SER' then '서비스'
+//       when job = 'PRO' then '생산'
+//       when job = 'RES' then '연구'
+//       when job = 'SAF' then '영업/제휴'
+//       when job = 'MED' then '의료'
+//       when job = 'HUR' then '인사'
+//       when job = 'ACC' then '제무/회계'
+//       when job = 'CUS' then 'CS'
+//       end as job
+//   FROM RunningPeople RP
+//   inner join Running R on RP.gatheringId = R.gatheringId
+//   inner join User U on RP.userId = U.userId
+//   WHERE  whetherAccept = 'Y';
+//                 `;
+//   const [getJobRows] = await connection.query(getJobQuery);
+//   return getJobRows;
+// }
 
 // 유저 인증 여부 확인
 async function checkUserStatus(connection, selectUserId) {
@@ -293,7 +298,6 @@ module.exports = {
     patchUserName,
     checkRecord,
     getMain,
-    getJob,
     checkUserStatus,
     checkUserAuth,
     checkFirst,

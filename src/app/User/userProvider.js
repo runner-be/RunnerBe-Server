@@ -116,11 +116,9 @@ exports.getMain = async function (
       whetherEndCondition,
       sortCondition
   );
-  const jobResult = await userDao.getJob(connection);
   connection.release();
 
-  const mainResult = { postingResult, jobResult };
-  return mainResult;
+  return postingResult;
 };
 
 // 유저 인증 여부 확인
