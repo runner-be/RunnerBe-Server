@@ -156,3 +156,20 @@ exports.checkUserInRoom = async function (roomId, userId) {
         return errResponse(baseResponse.DB_ERROR);
     }
 };
+
+// 참여 신청 처리 여부 확인
+exports.checkApplyChanged = async function (roomId) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const checkApplyChanged = await messageDao.checkApplyChanged(
+            connection,
+            roomId
+        );
+        connection.release();
+
+        return checkApplyChanged[0];
+    } catch (err) {
+        logger.error(`App - checkApplyChanged Provider error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};

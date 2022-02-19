@@ -48,15 +48,21 @@ module.exports = {
         message: "성공, 모임 참가자, 참여 신청 전",
     },
 
-    SUCCESS_MASTER_AFTER: {
+    SUCCESS_MASTER_AFTER_WAIT: {
         isSuccess: true,
         code: 1011,
-        message: "성공, 모임 생성자, 참여 신청 후",
+        message: "성공, 모임 생성자, 참여 신청 후, 신청 처리 대기중",
+    },
+
+    SUCCESS_MASTER_AFTER_DONE: {
+        isSuccess: true,
+        code: 1012,
+        message: "성공, 모임 생성자, 참여 신청 후, 신청 처리 완료",
     },
 
     SUCCESS_NON_MASTER_AFTER: {
         isSuccess: true,
-        code: 1012,
+        code: 1013,
         message: "성공, 모임 참가자, 참여 신청 후",
     },
 

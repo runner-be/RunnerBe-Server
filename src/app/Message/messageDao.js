@@ -215,6 +215,16 @@ async function checkUserInRoom(connection, checkUserInRoomParams) {
 
     return row;
 }
+
+// 참여 신청 처리 여부 확인
+async function checkApplyChanged(connection, roomId) {
+    const query = `
+    SELECT roomId FROM Room WHERE status = 'W' AND roomId = ?;
+                                    `;
+    const row = await connection.query(query, roomId);
+
+    return row;
+}
 module.exports = {
     getRepUserId,
     createRoom,
@@ -233,4 +243,5 @@ module.exports = {
     checkApplyStatus,
     changeApply,
     checkUserInRoom,
+    checkApplyChanged,
 };

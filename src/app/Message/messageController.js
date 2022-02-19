@@ -181,9 +181,19 @@ exports.getRoom = async function (req, res) {
         const checkMaster = await messageProvider.checkMaster(userId);
         // 참여 신청 여부 확인
         const checkApplyStatus = await messageProvider.checkApplyStatus(roomId); // Y일 때 length > 0
+        // 참여 신청 처리 여부 확인 1. W인 경우와 2. Y or N인 경우
+        const checkApplyChanged = await messageProvider.checkApplyChanged(roomId); // W일 때 length > 0
         if (checkMaster.length > 0) {
             if (checkApplyStatus.length > 0) {
-                res.send(response(baseResponse.SUCCESS_MASTER_AFTER, getRoomResponse));
+                if (checkApplyChanged.length > 0) {
+                    res.send(
+                        response(baseResponse.SUCCESS_MASTER_AFTER_WAIT, getRoomResponse)
+                    );
+                } else {
+                    res.send(
+                        response(baseResponse.SUCCESS_MASTER_AFTER_DONE, getRoomResponse)
+                    );
+                }
             } else {
                 res.send(response(baseResponse.SUCCESS_MASTER_BEFORE, getRoomResponse));
             }
