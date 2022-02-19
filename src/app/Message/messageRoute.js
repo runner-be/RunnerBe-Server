@@ -21,4 +21,7 @@ module.exports = function (app) {
 
     // 16. 대화방 상세 페이지 API
     app.get("/messages/rooms/:roomId", jwtMiddleware, message.getRoom);
+
+    // 17. 참여신청 API
+    app.patch("/message/request/:roomId", jwtMiddleware, message.sendRequest);
 };

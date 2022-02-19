@@ -379,6 +379,18 @@ module.exports = {
         code: 2051,
         message: "입력받은 userId는 해당 room에 속하지 않습니다",
     },
+
+    ALREADY_ACCEPTED: {
+        isSuccess: false,
+        code: 2052,
+        message: "이미 참여 신청을 했습니다.",
+    },
+
+    NOT_BELONG: {
+        isSuccess: false,
+        code: 2053,
+        message: "해당 유저는 해당 room에 속하지 않습니다.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,

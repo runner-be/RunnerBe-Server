@@ -124,3 +124,35 @@ exports.checkApplyStatus = async function (roomId) {
         return errResponse(baseResponse.DB_ERROR);
     }
 };
+
+//참여 신청 완료로 바꾸기
+exports.changeApply = async function (roomId) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const changeApply = await messageDao.changeApply(connection, roomId);
+        connection.release();
+
+        return changeApply[0];
+    } catch (err) {
+        logger.error(`App - changeApply Provider error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};
+
+// 방에 있는지 확인
+exports.checkUserInRoom = async function (roomId, userId) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const checkUserInRoomParams = [roomId, userId, userId];
+        const checkUserInRoom = await messageDao.checkUserInRoom(
+            connection,
+            checkUserInRoomParams
+        );
+        connection.release();
+
+        return checkUserInRoom[0];
+    } catch (err) {
+        logger.error(`App - checkUserInRoom Provider error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};

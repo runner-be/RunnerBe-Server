@@ -195,6 +195,26 @@ async function checkApplyStatus(connection, roomId) {
 
     return row;
 }
+
+// 참여 신청 완료로 바꾸기
+async function changeApply(connection, roomId) {
+    const query = `
+    UPDATE Room SET applyStatus = 'Y' WHERE roomId = ?;
+                                    `;
+    const row = await connection.query(query, roomId);
+
+    return row;
+}
+
+// 방에 있는지 확인
+async function checkUserInRoom(connection, checkUserInRoomParams) {
+    const query = `
+   SELECT roomId FROM Room WHERE roomId = ? AND (senderId = ? OR receiverId = ?);
+                                    `;
+    const row = await connection.query(query, checkUserInRoomParams);
+
+    return row;
+}
 module.exports = {
     getRepUserId,
     createRoom,
@@ -211,4 +231,6 @@ module.exports = {
     reading,
     checkMaster,
     checkApplyStatus,
+    changeApply,
+    checkUserInRoom,
 };
