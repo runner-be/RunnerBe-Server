@@ -101,9 +101,26 @@ exports.checkMaster = async function (userId) {
         const checkMaster = await messageDao.checkMaster(connection, userId);
         connection.release();
 
-        return checkMaster;
+        return checkMaster[0];
     } catch (err) {
         logger.error(`App - getRoom Provider error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};
+
+// 대화방의 참여 신청 여부 확인
+exports.checkApplyStatus = async function (roomId) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const checkApplyStatus = await messageDao.checkApplyStatus(
+            connection,
+            roomId
+        );
+        connection.release();
+
+        return checkApplyStatus[0];
+    } catch (err) {
+        logger.error(`App - checkApplyStatus Provider error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }
 };

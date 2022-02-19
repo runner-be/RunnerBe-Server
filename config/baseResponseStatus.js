@@ -36,16 +36,28 @@ module.exports = {
         message: "성공, 인증 회원, 최초 접속",
     },
 
-    SUCCESS_MASTER: {
+    SUCCESS_MASTER_BEFORE: {
         isSuccess: true,
         code: 1009,
-        message: "성공, 모임 생성자",
+        message: "성공, 모임 생성자, 참여 신청 전",
     },
 
-    SUCCESS_NON_MASTER: {
+    SUCCESS_NON_MASTER_BEFORE: {
         isSuccess: true,
         code: 1010,
-        message: "성공, 모임 참가자",
+        message: "성공, 모임 참가자, 참여 신청 전",
+    },
+
+    SUCCESS_MASTER_AFTER: {
+        isSuccess: true,
+        code: 1011,
+        message: "성공, 모임 생성자, 참여 신청 후",
+    },
+
+    SUCCESS_NON_MASTER_AFTER: {
+        isSuccess: true,
+        code: 1012,
+        message: "성공, 모임 참가자, 참여 신청 후",
     },
 
     // Common

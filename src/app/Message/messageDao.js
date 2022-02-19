@@ -184,6 +184,17 @@ async function checkMaster(connection, userId) {
 
     return row;
 }
+
+// 대화방의 신청 여부 확인
+async function checkApplyStatus(connection, roomId) {
+    const query = `
+    SELECT applyStatus FROM Room WHERE roomId = ? AND applyStatus = 'Y';
+                                    `;
+
+    const row = await connection.query(query, roomId);
+
+    return row;
+}
 module.exports = {
     getRepUserId,
     createRoom,
@@ -199,4 +210,5 @@ module.exports = {
     getRoomInfo,
     reading,
     checkMaster,
+    checkApplyStatus,
 };

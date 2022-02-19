@@ -179,10 +179,24 @@ exports.getRoom = async function (req, res) {
 
         // 들어온 userId가 반장인지에 따라서 result code 달리 해서 응답보내기
         const checkMaster = await messageProvider.checkMaster(userId);
+        // 참여 신청 여부 확인
+        const checkApplyStatus = await messageProvider.checkApplyStatus(roomId); // Y일 때 length > 0
         if (checkMaster.length > 0) {
-            res.send(response(baseResponse.SUCCESS_MASTER, getRoomResponse));
+            if (checkApplyStatus.length > 0) {
+                res.send(response(baseResponse.SUCCESS_MASTER_AFTER, getRoomResponse));
+            } else {
+                res.send(response(baseResponse.SUCCESS_MASTER_BEFORE, getRoomResponse));
+            }
         } else {
-            res.send(response(baseResponse.SUCCESS_NON_MASTER, getRoomResponse));
+            if (checkApplyStatus.length > 0) {
+                res.send(
+                    response(baseResponse.SUCCESS_NON_MASTER_AFTER, getRoomResponse)
+                );
+            } else {
+                res.send(
+                    response(baseResponse.SUCCESS_NON_MASTER_BEFORE, getRoomResponse)
+                );
+            }
         }
     }
 };
