@@ -409,6 +409,30 @@ module.exports = {
         code: 2054,
         message: "거리 필터링 조건이 N이 아니면, 숫자로 입력해주세요.",
     },
+
+    GENDER_FILTER_EMPTY: {
+        isSuccess: false,
+        code: 2055,
+        message: "성별 필터링 조건을 입력해주세요.",
+    },
+
+    GENDER_FILTER_IS_NOT_VALID: {
+        isSuccess: false,
+        code: 2056,
+        message: "성별 필터링 조건은 A,F,M 중 하나로 입력해주세요.",
+    },
+
+    JOB_FILTER_EMPTY: {
+        isSuccess: false,
+        code: 2057,
+        message: "직군 필터링 조건을 입력해주세요.",
+    },
+
+    JOB_FILTER_IS_NOT_VALID: {
+        isSuccess: false,
+        code: 2057,
+        message: "직군 필터링 조건이 유효하지 않습니다.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,

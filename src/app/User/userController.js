@@ -312,6 +312,7 @@ exports.patchUserName = async function (req, res) {
  * Path variable : runningTag
  * Query string : whetherEnd(Y, N), filter(D,R,B) 거리순 : D, 최신순 : R, 찜많은순 : B
  *                distanceFilter(N, 거리값)
+ *                genderFilter(A,F,M) A : 전체, F : 여성, M : 남성
  */
 exports.main = async function (req, res) {
     // Body 값
@@ -322,7 +323,9 @@ exports.main = async function (req, res) {
     // Query String 값
     const whetherEnd = req.query.whetherEnd; // Y, N
     const filter = req.query.filter; // 거리순 : D, 최신순 : R, 찜많은순 : B
-    let distanceFilter = req.query.distanceFilter;
+    const distanceFilter = req.query.distanceFilter; // (N, 거리값)
+    const genderFilter = req.query.genderFilter; // A : 전체, F : 여성, M : 남성
+    const jobFilter = req.query.jobFilter; // N: 필터X ,그 외 약속된 job code로 보내기
 
     // 빈 값 체크
     if (!userLongitude) return res.send(response(baseResponse.LONGITUDE_EMPTY));
@@ -331,24 +334,47 @@ exports.main = async function (req, res) {
     if (!whetherEnd) return res.send(response(baseResponse.WHETHEREND_EMPTY));
     if (!filter) return res.send(response(baseResponse.FILTER_EMPTY));
     if (!distanceFilter)
-        return res.send(response(baseResponse.DISTANCEFILTER_EMPTY)); ///######
+        return res.send(response(baseResponse.DISTANCEFILTER_EMPTY)); //명세서 추가
+    if (!genderFilter)
+        return res.send(response(baseResponse.GENDER_FILTER_EMPTY)); //명세서 추가
+    if (!jobFilter) return res.send(response(baseResponse.JOB_FILTER_EMPTY)); //명세서 추가
 
     // 유효성 검사
     const runningTagList = ["A", "B", "H"];
     const whetherEndList = ["Y", "N"];
     const filterList = ["D", "R", "B"];
+    const genderFilterList = ["A", "F", "M"];
+    const jobList = [
+        "PSV",
+        "EDU",
+        "DEV",
+        "PSM",
+        "DES",
+        "MPR",
+        "SER",
+        "PRO",
+        "RES",
+        "SAF",
+        "MED",
+        "HUR",
+        "ACC",
+        "CUS",
+    ];
     if (!runningTag.includes(runningTag))
         return res.send(response(baseResponse.RUNNONGTAG_IS_NOT_VALID));
     if (!whetherEndList.includes(whetherEnd))
         return res.send(response(baseResponse.END_IS_NOT_VALID));
     if (!filterList.includes(filter))
         return res.send(response(baseResponse.FILTER_IS_NOT_VALID));
+    if (!genderFilterList.includes(genderFilter))
+        return res.send(response(baseResponse.GENDER_FILTER_IS_NOT_VALID)); //명세서 추가
 
     // 필터 조건 설정
     let whetherEndCondition = "";
     if (whetherEnd === "N") {
         whetherEndCondition += "AND whetherEnd = 'N'";
     }
+
     let sortCondition = "";
     if (filter === "D") {
         sortCondition += "DISTANCE";
@@ -357,12 +383,26 @@ exports.main = async function (req, res) {
     } else if (filter === "B") {
         sortCondition += "bookMarkNumber";
     }
-    //쿼리에서 필터 값은 문자열이 되면 안되므로 기존 방식 대신 각 Provider에서 각기 다른 쿼리 호출하기
+
     let distanceCondition = "";
     if (distanceFilter != "N") {
         if (isNaN(distanceFilter) === true)
-            return res.send(response(baseResponse.DISTANCE_FILTER_NOTNUM));
+            return res.send(response(baseResponse.DISTANCE_FILTER_NOTNUM)); //명세서 추가
         distanceCondition += `AND DISTANCE <= ${distanceFilter}`;
+    }
+
+    let genderCondition = "";
+    if (genderFilter === "F") {
+        genderCondition += "AND runnerGender = 'F'";
+    } else if (genderFilter === "M") {
+        genderCondition += "AND runnerGender = 'M'";
+    }
+
+    let jobCondition = "";
+    if (jobFilter != "N") {
+        if (!jobList.includes(jobFilter))
+            return res.send(response(baseResponse.JOB_FILTER_IS_NOT_VALID)); //명세서 추가
+        jobCondition += `AND INSTR(J.job, ${jobFilter}) > 0`;
     }
 
     const mainResult = await userProvider.getMain(
@@ -371,7 +411,9 @@ exports.main = async function (req, res) {
         runningTag,
         whetherEndCondition,
         sortCondition,
-        distanceCondition
+        distanceCondition,
+        genderCondition,
+        jobCondition
     );
     return res.send(response(baseResponse.SUCCESS, mainResult));
 };

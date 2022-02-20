@@ -160,7 +160,9 @@ async function getMain(
     runningTag,
     whetherEndCondition,
     sortCondition,
-    distanceCondition
+    distanceCondition,
+    genderCondition,
+    jobCondition
 ) {
     const getMainQuery = `
   SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
@@ -208,7 +210,7 @@ async function getMain(
                             sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
   on D.postId = P.postId
   WHERE runningTag = "${runningTag}" ${distanceCondition}
-  ${whetherEndCondition}
+  ${whetherEndCondition} ${genderCondition} ${jobCondition}
   GROUP BY B.postId
   ORDER BY "${sortCondition}";
                 `;
