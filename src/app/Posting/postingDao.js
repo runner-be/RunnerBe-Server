@@ -205,6 +205,7 @@ module.exports = {
     createPosting,
     userIdCheck,
     createRunning,
+    creaetRunningPeople,
     checkWriter,
     getPosting,
     getRunner,
