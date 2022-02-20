@@ -403,6 +403,12 @@ module.exports = {
         code: 2053,
         message: "거리 필터링 조건을 입력해주세요.",
     },
+
+    DISTANCE_FILTER_NOTNUM: {
+        isSuccess: false,
+        code: 2054,
+        message: "거리 필터링 조건이 N이 아니면, 숫자로 입력해주세요.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,

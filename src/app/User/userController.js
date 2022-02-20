@@ -360,6 +360,8 @@ exports.main = async function (req, res) {
     //쿼리에서 필터 값은 문자열이 되면 안되므로 기존 방식 대신 각 Provider에서 각기 다른 쿼리 호출하기
     let distanceCondition = "";
     if (distanceFilter != "N") {
+        if (isNaN(distanceFilter) === true)
+            return res.send(response(baseResponse.DISTANCE_FILTER_NOTNUM));
         distanceCondition += `AND DISTANCE <= ${distanceFilter}`;
     }
 
