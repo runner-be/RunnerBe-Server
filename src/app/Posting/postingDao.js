@@ -26,16 +26,16 @@ async function createRunning(connection, createRunningParams) {
 }
 
 // 러닝 당 people에 반장 추가
-async function creaetRunningPeople(connection, insertRunningPeopleParams) {
-    const creaetRunningPeopleQuery = `
+async function createRunningPeople(connection, insertRunningPeopleParams) {
+    const createRunningPeopleQuery = `
                 INSERT INTO RunningPeople(gatheringId, userId, whetherAccept) VALUES (?,?,'Y');
                  `;
-    const creaetRunningPeopleRow = await connection.query(
-        creaetRunningPeopleQuery,
-        creaetRunningPeopleParams
+    const createRunningPeopleRow = await connection.query(
+        createRunningPeopleQuery,
+        createRunningPeopleParams
     );
 
-    return creaetRunningPeopleRow;
+    return createRunningPeopleRow;
 }
 // 유저 있는지 확인
 async function userIdCheck(connection, userId) {
@@ -205,7 +205,7 @@ module.exports = {
     createPosting,
     userIdCheck,
     createRunning,
-    creaetRunningPeople,
+    createRunningPeople,
     checkWriter,
     getPosting,
     getRunner,

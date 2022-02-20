@@ -311,6 +311,7 @@ exports.patchUserName = async function (req, res) {
  * Body : userLongitude, userLatitude
  * Path variable : runningTag
  * Query string : whetherEnd(Y, N), filter(D,R,B) 거리순 : D, 최신순 : R, 찜많은순 : B
+ *                distanceFilter(N, 거리값)
  */
 exports.main = async function (req, res) {
     // Body 값
@@ -321,6 +322,7 @@ exports.main = async function (req, res) {
     // Query String 값
     const whetherEnd = req.query.whetherEnd; // Y, N
     const filter = req.query.filter; // 거리순 : D, 최신순 : R, 찜많은순 : B
+    let distanceFilter = req.query.distanceFilter;
 
     // 빈 값 체크
     if (!userLongitude) return res.send(response(baseResponse.LONGITUDE_EMPTY));
@@ -328,6 +330,8 @@ exports.main = async function (req, res) {
     if (!runningTag) return res.send(response(baseResponse.RUNNONGTAG_EMPTY));
     if (!whetherEnd) return res.send(response(baseResponse.WHETHEREND_EMPTY));
     if (!filter) return res.send(response(baseResponse.FILTER_EMPTY));
+    if (!distanceFilter)
+        return res.send(response(baseResponse.DISTANCEFILTER_EMPTY)); ///######
 
     // 유효성 검사
     const runningTagList = ["A", "B", "H"];
@@ -345,7 +349,7 @@ exports.main = async function (req, res) {
     if (whetherEnd === "N") {
         whetherEndCondition += "AND whetherEnd = 'N'";
     }
-    let sortCondition;
+    let sortCondition = "";
     if (filter === "D") {
         sortCondition += "DISTANCE";
     } else if (filter === "R") {
@@ -353,13 +357,19 @@ exports.main = async function (req, res) {
     } else if (filter === "B") {
         sortCondition += "bookMarkNumber";
     }
+    //쿼리에서 필터 값은 문자열이 되면 안되므로 기존 방식 대신 각 Provider에서 각기 다른 쿼리 호출하기
+    let distanceCondition = "";
+    if (distanceFilter != "N") {
+        distanceCondition += `AND DISTANCE <= ${distanceFilter}`;
+    }
 
     const mainResult = await userProvider.getMain(
         userLongitude,
         userLatitude,
         runningTag,
         whetherEndCondition,
-        sortCondition
+        sortCondition,
+        distanceCondition
     );
     return res.send(response(baseResponse.SUCCESS, mainResult));
 };

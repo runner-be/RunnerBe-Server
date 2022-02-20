@@ -397,6 +397,12 @@ module.exports = {
         code: 2053,
         message: "해당 유저는 해당 room에 속하지 않습니다.",
     },
+
+    DISTANCEFILTER_EMPTY: {
+        isSuccess: false,
+        code: 2053,
+        message: "거리 필터링 조건을 입력해주세요.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,

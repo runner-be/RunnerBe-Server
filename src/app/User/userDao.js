@@ -159,7 +159,8 @@ async function getMain(
     userLatitude,
     runningTag,
     whetherEndCondition,
-    sortCondition
+    sortCondition,
+    distanceCondition
 ) {
     const getMainQuery = `
   SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
@@ -191,9 +192,7 @@ async function getMain(
          else
          case when runnerGender='F' then '여성'
           end end end as gender,
-          left((6371 * acos(cos(radians(${userLatitude})) * cos(radians(gatherLatitude)) *
-                              cos(radians(gatherLongitude) - radians(${userLongitude})) +
-                              sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))), 4) AS DISTANCE,
+          DISTANCE,
          count(B.userId) as bookMarkNumber, whetherEnd, J.job
   FROM Posting P
   INNER JOIN User U on U.userId = P.postUserId
@@ -204,7 +203,11 @@ async function getMain(
   inner join Running R on RP.gatheringId = R.gatheringId
   inner join User U on RP.userId = U.userId
   group by postId) J on J.postId = P.postId
-  WHERE runningTag = "${runningTag}"
+  inner join (SELECT postId, CAST((6371 * acos(cos(radians(${userLatitude})) * cos(radians(gatherLatitude)) *
+                            cos(radians(gatherLongitude) - radians(${userLongitude})) +
+                            sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
+  on D.postId = P.postId
+  WHERE runningTag = "${runningTag}" ${distanceCondition}
   ${whetherEndCondition}
   GROUP BY B.postId
   ORDER BY "${sortCondition}";
@@ -212,6 +215,7 @@ async function getMain(
     const [mainRows] = await connection.query(getMainQuery);
     return mainRows;
 }
+
 // // 직군 코드
 // async function getJob(connection) {
 //   const getJobQuery = `

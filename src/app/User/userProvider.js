@@ -105,20 +105,22 @@ exports.getMain = async function (
     userLatitude,
     runningTag,
     whetherEndCondition,
-    sortCondition
+    sortCondition,
+    distanceCondition
 ) {
   const connection = await pool.getConnection(async (conn) => conn);
-  const postingResult = await userDao.getMain(
+  const getMainResult = await userDao.getMain(
       connection,
       userLongitude,
       userLatitude,
       runningTag,
       whetherEndCondition,
-      sortCondition
+      sortCondition,
+      distanceCondition
   );
   connection.release();
 
-  return postingResult;
+  return getMainResult;
 };
 
 // 유저 인증 여부 확인

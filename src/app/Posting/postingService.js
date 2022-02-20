@@ -65,7 +65,7 @@ exports.createPosting = async function (
         //방장 모임 인원에 추가
         const insertRunningId = createRunning[0].insertId;
         const insertRunningPeopleParams = [insertRunningId, userId];
-        const creaetRunningPeople = await postingDao.creaetRunningPeople(
+        const createRunningPeople = await postingDao.createRunningPeople(
             connection,
             insertRunningPeopleParams
         );
