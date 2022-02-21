@@ -89,7 +89,7 @@ exports.handleRequest = async function (req, res) {
         return res.send(response(baseResponse.APPLICANTID_NOTNUM));
 
     // 유효성 검사
-    const whetherAcceptList = ["Y", "N"];
+    const whetherAcceptList = ["Y", "D"];
     if (!whetherAcceptList.includes(whetherAccept))
         return res.send(response(baseResponse.WACCEPT_IS_NOT_VALID));
 

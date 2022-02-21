@@ -503,7 +503,7 @@ module.exports = {
     WACCEPT_IS_NOT_VALID: {
         isSuccess: false,
         code: 2069,
-        message: "수락 여부는 Y이나 N로 입력해주세요",
+        message: "수락 여부는 Y이나 D로 입력해주세요",
     },
 
     USER_CANNOT_REQUEST: {
