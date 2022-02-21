@@ -338,14 +338,14 @@ exports.main = async function (req, res) {
     if (!whetherEnd) return res.send(response(baseResponse.WHETHEREND_EMPTY));
     if (!filter) return res.send(response(baseResponse.FILTER_EMPTY));
     if (!distanceFilter)
-        return res.send(response(baseResponse.DISTANCEFILTER_EMPTY)); //명세서 추가
+        return res.send(response(baseResponse.DISTANCEFILTER_EMPTY));
     if (!genderFilter)
-        return res.send(response(baseResponse.GENDER_FILTER_EMPTY)); //명세서 추가
-    if (!jobFilter) return res.send(response(baseResponse.JOB_FILTER_EMPTY)); //명세서 추가
+        return res.send(response(baseResponse.GENDER_FILTER_EMPTY));
+    if (!jobFilter) return res.send(response(baseResponse.JOB_FILTER_EMPTY));
     if (!ageFilterMin)
-        return res.send(response(baseResponse.AGE_MIN_FILTER_EMPTY)); //명세서 추가
+        return res.send(response(baseResponse.AGE_MIN_FILTER_EMPTY));
     if (!ageFilterMax)
-        return res.send(response(baseResponse.AGE_MAX_FILTER_EMPTY)); //명세서 추가
+        return res.send(response(baseResponse.AGE_MAX_FILTER_EMPTY));
 
     // 유효성 검사
     const runningTagList = ["A", "B", "H"];
@@ -375,13 +375,13 @@ exports.main = async function (req, res) {
     if (!filterList.includes(filter))
         return res.send(response(baseResponse.FILTER_IS_NOT_VALID));
     if (!genderFilterList.includes(genderFilter))
-        return res.send(response(baseResponse.GENDER_FILTER_IS_NOT_VALID)); //명세서 추가
+        return res.send(response(baseResponse.GENDER_FILTER_IS_NOT_VALID));
 
     if (
         (ageFilterMax != "N" && ageFilterMin === "N") ||
         (ageFilterMax === "N" && ageFilterMin != "N")
     )
-        return res.send(response(baseResponse.AGE_FILTER_MATCH)); //명세서 추가
+        return res.send(response(baseResponse.AGE_FILTER_MATCH));
 
     // 필터 조건 설정
     let whetherEndCondition = "";
@@ -401,7 +401,7 @@ exports.main = async function (req, res) {
     let distanceCondition = "";
     if (distanceFilter != "N") {
         if (isNaN(distanceFilter) === true)
-            return res.send(response(baseResponse.DISTANCE_FILTER_NOTNUM)); //명세서 추가
+            return res.send(response(baseResponse.DISTANCE_FILTER_NOTNUM));
         distanceCondition += `AND DISTANCE <= ${distanceFilter}`;
     }
 
@@ -415,16 +415,16 @@ exports.main = async function (req, res) {
     let jobCondition = "";
     if (jobFilter != "N") {
         if (!jobList.includes(jobFilter))
-            return res.send(response(baseResponse.JOB_FILTER_IS_NOT_VALID)); //명세서 추가
+            return res.send(response(baseResponse.JOB_FILTER_IS_NOT_VALID));
         jobCondition += `AND INSTR(J.job, '${jobFilter}') > 0`;
     }
 
     let ageCondition = "";
     if (ageFilterMax != "N" && ageFilterMin != "N") {
         if (isNaN(ageFilterMax) === true)
-            return res.send(response(baseResponse.AGE_MAX_FILTER_NOTNUM)); //명세서 추가
+            return res.send(response(baseResponse.AGE_MAX_FILTER_NOTNUM));
         if (isNaN(ageFilterMin) === true)
-            return res.send(response(baseResponse.AGE_MIN_FILTER_NOTNUM)); //명세서 추가
+            return res.send(response(baseResponse.AGE_MIN_FILTER_NOTNUM));
         ageCondition += `AND ageMin >= ${ageFilterMin} AND ageMax <= ${ageFilterMax}`;
     }
 
