@@ -24,6 +24,23 @@ exports.getPosting = async function (postId) {
     return getPostingFinalResult;
 };
 
+// 게시글 상세페이지 - 작성자 view
+exports.getPostingWriter = async function (postId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const getPostingResult = await postingDao.getPosting(connection, postId);
+    const getRunnerResult = await postingDao.getRunner(connection, postId);
+    const getWaitingRunnerResult = await postingDao.getWaitingRunner(
+        connection,
+        postId
+    );
+    connection.release();
+    const postingInfo = getPostingResult[0];
+    const runnerInfo = getRunnerResult[0];
+    const waitingRunnerInfo = getWaitingRunnerResult[0];
+    const getPostingFinalResult = { postingInfo, runnerInfo, waitingRunnerInfo };
+    return getPostingFinalResult;
+};
+
 // 작성자인지 체크
 exports.checkWriter = async function (postId, userId) {
     const connection = await pool.getConnection(async (conn) => conn);

@@ -142,13 +142,17 @@ exports.getPosting = async function (req, res) {
         if (checkUserAuth.length === 0) {
             return res.send(response(baseResponse.USER_NON_AUTH));
         }
-        const getPostingResponse = await postingProvider.getPosting(postId);
 
         // 작성자, 비작성자 구분하기
+        // 작성자는 참여 러너와 신청한 러너 둘 다 뜸
         const checkWriter = await postingProvider.checkWriter(postId, userId);
         if (checkWriter.length > 0) {
-            res.send(response(baseResponse.SUCCESS_WRITER, getPostingResponse));
+            const getPostingWriterResponse = await postingProvider.getPostingWriter(
+                postId
+            );
+            res.send(response(baseResponse.SUCCESS_WRITER, getPostingWriterResponse));
         } else {
+            const getPostingResponse = await postingProvider.getPosting(postId);
             res.send(response(baseResponse.SUCCESS_NON_WRITER, getPostingResponse));
         }
     }
