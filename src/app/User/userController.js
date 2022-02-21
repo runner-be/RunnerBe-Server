@@ -313,6 +313,8 @@ exports.patchUserName = async function (req, res) {
  * Query string : whetherEnd(Y, N), filter(D,R,B) 거리순 : D, 최신순 : R, 찜많은순 : B
  *                distanceFilter(N, 거리값)
  *                genderFilter(A,F,M) A : 전체, F : 여성, M : 남성
+ *                ageFilterMax(N, 숫자)
+ *                ageFilterMin(N, 숫자)
  */
 exports.main = async function (req, res) {
     // Body 값
@@ -326,6 +328,8 @@ exports.main = async function (req, res) {
     const distanceFilter = req.query.distanceFilter; // (N, 거리값)
     const genderFilter = req.query.genderFilter; // A : 전체, F : 여성, M : 남성
     const jobFilter = req.query.jobFilter; // N: 필터X ,그 외 약속된 job code로 보내기
+    const ageFilterMin = req.query.ageFilterMin; // N : 필터 x, 그 외 최소 연령대
+    const ageFilterMax = req.query.ageFilterMax; // N : 필터 x, 그 외 최대 연령대
 
     // 빈 값 체크
     if (!userLongitude) return res.send(response(baseResponse.LONGITUDE_EMPTY));
@@ -338,6 +342,10 @@ exports.main = async function (req, res) {
     if (!genderFilter)
         return res.send(response(baseResponse.GENDER_FILTER_EMPTY)); //명세서 추가
     if (!jobFilter) return res.send(response(baseResponse.JOB_FILTER_EMPTY)); //명세서 추가
+    if (!ageFilterMin)
+        return res.send(response(baseResponse.AGE_MIN_FILTER_EMPTY)); //명세서 추가
+    if (!ageFilterMax)
+        return res.send(response(baseResponse.AGE_MAX_FILTER_EMPTY)); //명세서 추가
 
     // 유효성 검사
     const runningTagList = ["A", "B", "H"];
@@ -368,6 +376,12 @@ exports.main = async function (req, res) {
         return res.send(response(baseResponse.FILTER_IS_NOT_VALID));
     if (!genderFilterList.includes(genderFilter))
         return res.send(response(baseResponse.GENDER_FILTER_IS_NOT_VALID)); //명세서 추가
+
+    if (
+        (ageFilterMax != "N" && ageFilterMin === "N") ||
+        (ageFilterMax === "N" && ageFilterMin != "N")
+    )
+        return res.send(response(baseResponse.AGE_FILTER_MATCH)); //명세서 추가
 
     // 필터 조건 설정
     let whetherEndCondition = "";
@@ -402,7 +416,16 @@ exports.main = async function (req, res) {
     if (jobFilter != "N") {
         if (!jobList.includes(jobFilter))
             return res.send(response(baseResponse.JOB_FILTER_IS_NOT_VALID)); //명세서 추가
-        jobCondition += `AND INSTR(J.job, ${jobFilter}) > 0`;
+        jobCondition += `AND INSTR(J.job, '${jobFilter}') > 0`;
+    }
+
+    let ageCondition = "";
+    if (ageFilterMax != "N" && ageFilterMin != "N") {
+        if (isNaN(ageFilterMax) === true)
+            return res.send(response(baseResponse.AGE_MAX_FILTER_NOTNUM)); //명세서 추가
+        if (isNaN(ageFilterMin) === true)
+            return res.send(response(baseResponse.AGE_MIN_FILTER_NOTNUM)); //명세서 추가
+        ageCondition += `AND ageMin >= ${ageFilterMin} AND ageMax <= ${ageFilterMax}`;
     }
 
     const mainResult = await userProvider.getMain(
@@ -413,7 +436,8 @@ exports.main = async function (req, res) {
         sortCondition,
         distanceCondition,
         genderCondition,
-        jobCondition
+        jobCondition,
+        ageCondition
     );
     return res.send(response(baseResponse.SUCCESS, mainResult));
 };

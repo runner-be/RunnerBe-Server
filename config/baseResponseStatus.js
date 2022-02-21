@@ -433,6 +433,36 @@ module.exports = {
         code: 2057,
         message: "직군 필터링 조건이 유효하지 않습니다.",
     },
+
+    AGE_MIN_FILTER_EMPTY: {
+        isSuccess: false,
+        code: 2058,
+        message: "최소 연령대 조건을 입력해주세요.",
+    },
+
+    AGE_MAX_FILTER_EMPTY: {
+        isSuccess: false,
+        code: 2059,
+        message: "최대 연령대 조건을 입력해주세요.",
+    },
+
+    AGE_FILTER_MATCH: {
+        isSuccess: false,
+        code: 2060,
+        message: "연령대 조건은 둘 다 N이거나 둘 다 숫자로 입력해주세요.",
+    },
+
+    AGE_MAX_FILTER_NOTNUM: {
+        isSuccess: false,
+        code: 2061,
+        message: "최대 연령대 조건은 숫자로 입력해주세요.",
+    },
+
+    AGE_MIN_FILTER_NOTNUM: {
+        isSuccess: false,
+        code: 2062,
+        message: "최소 연령대 조건은 숫자로 입력해주세요.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,
