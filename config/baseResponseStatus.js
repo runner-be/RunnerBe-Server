@@ -11,7 +11,7 @@ module.exports = {
     SUCCESS_NON_WRITER: {
         isSuccess: true,
         code: 1004,
-        message: "성공, 비작성자",
+        message: "성공, 비작성자, 참여신청 전",
     },
     SUCCESS_EMAIL: {
         isSuccess: true,
@@ -64,6 +64,12 @@ module.exports = {
         isSuccess: true,
         code: 1013,
         message: "성공, 모임 참가자, 참여 신청 후",
+    },
+
+    SUCCESS_NON_WRITER_AA: {
+        isSuccess: true,
+        code: 1014,
+        message: "성공, 비작성자, 이미 참여 신청했음",
     },
 
     // Common

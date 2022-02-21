@@ -36,6 +36,19 @@ async function checkAlreadyapply(connection, checkAlreadyParams) {
     return checkAlreadyapplyRow;
 }
 
+// 이전에 참여신청했는지만 확인
+async function checkAlreadyapplyNotD(connection, checkAlreadyParams) {
+    const checkAlreadyapplyQuery = `
+    SELECT userId FROM RunningPeople RP
+    inner join Running R on RP.gatheringId = R.gatheringId
+    WHERE userId = ? and postId = ?;
+                   `;
+    const [checkAlreadyapplyRow] = await connection.query(
+        checkAlreadyapplyQuery,
+        checkAlreadyParams
+    );
+    return checkAlreadyapplyRow;
+}
 // Id 가져오기
 async function getSender(connection, senderParams) {
     const query = `
@@ -229,6 +242,7 @@ module.exports = {
     getRepUserId,
     createRoom,
     checkAlreadyapply,
+    checkAlreadyapplyNotD,
     checkSender,
     getSender,
     checkReceiver,

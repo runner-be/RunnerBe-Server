@@ -1,5 +1,6 @@
 const jwtMiddleware = require("../../../config/jwtMiddleware");
 const postingProvider = require("../../app/Posting/postingProvider");
+const messageProvider = require("../../app/Message/messageProvider");
 const postingService = require("../../app/Posting/postingService");
 const userProvider = require("../../app/User/userProvider");
 const baseResponse = require("../../../config/baseResponseStatus");
@@ -153,7 +154,19 @@ exports.getPosting = async function (req, res) {
             res.send(response(baseResponse.SUCCESS_WRITER, getPostingWriterResponse));
         } else {
             const getPostingResponse = await postingProvider.getPosting(postId);
-            res.send(response(baseResponse.SUCCESS_NON_WRITER, getPostingResponse));
+
+            //이미 신청했는지 확인하기
+            const checkAlreadyapplyNotD = await messageProvider.checkAlreadyapplyNotD(
+                userId,
+                postId
+            );
+            if (checkAlreadyapplyNotD.length != 0) {
+                res.send(
+                    response(baseResponse.SUCCESS_NON_WRITER_AA, getPostingResponse)
+                );
+            } else {
+                res.send(response(baseResponse.SUCCESS_NON_WRITER, getPostingResponse));
+            }
         }
     }
 };

@@ -50,8 +50,9 @@ exports.checkWriter = async function (postId, userId) {
         checkWriterParams
     );
     connection.release();
+    const checkWriterResultF = checkWriterResult[0];
 
-    return checkWriterResult;
+    return checkWriterResultF;
 };
 
 // 마감하기

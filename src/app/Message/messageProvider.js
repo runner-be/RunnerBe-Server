@@ -24,6 +24,17 @@ exports.checkAlreadyapply = async function (senderId, postId) {
 
     return checkAlreadyResult;
 };
+// 이전에 참여 신청해서 아직 대기중인지 확인
+exports.checkAlreadyapplyNotD = async function (senderId, postId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const checkAlreadyParams = [senderId, postId];
+    const checkAlreadyResult = await messageDao.checkAlreadyapplyNotD(
+        connection,
+        checkAlreadyParams
+    );
+    connection.release();
+    return checkAlreadyResult;
+};
 
 // 수신자 Id 가져오기
 exports.getReceiverId = async function (roomId, senderId) {
