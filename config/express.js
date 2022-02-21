@@ -20,6 +20,7 @@ module.exports = function () {
     require("../src/app/User/userRoute")(app);
     require("../src/app/Posting/postingRoute")(app);
     require("../src/app/Message/messageRoute")(app);
+    require("../src/app/Running/runningRoute")(app);
 
     return app;
 };
