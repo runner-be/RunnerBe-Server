@@ -13,20 +13,9 @@ const res = require("express/lib/response");
 // 참여 요청 보내기
 exports.sendRequest = async function (postId, userId) {
     try {
-        // 이미 참여 신청을 해서 거절당했는지 확인
-        const checkAlreadyapply = await messageProvider.checkAlreadyapply(
-            userId,
-            postId
-        );
-
-        /////여기서 다시 시작
-        if (checkAlreadyapply.length > 0) {
-            return errResponse(baseResponse.USER_ALREADY_DENIED);
-        }
-
         const connection = await pool.getConnection(async (conn) => conn);
-        const sendRequestParams = [postId, senderId, repUserId];
-        const sendRequestResult = await messageDao.createRoom(
+        const sendRequestParams = [postId, userId];
+        const sendRequestResult = await runningDao.sendRequest(
             connection,
             sendRequestParams
         );

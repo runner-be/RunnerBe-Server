@@ -469,6 +469,12 @@ module.exports = {
         code: 2063,
         message: "최소 연령대 조건은 숫자로 입력해주세요.",
     },
+
+    ALREADY_APPLY: {
+        isSuccess: false,
+        code: 2064,
+        message: "이미 신청했던 유저입니다.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,

@@ -24,7 +24,7 @@ exports.checkAlreadyapply = async function (senderId, postId) {
 
     return checkAlreadyResult;
 };
-// 이전에 참여 신청해서 아직 대기중인지 확인
+// 이전에 참여 신청했는지만 확인
 exports.checkAlreadyapplyNotD = async function (senderId, postId) {
     const connection = await pool.getConnection(async (conn) => conn);
     const checkAlreadyParams = [senderId, postId];

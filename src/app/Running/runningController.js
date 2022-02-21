@@ -1,6 +1,7 @@
 const jwtMiddleware = require("../../../config/jwtMiddleware");
 const runningProvider = require("../../app/Running/runningProvider");
 const userProvider = require("../../app/User/userProvider");
+const messageProvider = require("../../app/Message/messageProvider");
 const runningService = require("../../app/Running/runningService");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
@@ -19,7 +20,7 @@ exports.sendRequest = async function (req, res) {
      * query String : userId
      */
     const postId = req.params.postId;
-    const userId = req.params.userId;
+    const userId = req.query.userId;
     const userIdFromJWT = req.verifiedToken.userId;
 
     // 필수 값 : 빈 값 체크 (text를 제외한 나머지)
@@ -32,6 +33,15 @@ exports.sendRequest = async function (req, res) {
     if (isNaN(postId) === true)
         return res.send(response(baseResponse.POSTID_NOTNUM));
 
+    // 이미 참여 신청을 했었는지 확인
+    const checkAlreadyapplyNotD = await messageProvider.checkAlreadyapplyNotD(
+        userId,
+        postId
+    );
+    if (checkAlreadyapplyNotD.length != 0) {
+        return res.send(response(baseResponse.ALREADY_APPLY));
+    }
+
     //jwt로 userId 확인
     if (userIdFromJWT != userId) {
         res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
@@ -43,6 +53,6 @@ exports.sendRequest = async function (req, res) {
         }
         const Response = await runningService.sendRequest(postId, userId);
 
-        return res.send(response(baseResponse.SUCCESS, Response));
+        return res.send(response(baseResponse.SUCCESS));
     }
 };
