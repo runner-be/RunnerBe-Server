@@ -11,13 +11,14 @@ const { connect } = require("http2");
 const res = require("express/lib/response");
 
 // 참여 요청 보내기
-exports.sendRequest = async function (postId, userId) {
+exports.sendRequest = async function (postId, applicantId, whetherAccept) {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
-        const sendRequestParams = [postId, userId];
+        const sendRequestParams = [postId, applicantId];
         const sendRequestResult = await runningDao.sendRequest(
             connection,
-            sendRequestParams
+            sendRequestParams,
+            whetherAccept
         );
 
         connection.release();

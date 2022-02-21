@@ -475,6 +475,43 @@ module.exports = {
         code: 2064,
         message: "이미 신청했던 유저입니다.",
     },
+
+    APPLICANTID_EMPTY: {
+        isSuccess: false,
+        code: 2065,
+        message: "applicantId를 입력해주세요.",
+    },
+
+    APPLICANTID_NOTNUM: {
+        isSuccess: false,
+        code: 2066,
+        message: "applicantId는숫자로 입력해주세요.",
+    },
+
+    USERID_NOT_WRITER: {
+        isSuccess: false,
+        code: 2067,
+        message: "신청 처리 요청을 보낸 userId는 반장의 id가 아닙니다.",
+    },
+
+    WACCEPT_EMPTY: {
+        isSuccess: false,
+        code: 2068,
+        message: "수락 여부를 입력해주세요",
+    },
+
+    WACCEPT_IS_NOT_VALID: {
+        isSuccess: false,
+        code: 2069,
+        message: "수락 여부는 Y이나 N로 입력해주세요",
+    },
+
+    USER_CANNOT_REQUEST: {
+        isSuccess: false,
+        code: 2070,
+        message:
+            "applicantId에 해당하는 유저가 해당 모임에 속하지 않거나 대기 상태가 아닙니다.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,
