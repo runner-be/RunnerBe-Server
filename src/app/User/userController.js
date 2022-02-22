@@ -308,21 +308,21 @@ exports.patchUserName = async function (req, res) {
  * API No. 7
  * API Name : 메인페이지 API
  * [GET] /users/main/:runningTag
- * Body : userLongitude, userLatitude
+ * Body :
  * Path variable : runningTag
- * Query string : whetherEnd(Y, N), filter(D,R,B) 거리순 : D, 최신순 : R, 찜많은순 : B
+ * Query string : userLongitude, userLatitude
+ *                whetherEnd(Y, N), filter(D,R,B) 거리순 : D, 최신순 : R, 찜많은순 : B
  *                distanceFilter(N, 거리값)
  *                genderFilter(A,F,M) A : 전체, F : 여성, M : 남성
  *                ageFilterMax(N, 숫자)
  *                ageFilterMin(N, 숫자)
  */
 exports.main = async function (req, res) {
-    // Body 값
-    const userLongitude = req.body.userLongitude;
-    const userLatitude = req.body.userLatitude;
     // Path variable 값
     const runningTag = req.params.runningTag;
     // Query String 값
+    const userLongitude = req.query.userLongitude;
+    const userLatitude = req.query.userLatitude;
     const whetherEnd = req.query.whetherEnd; // Y, N
     const filter = req.query.filter; // 거리순 : D, 최신순 : R, 찜많은순 : B
     const distanceFilter = req.query.distanceFilter; // (N, 거리값)
