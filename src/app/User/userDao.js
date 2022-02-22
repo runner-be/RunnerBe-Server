@@ -167,6 +167,11 @@ async function getMain(
 ) {
     const getMainQuery = `
   SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
+          case when runningTime <= '01:00:00'
+          then CONCAT('약 ',date_format(runningTime,'%i'),'분')
+          else case when runningTime > '01:00:00'
+          then CONCAT('약 ',date_format(runningTime,'%l'),'시간',date_format(runningTime,'%i'),'분')
+          end end as runningTime,
           case when date_format(gatheringTime, '%w') = 0
           then date_format(gatheringTime,'%m/%d(일) %p%l:%i')
           else
