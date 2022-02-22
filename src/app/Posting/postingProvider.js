@@ -72,3 +72,21 @@ exports.checkPosting = async function (postId) {
 
     return checkPostingResult;
 };
+
+// 찜 등록했는지 확인
+exports.checkBookMark = async function (userId, postId) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const checkBookMarkParams = [userId, postId];
+        const checkBookMark = await postingDao.checkBookMark(
+            connection,
+            checkBookMarkParams
+        );
+        connection.release();
+
+        return checkBookMark[0];
+    } catch (err) {
+        logger.error(`App - checkBookMark Provider error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};

@@ -143,6 +143,8 @@ exports.getPosting = async function (req, res) {
         if (checkUserAuth.length === 0) {
             return res.send(response(baseResponse.USER_NON_AUTH));
         }
+        // 해당 게시글 찜 했는지 확인
+        const checkBookMark = await postingProvider.checkBookMark(userId, postId);
 
         // 작성자, 비작성자 구분하기
         // 작성자는 참여 러너와 신청한 러너 둘 다 뜸
@@ -151,7 +153,15 @@ exports.getPosting = async function (req, res) {
             const getPostingWriterResponse = await postingProvider.getPostingWriter(
                 postId
             );
-            res.send(response(baseResponse.SUCCESS_WRITER, getPostingWriterResponse));
+            if (checkBookMark.length != 0) {
+                res.send(
+                    response(baseResponse.SUCCESS_WRITER_BMY, getPostingWriterResponse)
+                );
+            } else {
+                res.send(
+                    response(baseResponse.SUCCESS_WRITER_BMN, getPostingWriterResponse)
+                );
+            }
         } else {
             const getPostingResponse = await postingProvider.getPosting(postId);
 
@@ -160,12 +170,27 @@ exports.getPosting = async function (req, res) {
                 userId,
                 postId
             );
+
             if (checkAlreadyapplyNotD.length != 0) {
-                res.send(
-                    response(baseResponse.SUCCESS_NON_WRITER_AA, getPostingResponse)
-                );
+                if (checkBookMark.length != 0) {
+                    res.send(
+                        response(baseResponse.SUCCESS_NON_WRITER_AA_BMY, getPostingResponse)
+                    );
+                } else {
+                    res.send(
+                        response(baseResponse.SUCCESS_NON_WRITER_AA_BMN, getPostingResponse)
+                    );
+                }
             } else {
-                res.send(response(baseResponse.SUCCESS_NON_WRITER, getPostingResponse));
+                if (checkBookMark.length != 0) {
+                    res.send(
+                        response(baseResponse.SUCCESS_NON_WRITER_BMY, getPostingResponse)
+                    );
+                } else {
+                    res.send(
+                        response(baseResponse.SUCCESS_NON_WRITER_BMN, getPostingResponse)
+                    );
+                }
             }
         }
     }

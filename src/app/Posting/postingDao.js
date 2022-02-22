@@ -245,6 +245,19 @@ async function dropPosting(connection, postId) {
 
     return dropPostingRow;
 }
+
+// 찜 등록여부
+async function checkBookMark(connection, checkBookMarkParams) {
+    const checkBookMarkQuery = `
+  SELECT userId FROM Bookmarks WHERE userId = ? AND postId = ?;
+                 `;
+    const checkBookMarkRow = await connection.query(
+        checkBookMarkQuery,
+        checkBookMarkParams
+    );
+
+    return checkBookMarkRow;
+}
 module.exports = {
     createPosting,
     userIdCheck,
@@ -258,4 +271,5 @@ module.exports = {
     patchPosting,
     checkPosting,
     dropPosting,
+    checkBookMark,
 };

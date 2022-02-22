@@ -72,6 +72,42 @@ module.exports = {
         message: "성공, 비작성자, 이미 참여 신청했음",
     },
 
+    SUCCESS_NON_WRITER_AA_BMY: {
+        isSuccess: true,
+        code: 1015,
+        message: "성공, 비작성자, 이미 참여 신청했음, 찜 등록함",
+    },
+
+    SUCCESS_NON_WRITER_AA_BMN: {
+        isSuccess: true,
+        code: 1016,
+        message: "성공, 비작성자, 이미 참여 신청했음, 찜 등록 안 함",
+    },
+
+    SUCCESS_NON_WRITER_BMY: {
+        isSuccess: true,
+        code: 1017,
+        message: "성공, 비작성자, 참여신청 전, 찜 등록함",
+    },
+
+    SUCCESS_NON_WRITER_BMN: {
+        isSuccess: true,
+        code: 1018,
+        message: "성공, 비작성자, 참여신청 전, 찜 등록 안 함",
+    },
+
+    SUCCESS_WRITER_BMY: {
+        isSuccess: true,
+        code: 1019,
+        message: "성공, 작성자, 찜 등록함",
+    },
+
+    SUCCESS_WRITER_BMN: {
+        isSuccess: true,
+        code: 1020,
+        message: "성공, 작성자, 찜 등록 안 함",
+    },
+
     // Common
     TOKEN_EMPTY: {
         isSuccess: false,
