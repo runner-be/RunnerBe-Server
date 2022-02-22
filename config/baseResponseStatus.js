@@ -572,6 +572,18 @@ module.exports = {
         code: 2074,
         message: "해당 유저는 이미 찜을 해제했습니다.",
     },
+
+    KEY_WORD_EMPTY: {
+        isSuccess: false,
+        code: 2075,
+        message: "keyword를 입력해주세요.",
+    },
+
+    KEY_WORD_LENGTH: {
+        isSuccess: false,
+        code: 2076,
+        message: "keyword는 10자 이하로 입력해주세요.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,

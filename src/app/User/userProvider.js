@@ -109,7 +109,8 @@ exports.getMain = async function (
     distanceCondition,
     genderCondition,
     jobCondition,
-    ageCondition
+    ageCondition,
+    keywordCondition
 ) {
   const connection = await pool.getConnection(async (conn) => conn);
   const getMainResult = await userDao.getMain(
@@ -122,7 +123,8 @@ exports.getMain = async function (
       distanceCondition,
       genderCondition,
       jobCondition,
-      ageCondition
+      ageCondition,
+      keywordCondition
   );
   connection.release();
 

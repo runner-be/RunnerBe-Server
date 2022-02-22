@@ -330,6 +330,7 @@ exports.main = async function (req, res) {
     const jobFilter = req.query.jobFilter; // N: 필터X ,그 외 약속된 job code로 보내기
     const ageFilterMin = req.query.ageFilterMin; // N : 필터 x, 그 외 최소 연령대
     const ageFilterMax = req.query.ageFilterMax; // N : 필터 x, 그 외 최대 연령대
+    const keywordSearch = req.query.keywordSearch; // N : 필터 x, 그 외 키워드 검색
 
     // 빈 값 체크
     if (!userLongitude) return res.send(response(baseResponse.LONGITUDE_EMPTY));
@@ -346,6 +347,11 @@ exports.main = async function (req, res) {
         return res.send(response(baseResponse.AGE_MIN_FILTER_EMPTY));
     if (!ageFilterMax)
         return res.send(response(baseResponse.AGE_MAX_FILTER_EMPTY));
+    if (!keywordSearch) return res.send(response(baseResponse.KEY_WORD_EMPTY));
+
+    // 길이 체크
+    if (keywordSearch.length > 10)
+        return res.send(response(baseResponse.KEY_WORD_LENGTH));
 
     // 유효성 검사
     const runningTagList = ["A", "B", "H"];
@@ -428,6 +434,11 @@ exports.main = async function (req, res) {
         ageCondition += `AND ageMin >= ${ageFilterMin} AND ageMax <= ${ageFilterMax}`;
     }
 
+    let keywordCondition = "";
+    if (keywordCondition != "N") {
+        keywordCondition += `AND INSTR(P.title, '${keywordSearch}') > 0 OR INSTR(P.contents, '${keywordSearch}') > 0`;
+    }
+
     const mainResult = await userProvider.getMain(
         userLongitude,
         userLatitude,
@@ -437,7 +448,8 @@ exports.main = async function (req, res) {
         distanceCondition,
         genderCondition,
         jobCondition,
-        ageCondition
+        ageCondition,
+        keywordCondition
     );
     return res.send(response(baseResponse.SUCCESS, mainResult));
 };
