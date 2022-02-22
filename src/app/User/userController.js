@@ -518,3 +518,39 @@ exports.addBM = async function (req, res) {
         return res.send(response(baseResponse.SUCCESS));
     }
 };
+
+/**
+ * API No. 21
+ * API Name : 찜 목록 조회 API
+ * [GET] /users/:userId/bookmarks
+ */
+exports.getBM = async function (req, res) {
+    /**
+     * Header : jwt
+     * Path Variable : userId
+     */
+
+    const userId = req.params.userId;
+    // const userIdFromJWT = req.verifiedToken.userId;
+
+    // 필수 값 : 빈 값 체크 (text를 제외한 나머지)
+    if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.USER_USERID_NOTNUM));
+
+    //jwt로 userId 확인
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        // 인증 대기 회원 확인
+        const checkUserAuth = await userProvider.checkUserAuth(userId);
+        if (checkUserAuth.length === 0) {
+            return res.send(response(baseResponse.USER_NON_AUTH));
+        }
+        const Response = await userProvider.getBM(userId);
+
+        return res.send(response(baseResponse.SUCCESS, Response));
+    }
+};

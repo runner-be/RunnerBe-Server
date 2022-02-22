@@ -184,3 +184,15 @@ exports.checkAddBM = async function (userId, postId) {
     return errResponse(baseResponse.DB_ERROR);
   }
 };
+
+// 찜 목록 가져오기
+exports.getBM = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const bookMarkNumB = await userDao.getBMNum(connection, userId);
+  const bookMarkNum = bookMarkNumB[0];
+  const bookMarkList = await userDao.getBM(connection, userId);
+  connection.release();
+  const finalResult = { bookMarkNum, bookMarkList };
+
+  return finalResult;
+};

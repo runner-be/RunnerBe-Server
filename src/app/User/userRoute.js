@@ -31,4 +31,7 @@ module.exports = function (app) {
 
     // 20. 찜 등록, 해제 API
     app.post("/users/:userId/bookmarks/:whetherAdd", jwtMiddleware, user.addBM);
+
+    // 21. 찜 목록 조회 API
+    app.get("/users/:userId/bookmarks", jwtMiddleware, user.getBM);
 };

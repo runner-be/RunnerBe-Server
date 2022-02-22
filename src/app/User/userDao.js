@@ -324,6 +324,64 @@ async function addBMN(connection, addBMParams) {
     const [addBMNRows] = await connection.query(addBMNQuery, addBMParams);
     return addBMNRows;
 }
+
+// 찜 목록
+async function getBM(connection, userId) {
+    const getBMQuery = `
+  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
+          case when runningTime <= '01:00:00'
+          then CONCAT('약 ',date_format(runningTime,'%i'),'분')
+          else case when runningTime > '01:00:00'
+          then CONCAT('약 ',date_format(runningTime,'%l'),'시간',date_format(runningTime,'%i'),'분')
+          end end as runningTime,
+          case when date_format(gatheringTime, '%w') = 0
+          then date_format(gatheringTime,'%m/%d(일) %p%l:%i')
+          else
+          case when date_format(gatheringTime, '%w') = 1
+          then date_format(gatheringTime,'%m/%d(월) %p%l:%i')
+          else
+          case when date_format(gatheringTime, '%w') = 2
+          then date_format(gatheringTime,'%m/%d(화) %p%l:%i')
+          else
+          case when date_format(gatheringTime, '%w') = 3
+          then date_format(gatheringTime,'%m/%d(수) %p%l:%i')
+          else
+          case when date_format(gatheringTime, '%w') = 4
+          then date_format(gatheringTime,'%m/%d(목) %p%l:%i')
+          else
+          case when date_format(gatheringTime, '%w') = 5
+          then date_format(gatheringTime,'%m/%d(금) %p%l:%i')
+          else
+          case when date_format(gatheringTime, '%w') = 6
+          then date_format(gatheringTime,'%m/%d(토) %p%l:%i')
+          end end end end end end end as gatheringTime,
+         gatherLongitude, gatherLatitude, locationInfo, concat(ageMin,'-',ageMax) as age,
+         case when runnerGender='A' then '전체'
+         else
+         case when runnerGender='M' then '남성'
+         else
+         case when runnerGender='F' then '여성'
+          end end end as gender, whetherEnd, B.userId
+  FROM Posting P
+  INNER JOIN User U on U.userId = P.postUserId
+  INNER JOIN Running R on R.postId = P.postId
+  LEFT OUTER JOIN Bookmarks B on P.postId = B.postId
+  WHERE B.userId = ?;
+                `;
+    const [getBMRows] = await connection.query(getBMQuery, userId);
+    return getBMRows;
+}
+
+// 찜 개수
+async function getBMNum(connection, userId) {
+    const getBMNumQuery = `
+  SELECT CONCAT('총 ',COUNT(bookmarkId),'건') as num FROM Bookmarks
+  WHERE userId = ?
+  group by userId ;
+                `;
+    const [getBMNumRows] = await connection.query(getBMNumQuery, userId);
+    return getBMNumRows;
+}
 module.exports = {
     selectUser,
     deleteUser,
@@ -346,4 +404,6 @@ module.exports = {
     checkAddBM,
     addBMY,
     addBMN,
+    getBM,
+    getBMNum,
 };
