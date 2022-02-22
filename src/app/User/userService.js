@@ -148,3 +148,23 @@ exports.patchUserName = async function (changedNickName, userId) {
         return errResponse(baseResponse.DB_ERROR);
     }
 };
+
+// 찜 등록 및 해제
+exports.addBM = async function (userId, postId, whetherAdd) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const addBMParams = [userId, postId];
+        if (whetherAdd === "Y") {
+            const addBMResult = await userDao.addBMY(connection, addBMParams);
+            connection.release();
+            return addBMResult;
+        } else if (whetherAdd === "N") {
+            const addBMResult = await userDao.addBMN(connection, addBMParams);
+            connection.release();
+            return addBMResult;
+        }
+    } catch (err) {
+        logger.error(`App - addBM Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};

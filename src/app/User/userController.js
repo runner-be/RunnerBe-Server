@@ -460,3 +460,61 @@ exports.authCheck = async function (req, res) {
         return res.send(response(baseResponse.SUCCESS_MEMBER_NON_AUTH));
     }
 };
+
+/**
+ * API No. 20
+ * API Name : 찜 등록 API
+ * [POST] /users/:userId/bookmarks/:whetherAdd
+ */
+exports.addBM = async function (req, res) {
+    /**
+     * Header : jwt
+     * Path Variable : userId, whetherAdd
+     * query String : postId
+     */
+    const postId = req.query.postId;
+    const userId = req.params.userId;
+    const whetherAdd = req.params.whetherAdd;
+    const userIdFromJWT = req.verifiedToken.userId;
+
+    // 필수 값 : 빈 값 체크 (text를 제외한 나머지)
+    if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+    if (!postId) return res.send(response(baseResponse.POSTID_EMPTY));
+    if (!whetherAdd) return res.send(response(baseResponse.WADD_EMPTY));
+
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.USER_USERID_NOTNUM));
+    if (isNaN(postId) === true)
+        return res.send(response(baseResponse.POSTID_NOTNUM));
+
+    // 유효성 검사
+    const whetherAddList = ["Y", "N"];
+    if (!whetherAddList.includes(whetherAdd))
+        return res.send(response(baseResponse.WADD_IS_NOT_VALID));
+
+    //Y이면 이미 BM에 해당 userId, postId로 row존재 확인, 없어야 됨 <이미 찜 등록했는데 등록 요청하면 X>
+    //N이면 이미 BM에 해당 userId, postId로 row존재 확인, 있어야 됨 <찜 등록 안 했는데 해제 요청하면 X>
+    const checkAddBM = await userProvider.checkAddBM(userId, postId);
+    if (whetherAdd == "Y") {
+        if (checkAddBM.length != 0)
+            return res.send(response(baseResponse.USER_CANNOT_ADD)); //@@@@
+    } else if (whetherAdd == "N") {
+        if (checkAddBM.length === 0)
+            return res.send(response(baseResponse.USER_CANNOT_DELETE)); //@@@@
+    }
+
+    //jwt로 userId 확인
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        // 인증 대기 회원 확인
+        const checkUserAuth = await userProvider.checkUserAuth(userId);
+        if (checkUserAuth.length === 0) {
+            return res.send(response(baseResponse.USER_NON_AUTH));
+        }
+        const Response = await userService.addBM(userId, postId, whetherAdd);
+
+        return res.send(response(baseResponse.SUCCESS));
+    }
+};

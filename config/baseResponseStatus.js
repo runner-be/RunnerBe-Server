@@ -512,6 +512,30 @@ module.exports = {
         message:
             "applicantId에 해당하는 유저가 해당 모임에 속하지 않거나 대기 상태가 아닙니다.",
     },
+
+    WADD_EMPTY: {
+        isSuccess: false,
+        code: 2071,
+        message: "찜 등록/해제 입력해주세요",
+    },
+
+    WADD_IS_NOT_VALID: {
+        isSuccess: false,
+        code: 2072,
+        message: "찜 등록/해제는 Y, N로 입력해주세요",
+    },
+
+    USER_CANNOT_ADD: {
+        isSuccess: false,
+        code: 2073,
+        message: "해당 유저는 이미 찜을 등록했습니다.",
+    },
+
+    USER_CANNOT_DELETE: {
+        isSuccess: false,
+        code: 2074,
+        message: "해당 유저는 이미 찜을 해제했습니다.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,

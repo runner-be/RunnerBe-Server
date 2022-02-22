@@ -28,4 +28,7 @@ module.exports = function (app) {
 
     // 9. 앱 실행시 유저 인증여부 확인 API
     app.get("/users/auth", jwtMiddleware, user.authCheck);
+
+    // 20. 찜 등록, 해제 API
+    app.post("/users/:userId/bookmarks/:whetherAdd", jwtMiddleware, user.addBM);
 };

@@ -170,3 +170,17 @@ exports.checkFirst = async function (userIdFromJWT) {
     return errResponse(baseResponse.DB_ERROR);
   }
 };
+
+// BM에 있는지 확인
+exports.checkAddBM = async function (userId, postId) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const checkAddBMParams = [userId, postId];
+    const result = await userDao.checkAddBM(connection, checkAddBMParams);
+    connection.release();
+    return result;
+  } catch (err) {
+    logger.error(`User-checkAddBM Provider error: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+};

@@ -290,6 +290,35 @@ async function changeStatus(connection, userIdFromJWT) {
     return statusRows;
 }
 
+// BM에 있는지 확인
+async function checkAddBM(connection, checkAddBMParams) {
+    const checkAddBMQuery = `
+  SELECT userId FROM Bookmarks WHERE userId = ? AND postId = ?;
+                `;
+    const [checkAddBMRows] = await connection.query(
+        checkAddBMQuery,
+        checkAddBMParams
+    );
+    return checkAddBMRows;
+}
+
+// 찜 등록
+async function addBMY(connection, addBMParams) {
+    const addBMYQuery = `
+  INSERT INTO Bookmarks (userId, postId) VALUES (?,?);
+                `;
+    const [addBMYRows] = await connection.query(addBMYQuery, addBMParams);
+    return addBMYRows;
+}
+
+// 찜 해제
+async function addBMN(connection, addBMParams) {
+    const addBMNQuery = `
+  DELETE FROM Bookmarks WHERE userId = ? AND postId = ?;
+                `;
+    const [addBMNRows] = await connection.query(addBMNQuery, addBMParams);
+    return addBMNRows;
+}
 module.exports = {
     selectUser,
     deleteUser,
@@ -309,4 +338,7 @@ module.exports = {
     checkUserAuth,
     checkFirst,
     changeStatus,
+    checkAddBM,
+    addBMY,
+    addBMN,
 };
