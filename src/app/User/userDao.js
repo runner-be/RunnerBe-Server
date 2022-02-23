@@ -487,27 +487,24 @@ async function getMyRunning(connection, myRunningParams) {
   case when date_format(gatheringTime, '%w') = 6
   then date_format(gatheringTime,'%m/%d(토) %p%l:%i')
   end end end end end end end as gatheringTime,
- gatherLongitude, gatherLatitude, locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
+ locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
  case when runnerGender='A' then '전체'
  else
  case when runnerGender='M' then '남성'
  else
  case when runnerGender='F' then '여성'
-  end end end as gender,
- count(B.userId) as bookMarkNumber, whetherEnd, J.job,
+  end end end as gender, whetherEnd, J.job,
 EXISTS (SELECT bookmarkId FROM Bookmarks
         WHERE userId = ? AND postId = P.postId) as bookMark
 FROM Posting P
 INNER JOIN User U on U.userId = P.postUserId
 INNER JOIN Running R on R.postId = P.postId
-LEFT OUTER JOIN Bookmarks B on P.postId = B.postId
 INNER JOIN (SELECT DISTINCT postId, GROUP_CONCAT(distinct(job)) as job
 FROM RunningPeople RP
 inner join Running R on RP.gatheringId = R.gatheringId
 inner join User U on RP.userId = U.userId
 group by postId) J on J.postId = P.postId
-INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId
-GROUP BY B.postId;
+INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId;
                 `;
     const [Rows] = await connection.query(Query, myRunningParams);
     return Rows;
@@ -543,25 +540,22 @@ async function getMyPosting(connection, userId) {
   case when date_format(gatheringTime, '%w') = 6
   then date_format(gatheringTime,'%m/%d(토) %p%l:%i')
   end end end end end end end as gatheringTime,
- gatherLongitude, gatherLatitude, locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
+ locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
  case when runnerGender='A' then '전체'
  else
  case when runnerGender='M' then '남성'
  else
  case when runnerGender='F' then '여성'
-  end end end as gender,
- count(B.userId) as bookMarkNumber, whetherEnd, J.job
+  end end end as gender, whetherEnd, J.job
 FROM Posting P
 INNER JOIN User U on U.userId = P.postUserId
 INNER JOIN Running R on R.postId = P.postId
-LEFT OUTER JOIN Bookmarks B on P.postId = B.postId
 INNER JOIN (SELECT DISTINCT postId, GROUP_CONCAT(distinct(job)) as job
 FROM RunningPeople RP
 inner join Running R on RP.gatheringId = R.gatheringId
 inner join User U on RP.userId = U.userId
 group by postId) J on J.postId = P.postId
-WHERE postUserId = ?
-GROUP BY B.postId;
+WHERE postUserId = ?;
                 `;
     const [Rows] = await connection.query(Query, userId);
     return Rows;
