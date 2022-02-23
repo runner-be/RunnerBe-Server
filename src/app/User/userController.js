@@ -435,7 +435,7 @@ exports.main = async function (req, res) {
     }
 
     let keywordCondition = "";
-    if (keywordCondition != "N") {
+    if (keywordSearch != "N") {
         keywordCondition += `AND INSTR(P.title, '${keywordSearch}') > 0 OR INSTR(P.contents, '${keywordSearch}') > 0`;
     }
 
