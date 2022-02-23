@@ -29,11 +29,25 @@ Password : a2ia76
 │ │ │ ├── userController.js
 │ │ │ ├── userProvider.js
 │ │ │ ├── userService.js
+│ │ │ ├── userRoute.js
+│ │ ├── Running
+│ │ │ ├── runningDao.js
+│ │ │ ├── runningController.js
+│ │ │ ├── runningProvider.js
+│ │ │ ├── runningService.js
+│ │ │ ├── runningRoute.js
 │ │ ├── Posting
 │ │ │ ├── postingDao.js
 │ │ │ ├── postingController.js
 │ │ │ ├── postingProvider.js
 │ │ │ ├── postingService.js
+│ │ │ ├── postingRoute.js
+│ │ ├── Message
+│ │ │ ├── messageDao.js
+│ │ │ ├── messageController.js
+│ │ │ ├── messageProvider.js
+│ │ │ ├── messageService.js
+│ │ │ ├── messageRoute.js
 
 ├── .gitignore
 ├── index.js
