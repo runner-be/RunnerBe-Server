@@ -149,3 +149,23 @@ exports.dropPosting = async function (postId) {
         return errResponse(baseResponse.DB_ERROR);
     }
 };
+
+// 게시글 신고
+exports.reportPosting = async function (userId, postId) {
+    try {
+        //게시글 있는지 확인
+        const checkPostingResult = await postingProvider.checkPosting(postId);
+        if (checkPostingResult.length === 0)
+            return errResponse(baseResponse.POSTING_NOT_VALID_POSTID);
+
+        const connection = await pool.getConnection(async (conn) => conn);
+        // 게시글 신고
+        const Params = [postId, userId];
+        const reportResult = await postingDao.reportPosting(connection, Params);
+        connection.release();
+        return response(baseResponse.SUCCESS);
+    } catch (err) {
+        logger.error(`App - reportPosting Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};

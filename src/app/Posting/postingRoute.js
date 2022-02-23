@@ -15,4 +15,11 @@ module.exports = function (app) {
 
     // 12. 게시글 삭제 API
     app.patch("/postings/:postId/drop", jwtMiddleware, posting.dropPosting);
+
+    // 25. 신고하기 API
+    app.post(
+        "/postings/:postId/report/:userId",
+        jwtMiddleware,
+        posting.reportPosting
+    );
 };

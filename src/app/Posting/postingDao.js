@@ -258,6 +258,16 @@ async function checkBookMark(connection, checkBookMarkParams) {
 
     return checkBookMarkRow;
 }
+
+// 신고하기
+async function reportPosting(connection, Params) {
+    const Query = `
+  INSERT INTO AdminReport(postId, reporterId) VALUES (?,?);
+                 `;
+    const Row = await connection.query(Query, Params);
+
+    return Row;
+}
 module.exports = {
     createPosting,
     userIdCheck,
@@ -272,4 +282,5 @@ module.exports = {
     checkPosting,
     dropPosting,
     checkBookMark,
+    reportPosting,
 };
