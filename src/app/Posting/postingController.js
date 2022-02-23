@@ -16,7 +16,7 @@ const { emit } = require("nodemon");
 exports.createPosting = async function (req, res) {
     /**
      * Header : jwt
-     * Body: title, gatheringTime, runningTime, gahterLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender
+     * Body: title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender
      */
     const userId = req.params.userId;
     const userIdFromJWT = req.verifiedToken.userId;
@@ -24,7 +24,7 @@ exports.createPosting = async function (req, res) {
         title,
         gatheringTime,
         runningTime,
-        gahterLongitude,
+        gatherLongitude,
         gatherLatitude,
         locationInfo,
         runningTag,
@@ -42,7 +42,7 @@ exports.createPosting = async function (req, res) {
         return res.send(response(baseResponse.POSTING_GATHERINGTIME_EMPTY));
     if (!runningTime)
         return res.send(response(baseResponse.POSTING_RUNNINGTIME_EMPTY));
-    if (!gahterLongitude)
+    if (!gatherLongitude)
         return res.send(response(baseResponse.POSTING_LONGITUDE_EMPTY));
     if (!gatherLatitude)
         return res.send(response(baseResponse.POSTING_LATITUDE_EMPTY));
@@ -96,7 +96,7 @@ exports.createPosting = async function (req, res) {
             title,
             gatheringTime,
             runningTime,
-            gahterLongitude,
+            gatherLongitude,
             gatherLatitude,
             locationInfo,
             runningTag,
@@ -240,7 +240,7 @@ exports.closePosting = async function (req, res) {
 exports.patchPosting = async function (req, res) {
     /**
      * Header : jwt
-     * Body: title, gatheringTime, runningTime, gahterLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender
+     * Body: title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender
      */
     const userId = req.query.userId;
     const postId = req.params.postId;
@@ -249,7 +249,7 @@ exports.patchPosting = async function (req, res) {
         title,
         gatheringTime,
         runningTime,
-        gahterLongitude,
+        gatherLongitude,
         gatherLatitude,
         locationInfo,
         runningTag,
@@ -268,7 +268,7 @@ exports.patchPosting = async function (req, res) {
         return res.send(response(baseResponse.POSTING_GATHERINGTIME_EMPTY));
     if (!runningTime)
         return res.send(response(baseResponse.POSTING_RUNNINGTIME_EMPTY));
-    if (!gahterLongitude)
+    if (!gatherLongitude)
         return res.send(response(baseResponse.POSTING_LONGITUDE_EMPTY));
     if (!gatherLatitude)
         return res.send(response(baseResponse.POSTING_LATITUDE_EMPTY));
@@ -323,7 +323,7 @@ exports.patchPosting = async function (req, res) {
             title,
             gatheringTime,
             runningTime,
-            gahterLongitude,
+            gatherLongitude,
             gatherLatitude,
             locationInfo,
             runningTag,
