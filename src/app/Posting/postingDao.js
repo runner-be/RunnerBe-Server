@@ -32,7 +32,7 @@ async function createRunningPeople(connection, insertRunningPeopleParams) {
                  `;
     const createRunningPeopleRow = await connection.query(
         createRunningPeopleQuery,
-        createRunningPeopleParams
+        insertRunningPeopleParams
     );
 
     return createRunningPeopleRow;
