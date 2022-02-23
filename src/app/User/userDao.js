@@ -414,6 +414,158 @@ async function patchUserJob(connection, patchUserJobParams) {
     return patchUserJobRow;
 }
 
+//마이페이지 상단 정보
+async function getmyInfo(connection, userId) {
+    const Query = `
+  SELECT U.userId, nickName,
+             case when gender='M' then '남성'
+                  else case when gender='F' then '여성'
+                      end end as gender,
+             case when 0<= (DATE_FORMAT(now(),'%Y')-birthday)%10 and (DATE_FORMAT(now(),'%Y')-birthday)%10 <=3
+          then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 초반')
+          when 3< (DATE_FORMAT(now(),'%Y')-birthday)%10 and (DATE_FORMAT(now(),'%Y')-birthday)%10<=6
+          then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 중반')
+          when 6<(DATE_FORMAT(now(),'%Y')-birthday)%10 and (DATE_FORMAT(now(),'%Y')-birthday)%10<=9
+          then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 후반')
+      end as age,
+     case when 1<= U.diligence AND U.diligence <= 32
+         then '불량 러너'
+      else case when 32< U.diligence AND U.diligence<= 66
+          then '노력 러너'
+      else case when 66< U.diligence AND U.diligence<=100
+          then '성실 러너'
+      end end end as diligence,
+     case when job = 'PSV' then '공무원'
+         when job = 'EDU' then '교육'
+          when job = 'DEV' then '개발'
+          when job = 'PSM' then '기획/전략/경영'
+          when job = 'DES' then '디자인'
+          when job = 'MPR' then '마케팅/PR'
+          when job = 'SER' then '서비스'
+          when job = 'PRO' then '생산'
+          when job = 'RES' then '연구'
+          when job = 'SAF' then '영업/제휴'
+          when job = 'MED' then '의료'
+          when job = 'HUR' then '인사'
+          when job = 'ACC' then '제무/회계'
+          when job = 'CUS' then 'CS'
+      end as job
+      ,profileImageUrl FROM User U
+      WHERE U.userId = ?;
+                `;
+    const [Rows] = await connection.query(Query, userId);
+    return Rows;
+}
+
+// 마이페이지 참여한 러닝
+async function getMyRunning(connection, myRunningParams) {
+    const Query = `
+  SELECT P.postId,postUserId, U.nickName, U.profileImageUrl, title,
+  case when runningTime <= '01:00:00'
+  then CONCAT('약 ',date_format(runningTime,'%i'),'분')
+  else case when runningTime > '01:00:00'
+  then CONCAT('약 ',date_format(runningTime,'%l'),'시간',date_format(runningTime,'%i'),'분')
+  end end as runningTime,
+  case when date_format(gatheringTime, '%w') = 0
+  then date_format(gatheringTime,'%m/%d(일) %p%l:%i')
+  else
+  case when date_format(gatheringTime, '%w') = 1
+  then date_format(gatheringTime,'%m/%d(월) %p%l:%i')
+  else
+  case when date_format(gatheringTime, '%w') = 2
+  then date_format(gatheringTime,'%m/%d(화) %p%l:%i')
+  else
+  case when date_format(gatheringTime, '%w') = 3
+  then date_format(gatheringTime,'%m/%d(수) %p%l:%i')
+  else
+  case when date_format(gatheringTime, '%w') = 4
+  then date_format(gatheringTime,'%m/%d(목) %p%l:%i')
+  else
+  case when date_format(gatheringTime, '%w') = 5
+  then date_format(gatheringTime,'%m/%d(금) %p%l:%i')
+  else
+  case when date_format(gatheringTime, '%w') = 6
+  then date_format(gatheringTime,'%m/%d(토) %p%l:%i')
+  end end end end end end end as gatheringTime,
+ gatherLongitude, gatherLatitude, locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
+ case when runnerGender='A' then '전체'
+ else
+ case when runnerGender='M' then '남성'
+ else
+ case when runnerGender='F' then '여성'
+  end end end as gender,
+ count(B.userId) as bookMarkNumber, whetherEnd, J.job,
+EXISTS (SELECT bookmarkId FROM Bookmarks
+        WHERE userId = ? AND postId = P.postId) as bookMark
+FROM Posting P
+INNER JOIN User U on U.userId = P.postUserId
+INNER JOIN Running R on R.postId = P.postId
+LEFT OUTER JOIN Bookmarks B on P.postId = B.postId
+INNER JOIN (SELECT DISTINCT postId, GROUP_CONCAT(distinct(job)) as job
+FROM RunningPeople RP
+inner join Running R on RP.gatheringId = R.gatheringId
+inner join User U on RP.userId = U.userId
+group by postId) J on J.postId = P.postId
+INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId
+GROUP BY B.postId;
+                `;
+    const [Rows] = await connection.query(Query, myRunningParams);
+    return Rows;
+}
+
+// 마이페이지 내가 쓴 글
+async function getMyPosting(connection, userId) {
+    const Query = `
+  SELECT P.postId,postUserId, U.nickName, U.profileImageUrl, title,
+  case when runningTime <= '01:00:00'
+  then CONCAT('약 ',date_format(runningTime,'%i'),'분')
+  else case when runningTime > '01:00:00'
+  then CONCAT('약 ',date_format(runningTime,'%l'),'시간',date_format(runningTime,'%i'),'분')
+  end end as runningTime,
+  case when date_format(gatheringTime, '%w') = 0
+  then date_format(gatheringTime,'%m/%d(일) %p%l:%i')
+  else
+  case when date_format(gatheringTime, '%w') = 1
+  then date_format(gatheringTime,'%m/%d(월) %p%l:%i')
+  else
+  case when date_format(gatheringTime, '%w') = 2
+  then date_format(gatheringTime,'%m/%d(화) %p%l:%i')
+  else
+  case when date_format(gatheringTime, '%w') = 3
+  then date_format(gatheringTime,'%m/%d(수) %p%l:%i')
+  else
+  case when date_format(gatheringTime, '%w') = 4
+  then date_format(gatheringTime,'%m/%d(목) %p%l:%i')
+  else
+  case when date_format(gatheringTime, '%w') = 5
+  then date_format(gatheringTime,'%m/%d(금) %p%l:%i')
+  else
+  case when date_format(gatheringTime, '%w') = 6
+  then date_format(gatheringTime,'%m/%d(토) %p%l:%i')
+  end end end end end end end as gatheringTime,
+ gatherLongitude, gatherLatitude, locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
+ case when runnerGender='A' then '전체'
+ else
+ case when runnerGender='M' then '남성'
+ else
+ case when runnerGender='F' then '여성'
+  end end end as gender,
+ count(B.userId) as bookMarkNumber, whetherEnd, J.job
+FROM Posting P
+INNER JOIN User U on U.userId = P.postUserId
+INNER JOIN Running R on R.postId = P.postId
+LEFT OUTER JOIN Bookmarks B on P.postId = B.postId
+INNER JOIN (SELECT DISTINCT postId, GROUP_CONCAT(distinct(job)) as job
+FROM RunningPeople RP
+inner join Running R on RP.gatheringId = R.gatheringId
+inner join User U on RP.userId = U.userId
+group by postId) J on J.postId = P.postId
+WHERE postUserId = ?
+GROUP BY B.postId;
+                `;
+    const [Rows] = await connection.query(Query, userId);
+    return Rows;
+}
 module.exports = {
     selectUser,
     deleteUser,
@@ -440,4 +592,7 @@ module.exports = {
     getBMNum,
     patchUserImage,
     patchUserJob,
+    getmyInfo,
+    getMyRunning,
+    getMyPosting,
 };

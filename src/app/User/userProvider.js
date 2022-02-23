@@ -198,3 +198,17 @@ exports.getBM = async function (userId) {
 
   return finalResult;
 };
+
+// 마이페이지
+exports.getMyPage = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const myInfo = await userDao.getmyInfo(connection, userId);
+  const myPosting = await userDao.getMyPosting(connection, userId);
+  const myRunningParams = [userId, userId];
+  const myRunning = await userDao.getMyRunning(connection, myRunningParams);
+
+  connection.release();
+  const finalResult = { myInfo, myPosting, myRunning };
+
+  return finalResult;
+};

@@ -40,4 +40,7 @@ module.exports = function (app) {
 
     // 23. 직군 변경 API
     app.patch("/users/:userId/job", jwtMiddleware, user.patchUserJob);
+
+    // 24. 마이페이지 API
+    app.get("/users/:userId/myPage", jwtMiddleware, user.getMyPage);
 };

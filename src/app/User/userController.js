@@ -653,3 +653,33 @@ exports.patchUserJob = async function (req, res) {
         return res.send(response(baseResponse.SUCCESS));
     }
 };
+
+/**
+ * API No. 23
+ * API Name : 마이페이지 API
+ * [GET] /users/:userId/myPage
+ * Path variable: userId
+ * Header : jwt
+ */
+exports.getMyPage = async function (req, res) {
+    const userId = req.params.userId;
+    const userIdFromJWT = req.verifiedToken.userId;
+
+    // 빈 값 체크
+    if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.USER_USERID_NOTNUM));
+    //jwt로 userId 확인
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        // 인증 대기 회원 확인
+        const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+        if (checkUserAuth.length === 0) {
+            return res.send(response(baseResponse.USER_NON_AUTH));
+        }
+        const getMyPageResult = await userProvider.getMyPage(userId);
+        return res.send(response(baseResponse.SUCCESS, getMyPageResult));
+    }
+};
