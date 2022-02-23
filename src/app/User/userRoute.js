@@ -34,4 +34,7 @@ module.exports = function (app) {
 
     // 21. 찜 목록 조회 API
     app.get("/users/:userId/bookmarks", jwtMiddleware, user.getBM);
+
+    // 22. 프로필 사진 변경 API
+    app.patch("/users/:userId/profileImage", jwtMiddleware, user.patchUserImage);
 };

@@ -383,6 +383,22 @@ async function getBMNum(connection, userId) {
     const [getBMNumRows] = await connection.query(getBMNumQuery, userId);
     return getBMNumRows;
 }
+
+// 프로필 사진 변경
+async function patchUserImage(connection, patchUserImageParams) {
+    const patchUserImageQuery = `
+    UPDATE User
+    SET profileImageUrl = ?
+    WHERE userId = ?;
+               `;
+    const patchUserImageRow = await connection.query(
+        patchUserImageQuery,
+        patchUserImageParams
+    );
+
+    return patchUserImageRow;
+}
+
 module.exports = {
     selectUser,
     deleteUser,
@@ -407,4 +423,5 @@ module.exports = {
     addBMN,
     getBM,
     getBMNum,
+    patchUserImage,
 };

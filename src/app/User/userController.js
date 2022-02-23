@@ -566,3 +566,38 @@ exports.getBM = async function (req, res) {
         return res.send(response(baseResponse.SUCCESS, Response));
     }
 };
+
+/**
+ * API No. 22
+ * API Name : 프로필 사진 변경 API
+ * [PATCH] /users/:userId/profileImage
+ * Path variable: userId
+ * Header : jwt
+ * body : profileImageUrl
+ */
+exports.patchUserImage = async function (req, res) {
+    const userId = req.params.userId;
+    const userIdFromJWT = req.verifiedToken.userId;
+    const profileImageUrl = req.body.profileImageUrl;
+
+    // 빈 값 체크
+    if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.USER_USERID_NOTNUM));
+    //jwt로 userId 확인
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        // 인증 대기 회원 확인
+        const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+        if (checkUserAuth.length === 0) {
+            return res.send(response(baseResponse.USER_NON_AUTH));
+        }
+        const changeImage = await userService.patchUserImage(
+            profileImageUrl,
+            userId
+        );
+        return res.send(response(baseResponse.SUCCESS));
+    }
+};

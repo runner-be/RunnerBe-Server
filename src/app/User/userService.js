@@ -168,3 +168,22 @@ exports.addBM = async function (userId, postId, whetherAdd) {
         return errResponse(baseResponse.DB_ERROR);
     }
 };
+
+//user의 nickname 변경
+exports.patchUserImage = async function (profileImageUrl, userId) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const patchUserImageParams = [profileImageUrl, userId];
+        const patchUserImageResult = await userDao.patchUserImage(
+            connection,
+            patchUserImageParams
+        );
+
+        connection.release();
+
+        return patchUserImageResult;
+    } catch (err) {
+        logger.error(`App - patchUserImage Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};
