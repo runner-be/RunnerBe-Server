@@ -601,3 +601,55 @@ exports.patchUserImage = async function (req, res) {
         return res.send(response(baseResponse.SUCCESS));
     }
 };
+
+/**
+ * API No. 23
+ * API Name : 직군 변경 API
+ * [PATCH] /users/:userId/job
+ * Path variable: userId
+ * Header : jwt
+ * body : job
+ */
+exports.patchUserJob = async function (req, res) {
+    const userId = req.params.userId;
+    const userIdFromJWT = req.verifiedToken.userId;
+    const job = req.body.job;
+
+    // 빈 값 체크
+    if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+    if (!job) return res.send(response(baseResponse.SIGNUP_JOB_EMPTY));
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.USER_USERID_NOTNUM));
+    // 유효성 검사
+    const jobList = [
+        "PSV",
+        "EDU",
+        "DEV",
+        "PSM",
+        "DES",
+        "MPR",
+        "SER",
+        "PRO",
+        "RES",
+        "SAF",
+        "MED",
+        "HUR",
+        "ACC",
+        "CUS",
+    ];
+    if (!jobList.includes(job))
+        return res.send(response(baseResponse.JOB_FILTER_IS_NOT_VALID));
+    //jwt로 userId 확인
+    if (userIdFromJWT != userId) {
+        res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    } else {
+        // 인증 대기 회원 확인
+        const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+        if (checkUserAuth.length === 0) {
+            return res.send(response(baseResponse.USER_NON_AUTH));
+        }
+        const changeJob = await userService.patchUserJob(job, userId);
+        return res.send(response(baseResponse.SUCCESS));
+    }
+};

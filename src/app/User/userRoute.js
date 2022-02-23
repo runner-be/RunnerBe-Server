@@ -37,4 +37,7 @@ module.exports = function (app) {
 
     // 22. 프로필 사진 변경 API
     app.patch("/users/:userId/profileImage", jwtMiddleware, user.patchUserImage);
+
+    // 23. 직군 변경 API
+    app.patch("/users/:userId/job", jwtMiddleware, user.patchUserJob);
 };

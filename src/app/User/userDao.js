@@ -399,6 +399,21 @@ async function patchUserImage(connection, patchUserImageParams) {
     return patchUserImageRow;
 }
 
+// 직군 변경
+async function patchUserJob(connection, patchUserJobParams) {
+    const patchUserJobQuery = `
+    UPDATE User
+    SET job = ?
+    WHERE userId = ?;
+               `;
+    const patchUserJobRow = await connection.query(
+        patchUserJobQuery,
+        patchUserJobParams
+    );
+
+    return patchUserJobRow;
+}
+
 module.exports = {
     selectUser,
     deleteUser,
@@ -424,4 +439,5 @@ module.exports = {
     getBM,
     getBMNum,
     patchUserImage,
+    patchUserJob,
 };

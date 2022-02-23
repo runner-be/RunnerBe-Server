@@ -187,3 +187,22 @@ exports.patchUserImage = async function (profileImageUrl, userId) {
         return errResponse(baseResponse.DB_ERROR);
     }
 };
+
+//user의 job 변경
+exports.patchUserJob = async function (job, userId) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const patchUserJobParams = [job, userId];
+        const patchUserJobResult = await userDao.patchUserJob(
+            connection,
+            patchUserJobParams
+        );
+
+        connection.release();
+
+        return patchUserJobResult;
+    } catch (err) {
+        logger.error(`App - patchUserJob Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};
