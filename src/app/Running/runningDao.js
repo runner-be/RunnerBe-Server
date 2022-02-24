@@ -25,4 +25,21 @@ async function checkApplicant(connection, checkApplicantParams) {
     return row;
 }
 
-module.exports = { sendRequest, checkApplicant };
+//디바이스 토큰 가져오기
+async function getDeviceToken(userId) {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const getDeviceTokenQuery = `
+      select deviceToken, nickName
+      from User
+      where userId = ?
+  `;
+    const [getDeviceTokenRows] = await connection.query(
+        getDeviceTokenQuery,
+        userId
+    );
+    connection.release();
+
+    return getDeviceTokenRows;
+}
+
+module.exports = { sendRequest, checkApplicant, getDeviceToken };

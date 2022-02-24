@@ -3,6 +3,7 @@ const runningProvider = require("../../app/Running/runningProvider");
 const userProvider = require("../../app/User/userProvider");
 const messageProvider = require("../../app/Message/messageProvider");
 const runningService = require("../../app/Running/runningService");
+const runningDao = require("./runningDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
 const { logger } = require("../../../config/winston");
@@ -135,29 +136,37 @@ exports.handleRequest = async function (req, res) {
     }
 };
 
+/**
+ * API No. 26
+ * API Name : 푸쉬알림 API
+ * [GET] /pushAlarm
+ */
 exports.pushAlarm = async function (req, res) {
-    const userId = req.params.userId;
-    // 기기 등록 토큰
-    const getDeviceToken = await runningProvider.getToken(userId);
-    let deviceToken = getDeviceToken;
+    const { userId } = req.verifiedToken;
+
+    const getDeviceTokenRows = await runningDao.getDeviceToken(userId);
 
     let message = {
         notification: {
             title: "테스트 제목",
-            body: "테스트 알림 내용",
+            body: getDeviceTokenRows[0].nickName + "님 러너비 앱을 확인해보세요!",
         },
-        token: deviceToken,
+        data: {
+            title: "테스트 제목",
+            body: getDeviceTokenRows[0].nickName + "님 러너비 앱을 확인해보세요!",
+        },
+        token: getDeviceTokenRows[0].deviceToken,
     };
 
     admin
         .messaging()
         .send(message)
         .then(function (response) {
-            console.log("Successfully sent message::", response);
+            console.log("Successfully sent message: : ", response);
             return res.status(200).json({ success: true });
         })
         .catch(function (err) {
-            console.log("Error Sending message :", err);
+            console.log("Error Sending message!!! : ", err);
             return res.status(400).json({ success: false });
         });
 };

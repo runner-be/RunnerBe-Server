@@ -12,6 +12,6 @@ module.exports = function (app) {
         running.handleRequest
     );
 
-    // 푸시 알림
-    app.get("/push/:userId", running.pushAlarm);
+    // 26. 푸시 알림
+    app.get("/pushAlarm", jwtMiddleware, running.pushAlarm);
 };
