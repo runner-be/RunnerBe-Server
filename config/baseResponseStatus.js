@@ -347,7 +347,7 @@ module.exports = {
     FILTER_IS_NOT_VALID: {
         isSuccess: false,
         code: 2038,
-        message: "필터 조건은 D, R, B 중 하나로 입력해주세요.",
+        message: "필터 조건은 D, R 중 하나로 입력해주세요.",
     },
 
     RUNNONGTAG_EMPTY: {

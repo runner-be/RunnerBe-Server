@@ -324,7 +324,7 @@ exports.main = async function (req, res) {
     const userLongitude = req.query.userLongitude;
     const userLatitude = req.query.userLatitude;
     const whetherEnd = req.query.whetherEnd; // Y, N
-    const filter = req.query.filter; // 거리순 : D, 최신순 : R, 찜많은순 : B
+    const filter = req.query.filter; // 거리순 : D, 최신순 : R
     const distanceFilter = req.query.distanceFilter; // (N, 거리값)
     const genderFilter = req.query.genderFilter; // A : 전체, F : 여성, M : 남성
     const jobFilter = req.query.jobFilter; // N: 필터X ,그 외 약속된 job code로 보내기
@@ -356,7 +356,7 @@ exports.main = async function (req, res) {
     // 유효성 검사
     const runningTagList = ["A", "B", "H"];
     const whetherEndList = ["Y", "N"];
-    const filterList = ["D", "R", "B"];
+    const filterList = ["D", "R"];
     const genderFilterList = ["A", "F", "M"];
     const jobList = [
         "PSV",
@@ -400,8 +400,6 @@ exports.main = async function (req, res) {
         sortCondition += "DISTANCE";
     } else if (filter === "R") {
         sortCondition += "postingTime";
-    } else if (filter === "B") {
-        sortCondition += "bookMarkNumber";
     }
 
     let distanceCondition = "";

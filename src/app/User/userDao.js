@@ -202,11 +202,10 @@ async function getMain(
          case when runnerGender='F' then '여성'
           end end end as gender,
           DISTANCE,
-         count(B.userId) as bookMarkNumber, whetherEnd, J.job
+         whetherEnd, J.job
   FROM Posting P
   INNER JOIN User U on U.userId = P.postUserId
   INNER JOIN Running R on R.postId = P.postId
-  LEFT OUTER JOIN Bookmarks B on P.postId = B.postId
   INNER JOIN (SELECT DISTINCT postId, GROUP_CONCAT(distinct(job)) as job
   FROM RunningPeople RP
   inner join Running R on RP.gatheringId = R.gatheringId
@@ -218,7 +217,6 @@ async function getMain(
   on D.postId = P.postId
   WHERE runningTag = "${runningTag}" ${distanceCondition}
   ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition}
-  GROUP BY B.postId
   ORDER BY "${sortCondition}";
                 `;
     const [mainRows] = await connection.query(getMainQuery);
