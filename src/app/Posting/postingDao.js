@@ -114,7 +114,7 @@ WHERE P.postId = ?;
 //해당 모임에 참여하는 러너 정보 가져오기
 async function getRunner(connection, postId) {
     const getRunnerQuery = `
-      SELECT U.userId, nickName, whetherAccept,
+      SELECT U.userId, nickName,
              case when gender='M' then '남성'
                   else case when gender='F' then '여성'
                       end end as gender,
@@ -159,7 +159,7 @@ async function getRunner(connection, postId) {
 // 신청하고 수락 대기중인 러너들
 async function getWaitingRunner(connection, postId) {
     const getRunnerQuery = `
-      SELECT U.userId, nickName, whetherAccept,
+      SELECT U.userId, nickName,
              case when gender='M' then '남성'
                   else case when gender='F' then '여성'
                       end end as gender,
