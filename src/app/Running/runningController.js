@@ -8,6 +8,14 @@ const { response, errResponse } = require("../../../config/response");
 const { logger } = require("../../../config/winston");
 const { emit } = require("nodemon");
 
+//푸시알림
+const { initializeApp } = require("firebase-admin/app");
+const admin = require("firebase-admin");
+let serAccount = require("../../../config/runnerne-firebase-adminsdk-5jzt3-826315ed27.json");
+admin.initializeApp({
+    credential: admin.credential.cert(serAccount),
+});
+
 /**
  * API No. 18
  * API Name : 참여신청하기 API
@@ -125,4 +133,31 @@ exports.handleRequest = async function (req, res) {
 
         return res.send(response(baseResponse.SUCCESS));
     }
+};
+
+exports.pushAlarm = async function (req, res) {
+    const userId = req.params.userId;
+    // 기기 등록 토큰
+    const getDeviceToken = await runningProvider.getToken(userId);
+    let deviceToken = getDeviceToken;
+
+    let message = {
+        notification: {
+            title: "테스트 제목",
+            body: "테스트 알림 내용",
+        },
+        token: deviceToken,
+    };
+
+    admin
+        .messaging()
+        .send(message)
+        .then(function (response) {
+            console.log("Successfully sent message::", response);
+            return res.status(200).json({ success: true });
+        })
+        .catch(function (err) {
+            console.log("Error Sending message :", err);
+            return res.status(400).json({ success: false });
+        });
 };

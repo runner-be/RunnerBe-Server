@@ -5,3 +5,4 @@ log/*
 .DS_Store
 config/secret.js
 config/kakao_config.js
+config/runnerne-firebase-adminsdk-5jzt3-826315ed27.json
