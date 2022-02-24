@@ -541,7 +541,7 @@ exports.getBM = async function (req, res) {
      */
 
     const userId = req.params.userId;
-    // const userIdFromJWT = req.verifiedToken.userId;
+    const userIdFromJWT = req.verifiedToken.userId;
 
     // 필수 값 : 빈 값 체크 (text를 제외한 나머지)
     if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
