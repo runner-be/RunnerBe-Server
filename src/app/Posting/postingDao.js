@@ -100,7 +100,7 @@ SELECT P.postId, P.createdAt as postingTime, postUserId,
      concat(ageMin,'-',ageMax) as age,
      CONCAT('최대 ',peopleNum,'명') as peopleNum,
      contents,
-     gatherLongitude, gatherLatitude, locationInfo
+     gatherLongitude, gatherLatitude, locationInfo, whetherEnd
 FROM Posting P
 INNER JOIN User U on U.userId = P.postUserId
 INNER JOIN Running R on R.postId = P.postId
