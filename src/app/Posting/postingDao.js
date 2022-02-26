@@ -125,11 +125,11 @@ async function getRunner(connection, postId) {
           when 6<(DATE_FORMAT(now(),'%Y')-birthday)%10 and (DATE_FORMAT(now(),'%Y')-birthday)%10<=9
           then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 후반')
       end as age,
-     case when 1<= U.diligence AND U.diligence <= 32
+     case when  U.diligence <= 32
          then '불량 러너'
       else case when 32< U.diligence AND U.diligence<= 66
           then '노력 러너'
-      else case when 66< U.diligence AND U.diligence<=100
+      else case when 66< U.diligence
           then '성실 러너'
       end end end as diligence,
      case when job = 'PSV' then '공무원'
@@ -170,11 +170,11 @@ async function getWaitingRunner(connection, postId) {
           when 6<(DATE_FORMAT(now(),'%Y')-birthday)%10 and (DATE_FORMAT(now(),'%Y')-birthday)%10<=9
           then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 후반')
       end as age,
-     case when 1<= U.diligence AND U.diligence <= 32
+     case when  U.diligence <= 32
          then '불량 러너'
       else case when 32< U.diligence AND U.diligence<= 66
           then '노력 러너'
-      else case when 66< U.diligence AND U.diligence<=100
+      else case when 66< U.diligence 
           then '성실 러너'
       end end end as diligence,
      case when job = 'PSV' then '공무원'
