@@ -1,4 +1,15 @@
-async function sendRequest(connection, sendRequestParams, whetherAccept) {
+async function sendRequest(connection, sendRequestParams) {
+    const query = `
+  INSERT INTO RunningPeople(gatheringId, userId) 
+  VALUES ((SELECT gatheringId FROM Running INNER JOIN Posting P on Running.postId = P.postId WHERE P.postId = ?),?);
+                          `;
+
+    const row = await connection.query(query, sendRequestParams);
+
+    return row;
+}
+
+async function handleRequest(connection, sendRequestParams, whetherAccept) {
     const query = `
   UPDATE RunningPeople RP
   INNER JOIN  Running R on RP.gatheringId = R.gatheringId
@@ -42,4 +53,4 @@ async function getDeviceToken(userId) {
     return getDeviceTokenRows;
 }
 
-module.exports = { sendRequest, checkApplicant, getDeviceToken };
+module.exports = { sendRequest, handleRequest, checkApplicant, getDeviceToken };

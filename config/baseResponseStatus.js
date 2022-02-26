@@ -584,6 +584,12 @@ module.exports = {
         code: 2076,
         message: "keyword는 10자 이하로 입력해주세요.",
     },
+
+    USER_NOT_BELONG_RUNNING: {
+        isSuccess: false,
+        code: 2077,
+        message: "유저가 해당 러닝모임에 속하지 않습니다.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,

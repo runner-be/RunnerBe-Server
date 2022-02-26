@@ -11,7 +11,46 @@ const { connect } = require("http2");
 const res = require("express/lib/response");
 
 // 참여 요청 보내기
-exports.sendRequest = async function (postId, applicantId, whetherAccept) {
+exports.sendRequest = async function (postId, userId) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const sendRequestParams = [postId, userId];
+        const sendRequestResult = await runningDao.sendRequest(
+            connection,
+            sendRequestParams
+        );
+
+        connection.release();
+
+        return sendRequestResult;
+    } catch (err) {
+        logger.error(`App - sendRequest Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};
+
+// 참여 요청 처리하기
+exports.handleRequest = async function (postId, applicantId, whetherAccept) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const sendRequestParams = [postId, applicantId];
+        const sendRequestResult = await runningDao.handleRequest(
+            connection,
+            sendRequestParams,
+            whetherAccept
+        );
+
+        connection.release();
+
+        return sendRequestResult;
+    } catch (err) {
+        logger.error(`App - handleRequest Service error\n: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};
+
+// 출석하기
+exports.attend = async function (postId, applicantId, whetherAccept) {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
         const sendRequestParams = [postId, applicantId];

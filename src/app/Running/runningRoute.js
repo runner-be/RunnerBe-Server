@@ -14,4 +14,11 @@ module.exports = function (app) {
 
     // 26. 푸시 알림
     app.get("/push-alarm", jwtMiddleware, running.pushAlarm);
+
+    // 27. 출석하기 API
+    app.patch(
+        "/runnings/:postId/attendees/:userId",
+        jwtMiddleware,
+        running.attend
+    );
 };
