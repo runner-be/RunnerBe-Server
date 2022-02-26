@@ -3,11 +3,11 @@ module.exports = function (app) {
     const jwtMiddleware = require("../../../config/jwtMiddleware");
 
     // 18. 참여 신청 API
-    app.post("/running/request/:postId", jwtMiddleware, running.sendRequest);
+    app.post("/runnings/request/:postId", jwtMiddleware, running.sendRequest);
 
     // 19. 참여 신청 처리하기 API
     app.patch(
-        "/running/request/:postId/handling/:applicantId/:whetherAccept",
+        "/runnings/request/:postId/handling/:applicantId/:whetherAccept",
         jwtMiddleware,
         running.handleRequest
     );
