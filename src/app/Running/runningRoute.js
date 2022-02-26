@@ -13,5 +13,5 @@ module.exports = function (app) {
     );
 
     // 26. 푸시 알림
-    app.get("/pushAlarm", jwtMiddleware, running.pushAlarm);
+    app.get("/push-alarm", jwtMiddleware, running.pushAlarm);
 };

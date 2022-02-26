@@ -145,6 +145,8 @@ exports.pushAlarm = async function (req, res) {
     const { userId } = req.verifiedToken;
 
     const getDeviceTokenRows = await runningDao.getDeviceToken(userId);
+    if (getDeviceToken.length === 0)
+        return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
 
     let message = {
         notification: {
@@ -163,10 +165,10 @@ exports.pushAlarm = async function (req, res) {
         .send(message)
         .then(function (response) {
             console.log("Successfully sent message: : ", response);
-            return res.status(200).json({ success: true });
+            return res.send(response(baseResponse.SUCCESS));
         })
         .catch(function (err) {
             console.log("Error Sending message!!! : ", err);
-            return res.status(400).json({ success: false });
+            return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
         });
 };

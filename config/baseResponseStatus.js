@@ -596,6 +596,12 @@ module.exports = {
         code: 2085,
         message: "유효하지 않는 Access Token 입니다.",
     },
+
+    DEVICE_TOKEN_EMPTY: {
+        isSuccess: false,
+        code: 2086,
+        message: "해당 유저의 device token 값이 등록되어있지 않습니다.",
+    },
     // ----------------------------
 
     // Response error
@@ -631,6 +637,12 @@ module.exports = {
         isSuccess: false,
         code: 3006,
         message: "없는 유저의 userId입니다.",
+    },
+
+    ERROR_SEND_MESSAGE: {
+        isSuccess: false,
+        code: 3007,
+        message: "메세지 전송에 실패했습니다.",
     },
     // -----------------
 
