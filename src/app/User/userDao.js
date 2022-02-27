@@ -401,7 +401,7 @@ async function patchUserImage(connection, patchUserImageParams) {
 async function patchUserJob(connection, patchUserJobParams) {
     const patchUserJobQuery = `
     UPDATE User
-    SET job = ?
+    SET job = ?, updatedAt = current_timestamp()
     WHERE userId = ?;
                `;
     const patchUserJobRow = await connection.query(
@@ -569,6 +569,16 @@ WHERE postUserId = ?;
     // });
     return row1[0];
 }
+
+//직군 변경 후 3개월 지났는지 확인
+async function checkTerm(connection, userId) {
+    const Query = `
+  SELECT userId FROM User WHERE userId = ? AND DATEDIFF(current_timestamp, updatedAt) > 180;
+                `;
+    const [Rows] = await connection.query(Query, userId);
+    return Rows;
+}
+
 module.exports = {
     selectUser,
     deleteUser,
@@ -598,4 +608,5 @@ module.exports = {
     getmyInfo,
     getMyRunning,
     getMyPosting,
+    checkTerm,
 };

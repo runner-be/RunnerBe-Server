@@ -590,6 +590,12 @@ module.exports = {
         code: 2077,
         message: "유저가 해당 러닝모임에 속하지 않습니다.",
     },
+
+    CANNOT_CHANGE_JOB: {
+        isSuccess: false,
+        code: 2078,
+        message: "3개월이 지나지 않아 직군 변경이 불가능합니다.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,

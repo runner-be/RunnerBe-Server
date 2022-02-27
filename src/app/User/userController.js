@@ -638,6 +638,11 @@ exports.patchUserJob = async function (req, res) {
     ];
     if (!jobList.includes(job))
         return res.send(response(baseResponse.JOB_FILTER_IS_NOT_VALID));
+    //3개월에 한 번만 가능
+    const checkTerm = await userProvider.checkTerm(userId);
+    if (checkTerm.length === 0)
+        return res.send(response(baseResponse.CANNOT_CHANGE_JOB));
+
     //jwt로 userId 확인
     if (userIdFromJWT != userId) {
         res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));

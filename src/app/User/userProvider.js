@@ -212,3 +212,16 @@ exports.getMyPage = async function (userId) {
 
   return finalResult;
 };
+
+// 직군 변경하고 3개월 지났는지 확인
+exports.checkTerm = async function (userId) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const result = await userDao.checkTerm(connection, userId);
+    connection.release();
+    return result;
+  } catch (err) {
+    logger.error(`User-checkAddBM Provider error: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+};
