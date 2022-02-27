@@ -50,21 +50,22 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
 };
 
 // 출석하기
-exports.attend = async function (postId, applicantId, whetherAccept) {
+exports.attend = async function (postId, userId) {
     try {
         const connection = await pool.getConnection(async (conn) => conn);
-        const sendRequestParams = [postId, applicantId];
-        const sendRequestResult = await runningDao.sendRequest(
-            connection,
-            sendRequestParams,
-            whetherAccept
-        );
+
+        //RunningPeople에 참석여부 업데이트
+        const updateParams = [userId, postId];
+        const updateRunningA = await runningDao.updateR(connection, updateParams);
+        //유저의 성실도 업데이트
+        const updateParamsU = [userId, userId];
+        const updateUserA = await runningDao.updateU(connection, updateParamsU); //
 
         connection.release();
 
-        return sendRequestResult;
+        return updateRunningA;
     } catch (err) {
-        logger.error(`App - sendRequest Service error\n: ${err.message}`);
+        logger.error(`App - attend Service error\n: ${err.message}`);
         return errResponse(baseResponse.DB_ERROR);
     }
 };

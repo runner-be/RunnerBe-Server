@@ -53,4 +53,36 @@ async function getDeviceToken(userId) {
     return getDeviceTokenRows;
 }
 
-module.exports = { sendRequest, handleRequest, checkApplicant, getDeviceToken };
+// RP에 참석여부 업데이트
+async function updateR(connection, updateParams) {
+    const query = `
+  UPDATE RunningPeople
+  SET attendance = 1
+  WHERE userId = ? AND gatheringId = (SELECT gatheringId FROM Running WHERE postId = ?);
+                          `;
+
+    const row = await connection.query(query, updateParams);
+
+    return row;
+}
+
+// 유저의 출석률 업데이트
+async function updateU(connection, updateParamsU) {
+    const query = `
+  UPDATE User
+  SET diligence = (SELECT (SUM(attendance)/COUNT(gatheringId))*100 as attendance FROM RunningPeople WHERE userId = ? GROUP BY userId)
+  WHERE userId = ?
+                          `;
+
+    const row = await connection.query(query, updateParamsU);
+
+    return row;
+}
+module.exports = {
+    sendRequest,
+    handleRequest,
+    checkApplicant,
+    getDeviceToken,
+    updateR,
+    updateU,
+};

@@ -360,7 +360,7 @@ async function getBM(connection, userId) {
          case when runnerGender='M' then '남성'
          else
          case when runnerGender='F' then '여성'
-          end end end as gender, whetherEnd, B.userId
+          end end end as gender, whetherEnd, B.userId, runningTag
   FROM Posting P
   INNER JOIN User U on U.userId = P.postUserId
   INNER JOIN Running R on R.postId = P.postId
@@ -493,7 +493,7 @@ async function getMyRunning(connection, myRunningParams) {
  case when runnerGender='F' then '여성'
   end end end as gender, whetherEnd, J.job,
 EXISTS (SELECT bookmarkId FROM Bookmarks
-        WHERE userId = ? AND postId = P.postId) as bookMark
+        WHERE userId = ? AND postId = P.postId) as bookMark,attendance
 FROM Posting P
 INNER JOIN User U on U.userId = P.postUserId
 INNER JOIN Running R on R.postId = P.postId
@@ -510,7 +510,7 @@ INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId =
 
 // 마이페이지 내가 쓴 글
 async function getMyPosting(connection, userId) {
-    const Query = `
+    const query1 = `
   SELECT P.postId,postUserId, U.nickName, U.profileImageUrl, title,
   case when runningTime <= '01:00:00'
   then CONCAT('약 ',date_format(runningTime,'%i'),'분')
@@ -545,18 +545,28 @@ async function getMyPosting(connection, userId) {
  else
  case when runnerGender='F' then '여성'
   end end end as gender, whetherEnd, J.job
-FROM Posting P
-INNER JOIN User U on U.userId = P.postUserId
-INNER JOIN Running R on R.postId = P.postId
-INNER JOIN (SELECT DISTINCT postId, GROUP_CONCAT(distinct(job)) as job
-FROM RunningPeople RP
-inner join Running R on RP.gatheringId = R.gatheringId
-inner join User U on RP.userId = U.userId
-group by postId) J on J.postId = P.postId
-WHERE postUserId = ?;
+  FROM Posting P
+  INNER JOIN User U on U.userId = P.postUserId
+  INNER JOIN Running R on R.postId = P.postId
+  INNER JOIN (SELECT DISTINCT postId, GROUP_CONCAT(distinct(job)) as job
+  FROM RunningPeople RP
+  inner join Running R on RP.gatheringId = R.gatheringId
+  inner join User U on RP.userId = U.userId
+  group by postId) J on J.postId = P.postId
+  WHERE postUserId = ?;
                 `;
-    const [Rows] = await connection.query(Query, userId);
-    return Rows;
+    const query2 = `
+  SELECT R.postId, attendance FROM RunningPeople
+  INNER JOIN Running R on RunningPeople.gatheringId = R.gatheringId
+  INNER JOIN Posting P on R.postId = P.postId
+  WHERE postUserId = ? AND userId = ?
+  `;
+    const row1 = await connection.query(query1, userId);
+    const row2 = await connection.query(query2, [userId, userId]);
+    return (result = {
+        postingInfo: row1[0],
+        attendance: row2[0],
+    });
 }
 module.exports = {
     selectUser,
