@@ -168,32 +168,8 @@ async function getMain(
 ) {
     const getMainQuery = `
   SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
-          case when runningTime <= '01:00:00'
-          then CONCAT('약 ',date_format(runningTime,'%i'),'분')
-          else case when runningTime > '01:00:00'
-          then CONCAT('약 ',date_format(runningTime,'%l'),'시간',date_format(runningTime,'%i'),'분')
-          end end as runningTime,
-          case when date_format(gatheringTime, '%w') = 0
-          then date_format(gatheringTime,'%m/%d(일) %p%l:%i')
-          else
-          case when date_format(gatheringTime, '%w') = 1
-          then date_format(gatheringTime,'%m/%d(월) %p%l:%i')
-          else
-          case when date_format(gatheringTime, '%w') = 2
-          then date_format(gatheringTime,'%m/%d(화) %p%l:%i')
-          else
-          case when date_format(gatheringTime, '%w') = 3
-          then date_format(gatheringTime,'%m/%d(수) %p%l:%i')
-          else
-          case when date_format(gatheringTime, '%w') = 4
-          then date_format(gatheringTime,'%m/%d(목) %p%l:%i')
-          else
-          case when date_format(gatheringTime, '%w') = 5
-          then date_format(gatheringTime,'%m/%d(금) %p%l:%i')
-          else
-          case when date_format(gatheringTime, '%w') = 6
-          then date_format(gatheringTime,'%m/%d(토) %p%l:%i')
-          end end end end end end end as gatheringTime,
+          runningTime,
+          gatheringTime,
          gatherLongitude, gatherLatitude, locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
          case when runnerGender='A' then '전체'
          else
@@ -328,32 +304,8 @@ async function addBMN(connection, addBMParams) {
 async function getBM(connection, userId) {
     const getBMQuery = `
   SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
-          case when runningTime <= '01:00:00'
-          then CONCAT('약 ',date_format(runningTime,'%i'),'분')
-          else case when runningTime > '01:00:00'
-          then CONCAT('약 ',date_format(runningTime,'%l'),'시간',date_format(runningTime,'%i'),'분')
-          end end as runningTime,
-          case when date_format(gatheringTime, '%w') = 0
-          then date_format(gatheringTime,'%m/%d(일) %p%l:%i')
-          else
-          case when date_format(gatheringTime, '%w') = 1
-          then date_format(gatheringTime,'%m/%d(월) %p%l:%i')
-          else
-          case when date_format(gatheringTime, '%w') = 2
-          then date_format(gatheringTime,'%m/%d(화) %p%l:%i')
-          else
-          case when date_format(gatheringTime, '%w') = 3
-          then date_format(gatheringTime,'%m/%d(수) %p%l:%i')
-          else
-          case when date_format(gatheringTime, '%w') = 4
-          then date_format(gatheringTime,'%m/%d(목) %p%l:%i')
-          else
-          case when date_format(gatheringTime, '%w') = 5
-          then date_format(gatheringTime,'%m/%d(금) %p%l:%i')
-          else
-          case when date_format(gatheringTime, '%w') = 6
-          then date_format(gatheringTime,'%m/%d(토) %p%l:%i')
-          end end end end end end end as gatheringTime,
+          runningTime,
+          gatheringTime,
          gatherLongitude, gatherLatitude, locationInfo, concat(ageMin,'-',ageMax) as age,
          case when runnerGender='A' then '전체'
          else
@@ -459,32 +411,8 @@ async function getmyInfo(connection, userId) {
 async function getMyRunning(connection, myRunningParams) {
     const Query = `
   SELECT P.postId,postUserId, U.nickName, U.profileImageUrl, title,
-  case when runningTime <= '01:00:00'
-  then CONCAT('약 ',date_format(runningTime,'%i'),'분')
-  else case when runningTime > '01:00:00'
-  then CONCAT('약 ',date_format(runningTime,'%l'),'시간',date_format(runningTime,'%i'),'분')
-  end end as runningTime,
-  case when date_format(gatheringTime, '%w') = 0
-  then date_format(gatheringTime,'%m/%d(일) %p%l:%i')
-  else
-  case when date_format(gatheringTime, '%w') = 1
-  then date_format(gatheringTime,'%m/%d(월) %p%l:%i')
-  else
-  case when date_format(gatheringTime, '%w') = 2
-  then date_format(gatheringTime,'%m/%d(화) %p%l:%i')
-  else
-  case when date_format(gatheringTime, '%w') = 3
-  then date_format(gatheringTime,'%m/%d(수) %p%l:%i')
-  else
-  case when date_format(gatheringTime, '%w') = 4
-  then date_format(gatheringTime,'%m/%d(목) %p%l:%i')
-  else
-  case when date_format(gatheringTime, '%w') = 5
-  then date_format(gatheringTime,'%m/%d(금) %p%l:%i')
-  else
-  case when date_format(gatheringTime, '%w') = 6
-  then date_format(gatheringTime,'%m/%d(토) %p%l:%i')
-  end end end end end end end as gatheringTime,
+  runningTime,
+  gatheringTime,
  locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
  case when runnerGender='A' then '전체'
  else
@@ -512,32 +440,8 @@ INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId =
 async function getMyPosting(connection, userId) {
     const query1 = `
   SELECT P.postId,postUserId, U.nickName, U.profileImageUrl, title,
-  case when runningTime <= '01:00:00'
-  then CONCAT('약 ',date_format(runningTime,'%i'),'분')
-  else case when runningTime > '01:00:00'
-  then CONCAT('약 ',date_format(runningTime,'%l'),'시간',date_format(runningTime,'%i'),'분')
-  end end as runningTime,
-  case when date_format(gatheringTime, '%w') = 0
-  then date_format(gatheringTime,'%m/%d(일) %p%l:%i')
-  else
-  case when date_format(gatheringTime, '%w') = 1
-  then date_format(gatheringTime,'%m/%d(월) %p%l:%i')
-  else
-  case when date_format(gatheringTime, '%w') = 2
-  then date_format(gatheringTime,'%m/%d(화) %p%l:%i')
-  else
-  case when date_format(gatheringTime, '%w') = 3
-  then date_format(gatheringTime,'%m/%d(수) %p%l:%i')
-  else
-  case when date_format(gatheringTime, '%w') = 4
-  then date_format(gatheringTime,'%m/%d(목) %p%l:%i')
-  else
-  case when date_format(gatheringTime, '%w') = 5
-  then date_format(gatheringTime,'%m/%d(금) %p%l:%i')
-  else
-  case when date_format(gatheringTime, '%w') = 6
-  then date_format(gatheringTime,'%m/%d(토) %p%l:%i')
-  end end end end end end end as gatheringTime,
+  runningTime,
+  gatheringTime,
  locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
  case when runnerGender='A' then '전체'
  else

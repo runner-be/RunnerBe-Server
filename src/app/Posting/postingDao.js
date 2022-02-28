@@ -73,26 +73,8 @@ SELECT P.postId, P.createdAt as postingTime, postUserId,
           then '휴일'
       end end end as runningTag,
      title,
-     case when date_format(gatheringTime, '%w') = 0
-          then date_format(gatheringTime,'%m/%d(일) %p%l:%i')
-      else case when date_format(gatheringTime, '%w') = 1
-          then date_format(gatheringTime,'%m/%d(월) %p%l:%i')
-      else case when date_format(gatheringTime, '%w') = 2
-          then date_format(gatheringTime,'%m/%d(화) %p%l:%i')
-      else case when date_format(gatheringTime, '%w') = 3
-          then date_format(gatheringTime,'%m/%d(수) %p%l:%i')
-      else case when date_format(gatheringTime, '%w') = 4
-          then date_format(gatheringTime,'%m/%d(목) %p%l:%i')
-      else case when date_format(gatheringTime, '%w') = 5
-          then date_format(gatheringTime,'%m/%d(금) %p%l:%i')
-      else case when date_format(gatheringTime, '%w') = 6
-          then date_format(gatheringTime,'%m/%d(토) %p%l:%i')
-      end end end end end end end as gatheringTime,
-     case when runningTime <= '01:00:00'
-          then CONCAT('약 ',date_format(runningTime,'%i'),'분')
-      else case when runningTime > '01:00:00'
-          then CONCAT('약 ',date_format(runningTime,'%l'),'시간',date_format(runningTime,'%i'),'분')
-      end end as runningTime,
+      gatheringTime,
+      runningTime,
      case when runnerGender='A' then '전체'
      else case when runnerGender='M' then '남성'
      else case when runnerGender='F' then '여성'
