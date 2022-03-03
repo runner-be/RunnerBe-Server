@@ -390,7 +390,7 @@ exports.main = async function (req, res) {
         return res.send(response(baseResponse.AGE_FILTER_MATCH));
 
     // 필터 조건 설정
-    let whetherEndCondition = "";
+    let whetherEndCondition = "AND whetherEnd != 'D'";
     if (whetherEnd === "N") {
         whetherEndCondition += "AND whetherEnd = 'N'";
     }
