@@ -658,7 +658,7 @@ exports.patchUserJob = async function (req, res) {
 };
 
 /**
- * API No. 23
+ * API No. 24
  * API Name : 마이페이지 API
  * [GET] /users/:userId/myPage
  * Path variable: userId
@@ -684,5 +684,64 @@ exports.getMyPage = async function (req, res) {
         }
         const getMyPageResult = await userProvider.getMyPage(userId);
         return res.send(response(baseResponse.SUCCESS, getMyPageResult));
+    }
+};
+
+/**
+ * API No. 28
+ * API Name : (임시)애플 로그인 API
+ * [POST] /users/apple-login
+ */
+
+exports.appleLogin = async function (req, res) {
+    const uuid = req.body.uuid;
+
+    if (!uuid) return res.send(errResponse(baseResponse.SIGNUP_UUID_EMPTY));
+
+    try {
+        const checkUuid = await userProvider.checkUuidExist(uuid);
+
+        if (checkUuid.length > 0) {
+            const selectUserId = await userProvider.selectUserId(uuid);
+            let token = await jwt.sign(
+                {
+                    userId: selectUserId,
+                },
+                secret.jwtsecret,
+                {
+                    expiresIn: "365d",
+                    subject: "userInfo",
+                }
+            );
+
+            const checkUserStatus = await userProvider.checkUserStatus(selectUserId); //Y이면 length 1이상
+            if (checkUserStatus.length > 0) {
+                return res.send(
+                    response(baseResponse.SUCCESS_MEMBER_AUTH, {
+                        userId: selectUserId,
+                        jwt: token,
+                        message: "소셜로그인에 성공하셨습니다.",
+                    })
+                );
+            } else {
+                return res.send(
+                    response(baseResponse.SUCCESS_MEMBER_NON_AUTH, {
+                        userId: selectUserId,
+                        jwt: token,
+                        message: "인증 대기 회원입니다.",
+                    })
+                );
+            }
+        } else {
+            return res.send(
+                response(baseResponse.SUCCESS_NON_MEMBER, {
+                    message: "회원가입이 가능합니다.",
+                    uuid,
+                })
+            );
+        }
+    } catch (err) {
+        res.send(errResponse(baseResponse.SUCCESS, err));
+        return errResponse(baseResponse.DB_ERROR);
     }
 };
