@@ -43,4 +43,7 @@ module.exports = function (app) {
 
     // 24. 마이페이지 API
     app.get("/users/:userId/myPage", jwtMiddleware, user.getMyPage);
+
+    // 28. (임시)애플 로그인 API
+    app.post("/users/apple-login", user.appleLogin);
 };

@@ -50,6 +50,7 @@ exports.sendRequest = async function (req, res) {
     if (checkAlreadyapplyNotD.length != 0) {
         return res.send(response(baseResponse.ALREADY_APPLY));
     }
+    //반장 userId
 
     //jwt로 userId 확인
     if (userIdFromJWT != userId) {
@@ -61,6 +62,7 @@ exports.sendRequest = async function (req, res) {
             return res.send(response(baseResponse.USER_NON_AUTH));
         }
         const Response = await runningService.sendRequest(postId, userId);
+        //푸쉬알림
 
         return res.send(response(baseResponse.SUCCESS));
     }
