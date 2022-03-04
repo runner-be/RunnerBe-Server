@@ -75,8 +75,9 @@ exports.createUser = async function (
                     subject: "userInfo",
                 }
             );
+            const result = { insertedUserId, token };
 
-            return response(baseResponse.SUCCESS_EMAIL, token);
+            return response(baseResponse.SUCCESS_EMAIL, result);
         } else {
             const hashedEmail = officeEmail;
             const insertUserInfoParams = [
@@ -109,8 +110,9 @@ exports.createUser = async function (
                     subject: "userInfo",
                 }
             );
+            const result = { insertedUserId, token };
 
-            return response(baseResponse.SUCCESS_PHOTO, token);
+            return response(baseResponse.SUCCESS_PHOTO, result);
         }
     } catch (err) {
         logger.error(`App - createUser Service error\n: ${err.message}`);
