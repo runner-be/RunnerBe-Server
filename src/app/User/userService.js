@@ -208,3 +208,17 @@ exports.patchUserJob = async function (job, userId) {
         return errResponse(baseResponse.DB_ERROR);
     }
 };
+
+// 회원 정보 삭제
+exports.deleteUser = async function (userId) {
+    try {
+        const connection = await pool.getConnection(async (conn) => conn);
+        const deleteUser = await userDao.deleteUser(connection, userId);
+        connection.release();
+        const finalResult = { "deleted userId": userId };
+        return finalResult;
+    } catch (err) {
+        logger.error(`User-deleteUser Service error: ${err.message}`);
+        return errResponse(baseResponse.DB_ERROR);
+    }
+};

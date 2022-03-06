@@ -596,6 +596,18 @@ module.exports = {
         code: 2078,
         message: "3개월이 지나지 않아 직군 변경이 불가능합니다.",
     },
+
+    USER_KEY_EMPTY: {
+        isSuccess: false,
+        code: 2079,
+        message: "비밀 키값을 입력해주세요.",
+    },
+
+    KEY_DO_NOT_MATCH: {
+        isSuccess: false,
+        code: 2080,
+        message: "비밀 키값이 유효하지 않습니다.",
+    },
     // ----------------------------
     ACCESS_TOKEN_IS_EMPTY: {
         isSuccess: false,

@@ -745,3 +745,30 @@ exports.appleLogin = async function (req, res) {
         return errResponse(baseResponse.DB_ERROR);
     }
 };
+
+/**
+ * API No. 29
+ * API Name : 회원탈퇴 API
+ * [DELETE] /users/:userId
+ * Path variable: userId
+ * body : secret_key
+ */
+exports.deleteUser = async function (req, res) {
+    const userId = req.params.userId;
+    const key = req.body.secret_key;
+
+    // 빈 값 체크
+    if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+    // 빈 값 체크
+    if (!key) return res.send(response(baseResponse.USER_KEY_EMPTY));
+    // 숫자 확인
+    if (isNaN(userId) === true)
+        return res.send(response(baseResponse.USER_USERID_NOTNUM));
+
+    // secret_key 확인
+    if (key !== secret.api_secret_key)
+        return res.send(response(baseResponse.KEY_DO_NOT_MATCH));
+
+    const deleteResult = await userService.deleteUser(userId);
+    return res.send(response(baseResponse.SUCCESS, deleteResult));
+};

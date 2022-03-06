@@ -483,6 +483,32 @@ async function checkTerm(connection, userId) {
     return Rows;
 }
 
+// 회원 탈퇴
+async function deleteUser(connection, userId) {
+    const query1 = `
+  DELETE FROM User WHERE userId = ?;
+                `;
+    const query2 = `
+  DELETE FROM Posting WHERE postUserId = ?;
+  `;
+    const query3 = `
+  DELETE FROM Running WHERE repUserId = ?;
+  `;
+    const query4 = `
+  DELETE FROM RunningPeople WHERE userId = ?;
+  `;
+    const query5 = `
+  DELETE FROM Bookmarks WHERE userId = ?;
+  `;
+    const row1 = await connection.query(query1, userId);
+    const row2 = await connection.query(query2, userId);
+    const row3 = await connection.query(query3, userId);
+    const row4 = await connection.query(query4, userId);
+    const row5 = await connection.query(query5, userId);
+
+    return 0;
+}
+
 module.exports = {
     selectUser,
     deleteUser,
@@ -513,4 +539,5 @@ module.exports = {
     getMyRunning,
     getMyPosting,
     checkTerm,
+    deleteUser,
 };

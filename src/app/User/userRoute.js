@@ -46,4 +46,7 @@ module.exports = function (app) {
 
     // 28. (임시)애플 로그인 API
     app.post("/users/apple-login", user.appleLogin);
+
+    // 29. 회원 탈퇴 API
+    app.delete("/users/:userId", user.deleteUser);
 };
