@@ -755,18 +755,18 @@ exports.appleLogin = async function (req, res) {
  */
 exports.deleteUser = async function (req, res) {
     const userId = req.params.userId;
-    const key = req.body.secret_key;
+    const secret_key = req.body.secret_key;
 
     // 빈 값 체크
     if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
     // 빈 값 체크
-    if (!key) return res.send(response(baseResponse.USER_KEY_EMPTY));
+    if (!secret_key) return res.send(response(baseResponse.USER_KEY_EMPTY));
     // 숫자 확인
     if (isNaN(userId) === true)
         return res.send(response(baseResponse.USER_USERID_NOTNUM));
 
     // secret_key 확인
-    if (key !== secret.api_secret_key)
+    if (secret_key !== secret.api_secret_key)
         return res.send(response(baseResponse.KEY_DO_NOT_MATCH));
 
     const deleteResult = await userService.deleteUser(userId);
