@@ -51,5 +51,5 @@ module.exports = function (app) {
   app.delete("/users/:userId", user.deleteUser);
 
   // 30. 메인페이지 API v2
-  app.get("/users/main2/:runningTag", user.main2);
+  app.get("/users/main/v2/:runningTag", user.main2);
 };
