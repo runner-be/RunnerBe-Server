@@ -55,8 +55,8 @@ exports.uuidCheck = async function (uuid) {
 exports.nickNameCheck = async function (nickName) {
   const connection = await pool.getConnection(async (conn) => conn);
   const nickNameCheckResult = await userDao.selectNickName(
-      connection,
-      nickName
+    connection,
+    nickName
   );
   connection.release();
 
@@ -67,8 +67,8 @@ exports.nickNameCheck = async function (nickName) {
 exports.emailCheck = async function (hashedEmail) {
   const connection = await pool.getConnection(async (conn) => conn);
   const emailCheckResult = await userDao.selectUseremail(
-      connection,
-      hashedEmail
+    connection,
+    hashedEmail
   );
   connection.release();
 
@@ -101,6 +101,20 @@ exports.checkRecord = async function (userId) {
 
 //메인 페이지
 exports.getMain = async function (
+  userLongitude,
+  userLatitude,
+  runningTag,
+  whetherEndCondition,
+  sortCondition,
+  distanceCondition,
+  genderCondition,
+  jobCondition,
+  ageCondition,
+  keywordCondition
+) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const getMainResult = await userDao.getMain(
+    connection,
     userLongitude,
     userLatitude,
     runningTag,
@@ -111,20 +125,6 @@ exports.getMain = async function (
     jobCondition,
     ageCondition,
     keywordCondition
-) {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const getMainResult = await userDao.getMain(
-      connection,
-      userLongitude,
-      userLatitude,
-      runningTag,
-      whetherEndCondition,
-      sortCondition,
-      distanceCondition,
-      genderCondition,
-      jobCondition,
-      ageCondition,
-      keywordCondition
   );
   connection.release();
 
@@ -224,4 +224,79 @@ exports.checkTerm = async function (userId) {
     logger.error(`User-checkAddBM Provider error: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   }
+};
+
+//메인 페이지 v2 둘러보기
+exports.getMain2 = async function (
+  userLongitude,
+  userLatitude,
+  runningTag,
+  whetherEndCondition,
+  sortCondition,
+  distanceCondition,
+  genderCondition,
+  jobCondition,
+  ageCondition,
+  keywordCondition
+) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const getMainResult = await userDao.getMain2(
+    connection,
+    userLongitude,
+    userLatitude,
+    runningTag,
+    whetherEndCondition,
+    sortCondition,
+    distanceCondition,
+    genderCondition,
+    jobCondition,
+    ageCondition,
+    keywordCondition
+  );
+  connection.release();
+  for (i = 0; i < getMainResult.length; i++) {
+    getMainResult[i].userId = null;
+    getMainResult[i].bookMark = null;
+    getMainResult[i].attandance = null;
+  }
+
+  return getMainResult;
+};
+
+// 메인페이지 v2
+exports.getMain2Login = async function (
+  userLongitude,
+  userLatitude,
+  runningTag,
+  whetherEndCondition,
+  sortCondition,
+  distanceCondition,
+  genderCondition,
+  jobCondition,
+  ageCondition,
+  keywordCondition,
+  userId
+) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const getMainResult = await userDao.getMain2Login(
+    connection,
+    userLongitude,
+    userLatitude,
+    runningTag,
+    whetherEndCondition,
+    sortCondition,
+    distanceCondition,
+    genderCondition,
+    jobCondition,
+    ageCondition,
+    keywordCondition,
+    userId
+  );
+  connection.release();
+  for (i = 0; i < getMainResult.length; i++) {
+    getMainResult[i].userId = null;
+    getMainResult[i].attandance = null;
+  }
+
+  return getMainResult;
 };
