@@ -300,3 +300,19 @@ exports.getMain2Login = async function (
 
   return getMainResult;
 };
+
+// 찜 목록 가져오기 v2
+exports.getBM2 = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const bookMarkNumB = await userDao.getBMNum(connection, userId);
+  const bookMarkNum = bookMarkNumB[0];
+  const bookMarkList = await userDao.getBM2(connection, userId);
+  connection.release();
+  for (i = 0; i < bookMarkList.length; i++) {
+    bookMarkList[i].DISTANCE = null;
+    bookMarkList[i].attandance = null;
+  }
+  const finalResult = { bookMarkNum, bookMarkList };
+
+  return finalResult;
+};
