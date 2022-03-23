@@ -605,6 +605,34 @@ async function getMain2Login(
   const [mainRows] = await connection.query(getMainQuery);
   return mainRows;
 }
+
+// 찜 목록 v2
+async function getBM2(connection, userId) {
+  const getBMQuery = `
+  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
+  runningTime, gatheringTime, gatherLongitude, gatherLatitude, locationInfo, runningTag, concat(ageMin,'-',ageMax) as age,
+  case when runnerGender='A' then '전체'
+  else
+  case when runnerGender='M' then '남성'
+  else
+  case when runnerGender='F' then '여성'
+  end end end as gender, whetherEnd, B.userId, J.job, peopleNum, contents,
+  EXISTS (SELECT bookmarkId FROM Bookmarks
+  WHERE userId = ${userId} AND postId = P.postId) as bookMark
+  FROM Posting P
+  INNER JOIN User U on U.userId = P.postUserId
+  INNER JOIN Running R on R.postId = P.postId
+  INNER JOIN (SELECT DISTINCT postId, GROUP_CONCAT(distinct(job)) as job
+  FROM RunningPeople RP
+  inner join Running R on RP.gatheringId = R.gatheringId
+  inner join User U on RP.userId = U.userId
+  group by postId) J on J.postId = P.postId
+  LEFT OUTER JOIN Bookmarks B on P.postId = B.postId
+  WHERE B.userId = ?;
+                  `;
+  const [getBMRows] = await connection.query(getBMQuery, userId);
+  return getBMRows;
+}
 module.exports = {
   selectUser,
   deleteUser,
@@ -638,4 +666,5 @@ module.exports = {
   deleteUser,
   getMain2,
   getMain2Login,
+  getBM2,
 };

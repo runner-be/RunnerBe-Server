@@ -52,4 +52,7 @@ module.exports = function (app) {
 
   // 30. 메인페이지 API v2
   app.get("/users/main/v2/:runningTag", user.main2);
+
+  // 32. 찜 목록 조회 API v2
+  app.get("/users/:userId/bookmarks/v2", jwtMiddleware, user.getBM2);
 };
