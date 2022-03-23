@@ -4,7 +4,7 @@
   "description": "Node.js API Server",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "dev": "NODE_ENV=development node index.js",
     "prod": "NODE_ENV=production node index.js"
   },
@@ -26,5 +26,8 @@
     "regex-email": "^1.0.2",
     "winston": "^3.2.1",
     "winston-daily-rotate-file": "^4.2.1"
+  },
+  "devDependencies": {
+    "jest": "^27.5.1"
   }
 }
