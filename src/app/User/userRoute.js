@@ -55,4 +55,7 @@ module.exports = function (app) {
 
   // 32. 찜 목록 조회 API v2
   app.get("/users/:userId/bookmarks/v2", jwtMiddleware, user.getBM2);
+
+  // 33. 마이페이지 API v2
+  app.get("/users/:userId/myPage/v2", jwtMiddleware, user.getMyPage2);
 };
