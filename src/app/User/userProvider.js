@@ -204,8 +204,7 @@ exports.getMyPage = async function (userId) {
   const connection = await pool.getConnection(async (conn) => conn);
   const myInfo = await userDao.getmyInfo(connection, userId);
   const myPosting = await userDao.getMyPosting(connection, userId);
-  const myRunningParams = [userId, userId];
-  const myRunning = await userDao.getMyRunning(connection, myRunningParams);
+  const myRunning = await userDao.getMyRunning(connection, userId);
 
   connection.release();
   const finalResult = { myInfo, myPosting, myRunning };
@@ -313,6 +312,25 @@ exports.getBM2 = async function (userId) {
     bookMarkList[i].attandance = null;
   }
   const finalResult = { bookMarkNum, bookMarkList };
+
+  return finalResult;
+};
+
+// 마이페이지 v2
+exports.getMyPage2 = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const myInfo = await userDao.getmyInfo(connection, userId);
+  const myPosting = await userDao.getMyPosting2(connection, userId);
+  const myRunning = await userDao.getMyRunning2(connection, userId);
+  connection.release();
+  for (i = 0; i < myPosting.length; i++) {
+    myPosting[i].DISTANCE = null;
+    myPosting[i].attandance = null;
+  }
+  for (i = 0; i < myRunning.length; i++) {
+    myRunning[i].DISTANCE = null;
+  }
+  const finalResult = { myInfo, myPosting, myRunning };
 
   return finalResult;
 };
