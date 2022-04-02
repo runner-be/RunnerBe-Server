@@ -191,7 +191,7 @@ async function getMain(
                               cos(radians(gatherLongitude) - radians(${userLongitude})) +
                               sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
     on D.postId = P.postId
-    WHERE runningTag = "${runningTag}" ${distanceCondition}
+    WHERE DISTANCE < 150 AND runningTag = "${runningTag}" ${distanceCondition}
     ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition}
     ORDER BY "${sortCondition}";
                   `;
@@ -548,7 +548,7 @@ async function getMain2(
                               cos(radians(gatherLongitude) - radians(${userLongitude})) +
                               sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
     on D.postId = P.postId
-    WHERE runningTag = "${runningTag}" ${distanceCondition}
+    WHERE DISTANCE < 150 AND runningTag = "${runningTag}" ${distanceCondition}
     ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition}
     ORDER BY "${sortCondition}";
                   `;
@@ -598,7 +598,7 @@ async function getMain2Login(
                               cos(radians(gatherLongitude) - radians(${userLongitude})) +
                               sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
     on D.postId = P.postId
-    WHERE runningTag = "${runningTag}" ${distanceCondition}
+    WHERE DISTANCE < 150 AND runningTag = "${runningTag}" ${distanceCondition}
     ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition}
     ORDER BY "${sortCondition}";
                   `;
