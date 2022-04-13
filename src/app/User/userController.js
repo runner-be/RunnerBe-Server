@@ -205,10 +205,18 @@ exports.naverLogin = async function (req, res) {
  */
 exports.postUsers = async function (req, res) {
   /**
-   * Body: uuid, nickName, birthday, gender, job, idCardImageUrl, officeEmail
+   * Body: uuid, nickName, birthday, gender, job, idCardImageUrl, officeEmail, deviceToken
    */
-  const { uuid, nickName, birthday, gender, job, idCardImageUrl, officeEmail } =
-    req.body;
+  const {
+    uuid,
+    nickName,
+    birthday,
+    gender,
+    job,
+    idCardImageUrl,
+    officeEmail,
+    deviceToken,
+  } = req.body;
 
   // 필수 값 : 빈 값 체크
   if (!uuid) return res.send(response(baseResponse.SIGNUP_UUID_EMPTY));
@@ -216,6 +224,7 @@ exports.postUsers = async function (req, res) {
   if (!birthday) return res.send(response(baseResponse.SIGNUP_BIRTHDAY_EMPTY));
   if (!gender) return res.send(response(baseResponse.SIGNUP_GENDER_EMPTY));
   if (!job) return res.send(response(baseResponse.SIGNUP_JOB_EMPTY));
+  if (!deviceToken) return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
 
   // 길이 체크
   if (nickName.length > 10)
@@ -242,7 +251,8 @@ exports.postUsers = async function (req, res) {
     gender,
     job,
     idCardImageUrl,
-    officeEmail
+    officeEmail,
+    deviceToken
   );
   return res.send(signUpResponse);
 };
