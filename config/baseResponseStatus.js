@@ -608,6 +608,7 @@ module.exports = {
     code: 2080,
     message: "비밀 키값이 유효하지 않습니다.",
   },
+
   // ----------------------------
   ACCESS_TOKEN_IS_EMPTY: {
     isSuccess: false,

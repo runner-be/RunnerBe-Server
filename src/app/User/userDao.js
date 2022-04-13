@@ -90,8 +90,8 @@ async function selectUseremailForAuth(connection, officeEmail) {
 // 유저 생성, 이메일 인증
 async function insertUserInfoEmail(connection, insertUserInfoParams) {
   const insertUserInfoQuery = `
-                INSERT INTO User(uuid, nickName, birthday, gender, job, idCardImageUrl, officeEmail)
-                VALUES (?, ?, ?, ?, ?, ?, ?);
+                INSERT INTO User(uuid, nickName, birthday, gender, job, idCardImageUrl, officeEmail, deviceToken)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?);
                  `;
   const insertUserInfoRow = await connection.query(
     insertUserInfoQuery,
@@ -104,8 +104,8 @@ async function insertUserInfoEmail(connection, insertUserInfoParams) {
 // 유저 생성, 사원증 인증
 async function insertUserInfoPhoto(connection, insertUserInfoParams) {
   const insertUserInfoQuery = `
-                INSERT INTO User(status, uuid, nickName, birthday, gender, job, idCardImageUrl, officeEmail)
-                VALUES ('W',?, ?, ?, ?, ?, ?, ?);
+                INSERT INTO User(status, uuid, nickName, birthday, gender, job, idCardImageUrl, officeEmail, deviceToken)
+                VALUES ('W',?, ?, ?, ?, ?, ?, ?, ?);
                  `;
   const insertUserInfoRow = await connection.query(
     insertUserInfoQuery,
