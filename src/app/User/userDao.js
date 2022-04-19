@@ -692,6 +692,22 @@ INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId =
   const [Rows] = await connection.query(Query, userId);
   return Rows;
 }
+
+// 유저 생성 - v2 인증 삭제
+
+async function insertUserV2(connection, insertUserInfoParams) {
+  const insertUserInfoQuery = `
+                  INSERT INTO User(uuid, nickName, birthday, gender, job, deviceToken)
+                  VALUES (?, ?, ?, ?, ?, ?);
+                   `;
+  const insertUserInfoRow = await connection.query(
+    insertUserInfoQuery,
+    insertUserInfoParams
+  );
+
+  return insertUserInfoRow;
+}
+
 module.exports = {
   selectUser,
   deleteUser,
@@ -728,4 +744,5 @@ module.exports = {
   getBM2,
   getMyPosting2,
   getMyRunning2,
+  insertUserV2,
 };

@@ -1017,3 +1017,41 @@ exports.getMyPage2 = async function (req, res) {
     return res.send(response(baseResponse.SUCCESS, getMyPageResult));
   }
 };
+
+/**
+ * API No. 34
+ * API Name : 유저 생성 (회원가입) API v2 - 인증 절차 삭제
+ * [POST] /users
+ */
+exports.postUsersV2 = async function (req, res) {
+  /**
+   * Body: uuid, nickName, birthday, gender, job, deviceToken
+   */
+  const { uuid, nickName, birthday, gender, job, deviceToken } = req.body;
+
+  // 필수 값 : 빈 값 체크
+  if (!uuid) return res.send(response(baseResponse.SIGNUP_UUID_EMPTY));
+  if (!nickName) return res.send(response(baseResponse.SIGNUP_NICKNAME_EMPTY));
+  if (!birthday) return res.send(response(baseResponse.SIGNUP_BIRTHDAY_EMPTY));
+  if (!gender) return res.send(response(baseResponse.SIGNUP_GENDER_EMPTY));
+  if (!job) return res.send(response(baseResponse.SIGNUP_JOB_EMPTY));
+  if (!deviceToken) return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
+
+  // 길이 체크
+  if (nickName.length > 10)
+    return res.send(response(baseResponse.SIGNUP_NICKNAME_LENGTH));
+  if (gender.length != 1)
+    return res.send(response(baseResponse.SIGNUP_GENDER_LENGTH));
+  if (job.length != 3)
+    return res.send(response(baseResponse.SIGNUP_JOB_LENGTH));
+
+  const signUpResponse = await userService.createUserV2(
+    uuid,
+    nickName,
+    birthday,
+    gender,
+    job,
+    deviceToken
+  );
+  return res.send(signUpResponse);
+};

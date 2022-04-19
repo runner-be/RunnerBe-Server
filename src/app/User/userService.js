@@ -79,7 +79,7 @@ exports.createUser = async function (
       );
       const result = { insertedUserId, token };
 
-      return response(baseResponse.SUCCESS_EMAIL, result);
+      return response(baseResponse.SUCCESS_SIGN_UP, result);
     } else {
       const hashedEmail = officeEmail;
       const insertUserInfoParams = [
@@ -222,6 +222,67 @@ exports.deleteUser = async function (userId) {
     return finalResult;
   } catch (err) {
     logger.error(`User-deleteUser Service error: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+};
+
+// 유저 생성 v2 - 원래는 createUser 하나로 가야하지만, 이후 v1 삭제하고 v2를 기본으로 설정할 것이라 따로 나눔
+exports.createUserV2 = async function (
+  uuid,
+  nickName,
+  birthday,
+  gender,
+  job,
+  deviceToken
+) {
+  try {
+    // uuid 중복 확인
+    const uuidRows = await userProvider.uuidCheck(uuid);
+    if (uuidRows.length > 0)
+      return errResponse(baseResponse.SIGNUP_REDUNDANT_UUID);
+    //nickName 중복 확인
+    const nickNameRows = await userProvider.nickNameCheck(nickName);
+    if (nickNameRows.length > 0)
+      return errResponse(baseResponse.SIGNUP_REDUNDANT_NICKNAME);
+    // 직군코드 유효 확인
+    const checkJob = await userProvider.checkJobExist(job);
+    if (checkJob === 0)
+      return errResponse(baseResponse.SIGNUP_JOBCODE_IS_NOT_VALID);
+
+    const insertUserInfoParams = [
+      uuid,
+      nickName,
+      birthday,
+      gender,
+      job,
+      deviceToken,
+    ];
+    const connection = await pool.getConnection(async (conn) => conn);
+
+    const userResult = await userDao.insertUserV2(
+      connection,
+      insertUserInfoParams
+    );
+    const insertedUserId = userResult[0].insertId;
+    console.log(`추가된 회원 : ${userResult[0].insertId}`);
+    connection.release();
+
+    //jwt 발급
+    let token = await jwt.sign(
+      {
+        userId: insertedUserId,
+      },
+      secret.jwtsecret,
+      {
+        expiresIn: "365d",
+        subject: "userInfo",
+      }
+    );
+    const result = { insertedUserId, token };
+
+    return response(baseResponse.SUCCESS_SIGN_UP, result);
+  } catch (err) {
+    logger.error(`App - createUser Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   }
 };
