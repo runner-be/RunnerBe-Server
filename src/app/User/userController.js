@@ -1055,3 +1055,29 @@ exports.postUsersV2 = async function (req, res) {
   );
   return res.send(signUpResponse);
 };
+
+/**
+ * API No. 35
+ * API Name : firebase token 업데이트 API
+ * [PATCH] /users/:userId/deviceToken
+ * Path variable: userId
+ * body : deviceToken
+ */
+exports.patchDeviceToken = async function (req, res) {
+  const userId = req.params.userId;
+  const deviceToken = req.body.deviceToken;
+
+  // 빈 값 체크
+  if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+  if (!deviceToken)
+    return res.send(response(baseResponse.DEVICE_TOKEN_INPUT_EMPTY));
+  // 숫자 확인
+  if (isNaN(userId) === true)
+    return res.send(response(baseResponse.USER_USERID_NOTNUM));
+
+  const patchDeviceTokenResponse = await userService.patchDeviceToken(
+    deviceToken,
+    userId
+  );
+  return res.send(patchDeviceTokenResponse);
+};

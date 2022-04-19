@@ -708,6 +708,17 @@ async function insertUserV2(connection, insertUserInfoParams) {
   return insertUserInfoRow;
 }
 
+// firebase token 변경
+async function patchUserDeviceToken(connection, patchUserDeviceTokenParams) {
+  const Query = `
+      UPDATE User
+      SET deviceToken = ?, updatedAt = current_timestamp()
+      WHERE userId = ?;
+                 `;
+  const Row = await connection.query(Query, patchUserDeviceTokenParams);
+
+  return Row;
+}
 module.exports = {
   selectUser,
   deleteUser,
@@ -745,4 +756,5 @@ module.exports = {
   getMyPosting2,
   getMyRunning2,
   insertUserV2,
+  patchUserDeviceToken,
 };

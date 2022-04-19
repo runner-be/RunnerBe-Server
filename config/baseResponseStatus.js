@@ -627,6 +627,12 @@ module.exports = {
     code: 2086,
     message: "해당 유저의 device token 값이 등록되어있지 않습니다.",
   },
+
+  DEVICE_TOKEN_INPUT_EMPTY: {
+    isSuccess: false,
+    code: 2087,
+    message: "device token 값을 입력해주세요.",
+  },
   // ----------------------------
 
   // Response error

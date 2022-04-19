@@ -174,7 +174,7 @@ exports.addBM = async function (userId, postId, whetherAdd) {
   }
 };
 
-//user의 nickname 변경
+//user의 사진 변경
 exports.patchUserImage = async function (profileImageUrl, userId) {
   try {
     const connection = await pool.getConnection(async (conn) => conn);
@@ -283,6 +283,24 @@ exports.createUserV2 = async function (
     return response(baseResponse.SUCCESS_SIGN_UP, result);
   } catch (err) {
     logger.error(`App - createUser Service error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+};
+
+//user의 deviceToken 변경
+exports.patchDeviceToken = async function (deviceToken, userId) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const patchUserDeviceTokenParams = [deviceToken, userId];
+    const result = await userDao.patchUserDeviceToken(
+      connection,
+      patchUserDeviceTokenParams
+    );
+    connection.release();
+
+    return response(baseResponse.SUCCESS);
+  } catch (err) {
+    logger.error(`App - patcDeviceToken Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   }
 };
