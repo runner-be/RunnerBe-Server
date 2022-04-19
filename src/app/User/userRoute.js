@@ -58,4 +58,7 @@ module.exports = function (app) {
 
   // 33. 마이페이지 API v2
   app.get("/users/:userId/myPage/v2", jwtMiddleware, user.getMyPage2);
+
+  // 34. 회원가입 API v2
+  app.post("/v2/users", user.postUsersV2);
 };

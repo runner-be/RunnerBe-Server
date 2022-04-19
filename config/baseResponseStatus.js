@@ -13,10 +13,10 @@ module.exports = {
     code: 1004,
     message: "성공, 비작성자, 참여신청 전",
   },
-  SUCCESS_EMAIL: {
+  SUCCESS_SIGN_UP: {
     isSuccess: true,
     code: 1005,
-    message: "성공, 이메일 인증 완료",
+    message: "성공, 인증 완료",
   },
   SUCCESS_PHOTO: {
     isSuccess: true,
