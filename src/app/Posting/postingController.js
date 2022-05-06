@@ -353,7 +353,7 @@ exports.dropPosting = async function (req, res) {
   /**
    * Header : jwt
    */
-  const userId = req.query.userId;
+  const userId = req.params.userId;
   const postId = req.params.postId;
   const userIdFromJWT = req.verifiedToken.userId;
 
@@ -366,6 +366,12 @@ exports.dropPosting = async function (req, res) {
     return res.send(response(baseResponse.USER_USERID_NOTNUM));
   if (isNaN(postId) === true)
     return res.send(response(baseResponse.POSTID_NOTNUM));
+
+  //jwt로 들어온 userId가 작성자 id와 일치하는지 확인
+  const checkWriter = await postingProvider.checkWriter(postId, userIdFromJWT);
+  if (checkWriter.length < 0) {
+    res.send(response(baseResponse.USER_NOT_WRITER));
+  }
 
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
