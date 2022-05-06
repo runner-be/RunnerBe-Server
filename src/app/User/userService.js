@@ -197,10 +197,10 @@ exports.patchUserImage = async function (profileImageUrl, userId) {
 exports.patchUserJob = async function (job, userId) {
   try {
     const connection = await pool.getConnection(async (conn) => conn);
-    const patchUserJobParams = [job, userId];
     const patchUserJobResult = await userDao.patchUserJob(
       connection,
-      patchUserJobParams
+      job,
+      userId
     );
 
     connection.release();
