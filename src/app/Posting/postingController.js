@@ -242,7 +242,7 @@ exports.patchPosting = async function (req, res) {
    * Header : jwt
    * Body: title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender
    */
-  const userId = req.query.userId;
+  const userId = req.params.userId;
   const postId = req.params.postId;
   const userIdFromJWT = req.verifiedToken.userId;
   const {
