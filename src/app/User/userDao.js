@@ -350,15 +350,24 @@ async function patchUserImage(connection, patchUserImageParams) {
 }
 
 // 직군 변경
-async function patchUserJob(connection, patchUserJobParams) {
+async function patchUserJob(connection, job, userId) {
   const patchUserJobQuery = `
       UPDATE User
       SET job = ?, updatedAt = current_timestamp()
       WHERE userId = ?;
                  `;
-  const patchUserJobRow = await connection.query(
-    patchUserJobQuery,
-    patchUserJobParams
+  const updateJobChangedQuery = `
+      UPDATE User
+      SET jobChanged = DATE_FORMAT(now(),'%Y-%m-%d')
+      where userId = ?;
+      `;
+  const patchUserJobRow = await connection.query(patchUserJobQuery, [
+    job,
+    userId,
+  ]);
+  const updateJobChanged = await connection.query(
+    updateJobChangedQuery,
+    userId
   );
 
   return patchUserJobRow;
@@ -477,7 +486,7 @@ async function getMyPosting(connection, userId) {
 //직군 변경 후 3개월 지났는지 확인
 async function checkTerm(connection, userId) {
   const Query = `
-    SELECT userId FROM User WHERE userId = ? AND DATEDIFF(current_timestamp, updatedAt) > 180;
+  SELECT userId FROM User WHERE userId = ? AND DATEDIFF(DATE_FORMAT(now(),'%Y-%m-%d'), jobChanged) > 90;
                   `;
   const [Rows] = await connection.query(Query, userId);
   return Rows;
