@@ -155,7 +155,7 @@ exports.reportPosting = async function (userId, postId) {
   try {
     //게시글 있는지 확인
     const checkPostingResult = await postingProvider.checkPosting(postId);
-    if (checkPostingResult.length === 0)
+    if (checkPostingResult[0].length == 0)
       return errResponse(baseResponse.POSTING_NOT_VALID_POSTID);
 
     const connection = await pool.getConnection(async (conn) => conn);
