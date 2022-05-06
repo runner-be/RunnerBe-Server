@@ -312,7 +312,7 @@ exports.patchPosting = async function (req, res) {
 
   //jwt로 들어온 userId가 작성자 id와 일치하는지 확인
   const checkWriter = await postingProvider.checkWriter(postId, userIdFromJWT);
-  if (checkWriter.length > 0) {
+  if (checkWriter.length < 0) {
     res.send(response(baseResponse.USER_NOT_WRITER));
   }
 
