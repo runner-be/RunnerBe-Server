@@ -221,11 +221,25 @@ async function checkPosting(connection, postId) {
 // 게시글 삭제
 async function dropPosting(connection, postId) {
   const dropPostingQuery = `
-              DELETE FROM Posting WHERE postId=?;
-                 `;
-  const dropPostingRow = await connection.query(dropPostingQuery, postId);
+  DELETE FROM Posting WHERE postId=?;
+  `;
+  const dropRunningQuery = `
+  DELETE FROM Running where postId = ?;
+  `;
+  const dropRunningPeopleQuery = `
+  DELETE FROM RunningPeople
+  where gatheringId =
+  (select gatheringId from Running R inner join Posting P on R.postId = P.postId where R.postId = ?);
+  `;
 
-  return dropPostingRow;
+  const dropPosting = await connection.query(dropPostingQuery, postId);
+  const dropRunning = await connection.query(dropRunningQuery, postId);
+  const dropRunningPeople = await connection.query(
+    dropRunningPeopleQuery,
+    postId
+  );
+
+  return 0;
 }
 
 // 찜 등록여부
