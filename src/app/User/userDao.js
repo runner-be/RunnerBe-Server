@@ -728,6 +728,21 @@ async function patchUserDeviceToken(connection, patchUserDeviceTokenParams) {
 
   return Row;
 }
+
+// postId로 프로필 사진들 가져오기
+async function getProfileUrl(connection, postId) {
+  const query = `
+  select User.userId as userId, profileImageUrl from User
+  inner join RunningPeople RP on User.userId = RP.userId
+  inner join Running R on RP.gatheringId = R.gatheringId
+  inner join Posting P on R.postId = P.postId
+  where P.postId = ?;
+                 `;
+  const Row = await connection.query(query, postId);
+
+  return Row[0];
+}
+
 module.exports = {
   selectUser,
   deleteUser,
@@ -766,4 +781,5 @@ module.exports = {
   getMyRunning2,
   insertUserV2,
   patchUserDeviceToken,
+  getProfileUrl,
 };
