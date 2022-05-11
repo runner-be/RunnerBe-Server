@@ -2,6 +2,7 @@ const { pool } = require("../../../config/database");
 const { logger } = require("../../../config/winston");
 const baseResponse = require("../../../config/baseResponseStatus");
 const userDao = require("./userDao");
+const userProvider = require("./userProvider");
 
 exports.retrieveUserList = async function () {
   const connection = await pool.getConnection(async (conn) => conn);
@@ -193,6 +194,11 @@ exports.getBM = async function (userId) {
   const bookMarkNumB = await userDao.getBMNum(connection, userId);
   const bookMarkNum = bookMarkNumB[0];
   const bookMarkList = await userDao.getBM(connection, userId);
+  for (i = 0; i < bookMarkList.length; i++) {
+    const postId = bookMarkList[i].postId;
+    const body = await userDao.getProfileUrl(connection, postId);
+    bookMarkList[i].profileUrlList = body;
+  }
   connection.release();
   const finalResult = { bookMarkNum, bookMarkList };
 
@@ -205,6 +211,16 @@ exports.getMyPage = async function (userId) {
   const myInfo = await userDao.getmyInfo(connection, userId);
   const myPosting = await userDao.getMyPosting(connection, userId);
   const myRunning = await userDao.getMyRunning(connection, userId);
+  for (i = 0; i < myPosting.length; i++) {
+    const postId = myPosting[i].postId;
+    const body = await userDao.getProfileUrl(connection, postId);
+    myPosting[i].profileUrlList = body;
+  }
+  for (i = 0; i < myRunning.length; i++) {
+    const postId = myRunning[i].postId;
+    const body = await userDao.getProfileUrl(connection, postId);
+    myRunning[i].profileUrlList = body;
+  }
 
   connection.release();
   const finalResult = { myInfo, myPosting, myRunning };
@@ -257,6 +273,9 @@ exports.getMain2 = async function (
     getMainResult[i].userId = null;
     getMainResult[i].bookMark = null;
     getMainResult[i].attandance = null;
+    const postId = getMainResult[i].postId;
+    const body = await userDao.getProfileUrl(connection, postId);
+    getMainResult[i].profileUrlList = body;
   }
 
   return getMainResult;
@@ -295,6 +314,9 @@ exports.getMain2Login = async function (
   for (i = 0; i < getMainResult.length; i++) {
     getMainResult[i].userId = null;
     getMainResult[i].attandance = null;
+    const postId = getMainResult[i].postId;
+    const body = await userDao.getProfileUrl(connection, postId);
+    getMainResult[i].profileUrlList = body;
   }
 
   return getMainResult;
@@ -310,6 +332,9 @@ exports.getBM2 = async function (userId) {
   for (i = 0; i < bookMarkList.length; i++) {
     bookMarkList[i].DISTANCE = null;
     bookMarkList[i].attandance = null;
+    const postId = bookMarkList[i].postId;
+    const body = await userDao.getProfileUrl(connection, postId);
+    bookMarkList[i].profileUrlList = body;
   }
   const finalResult = { bookMarkNum, bookMarkList };
 
@@ -326,9 +351,15 @@ exports.getMyPage2 = async function (userId) {
   for (i = 0; i < myPosting.length; i++) {
     myPosting[i].DISTANCE = null;
     myPosting[i].attandance = null;
+    const postId = myPosting[i].postId;
+    const body = await userDao.getProfileUrl(connection, postId);
+    myPosting[i].profileUrlList = body;
   }
   for (i = 0; i < myRunning.length; i++) {
     myRunning[i].DISTANCE = null;
+    const postId = myRunning[i].postId;
+    const body = await userDao.getProfileUrl(connection, postId);
+    myRunning[i].profileUrlList = body;
   }
   const finalResult = { myInfo, myPosting, myRunning };
 

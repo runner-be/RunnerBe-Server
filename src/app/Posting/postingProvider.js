@@ -2,6 +2,7 @@ const { pool } = require("../../../config/database");
 const { logger } = require("../../../config/winston");
 
 const postingDao = require("./postingDao");
+const userDao = require("../../../src/app/User/userDao");
 
 // userId 있는지 체크
 exports.userIdCheck = async function (userId) {
@@ -102,6 +103,10 @@ exports.getPosting2 = async function (postId) {
   postingInfo[0].userId = null;
   postingInfo[0].bookMark = null;
   postingInfo[0].attandance = null;
+
+  const body = await userDao.getProfileUrl(connection, postId);
+  postingInfo[0].profileUrlList = body;
+
   const runnerInfo = getRunnerResult[0];
   const getPostingFinalResult = { postingInfo, runnerInfo };
   return getPostingFinalResult;
@@ -122,6 +127,10 @@ exports.getPostingWriter2 = async function (postId) {
   postingInfo[0].userId = null;
   postingInfo[0].bookMark = null;
   postingInfo[0].attandance = null;
+
+  const body = await userDao.getProfileUrl(connection, postId);
+  postingInfo[0].profileUrlList = body;
+
   const runnerInfo = getRunnerResult[0];
   const waitingRunnerInfo = getWaitingRunnerResult[0];
   const getPostingFinalResult = { postingInfo, runnerInfo, waitingRunnerInfo };
