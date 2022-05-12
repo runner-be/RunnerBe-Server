@@ -811,6 +811,7 @@ exports.main2 = async function (req, res) {
   const ageFilterMin = req.query.ageFilterMin; // N : 필터 x, 그 외 최소 연령대
   const ageFilterMax = req.query.ageFilterMax; // N : 필터 x, 그 외 최대 연령대
   const keywordSearch = req.query.keywordSearch; // N : 필터 x, 그 외 키워드 검색
+  const userId = req.query.userId;
 
   // 빈 값 체크
   if (!userLongitude) return res.send(response(baseResponse.LONGITUDE_EMPTY));
@@ -917,7 +918,6 @@ exports.main2 = async function (req, res) {
     keywordCondition += `AND INSTR(P.title, '${keywordSearch}') > 0 OR INSTR(P.contents, '${keywordSearch}') > 0`;
   }
 
-  const userId = req.body.userId;
   if (!userId) {
     // 둘러보기
     const mainResult = await userProvider.getMain2(
