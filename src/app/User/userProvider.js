@@ -272,7 +272,7 @@ exports.getMain2 = async function (
   for (i = 0; i < getMainResult.length; i++) {
     getMainResult[i].userId = null;
     getMainResult[i].bookMark = null;
-    getMainResult[i].attandance = null;
+    getMainResult[i].attendance = null;
     const postId = getMainResult[i].postId;
     const body = await userDao.getProfileUrl(connection, postId);
     getMainResult[i].profileUrlList = body;
@@ -313,7 +313,7 @@ exports.getMain2Login = async function (
   connection.release();
   for (i = 0; i < getMainResult.length; i++) {
     getMainResult[i].userId = null;
-    getMainResult[i].attandance = null;
+    getMainResult[i].attendance = null;
     const postId = getMainResult[i].postId;
     const body = await userDao.getProfileUrl(connection, postId);
     getMainResult[i].profileUrlList = body;
@@ -331,7 +331,7 @@ exports.getBM2 = async function (userId) {
   connection.release();
   for (i = 0; i < bookMarkList.length; i++) {
     bookMarkList[i].DISTANCE = null;
-    bookMarkList[i].attandance = null;
+    bookMarkList[i].attendance = null;
     const postId = bookMarkList[i].postId;
     const body = await userDao.getProfileUrl(connection, postId);
     bookMarkList[i].profileUrlList = body;
@@ -350,7 +350,7 @@ exports.getMyPage2 = async function (userId) {
   connection.release();
   for (i = 0; i < myPosting.length; i++) {
     myPosting[i].DISTANCE = null;
-    myPosting[i].attandance = null;
+    myPosting[i].attendance = null;
     const postId = myPosting[i].postId;
     const body = await userDao.getProfileUrl(connection, postId);
     myPosting[i].profileUrlList = body;
