@@ -6,66 +6,89 @@ const runningDao = require("./runningDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
-
 const { connect } = require("http2");
 const res = require("express/lib/response");
 
 // 참여 요청 보내기
 exports.sendRequest = async function (postId, userId) {
-    try {
-        const connection = await pool.getConnection(async (conn) => conn);
-        const sendRequestParams = [postId, userId];
-        const sendRequestResult = await runningDao.sendRequest(
-            connection,
-            sendRequestParams
-        );
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    //start Transaction
+    connection.beginTransaction();
 
-        connection.release();
+    const sendRequestParams = [postId, userId];
+    const sendRequestResult = await runningDao.sendRequest(
+      connection,
+      sendRequestParams
+    );
 
-        return sendRequestResult;
-    } catch (err) {
-        logger.error(`App - sendRequest Service error\n: ${err.message}`);
-        return errResponse(baseResponse.DB_ERROR);
-    }
+    //commit
+    await connection.commit();
+
+    return 0;
+  } catch (err) {
+    //rollback
+    await connection.rollback();
+    logger.error(`App - sendRequest Service error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
+  }
 };
 
 // 참여 요청 처리하기
 exports.handleRequest = async function (postId, applicantId, whetherAccept) {
-    try {
-        const connection = await pool.getConnection(async (conn) => conn);
-        const sendRequestParams = [postId, applicantId];
-        const sendRequestResult = await runningDao.handleRequest(
-            connection,
-            sendRequestParams,
-            whetherAccept
-        );
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    //start Transaction
+    connection.beginTransaction();
 
-        connection.release();
+    const sendRequestParams = [postId, applicantId];
+    const sendRequestResult = await runningDao.handleRequest(
+      connection,
+      sendRequestParams,
+      whetherAccept
+    );
 
-        return sendRequestResult;
-    } catch (err) {
-        logger.error(`App - handleRequest Service error\n: ${err.message}`);
-        return errResponse(baseResponse.DB_ERROR);
-    }
+    //commit
+    await connection.commit();
+
+    return 0;
+  } catch (err) {
+    //rollback
+    await connection.rollback();
+    logger.error(`App - handleRequest Service error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
+  }
 };
 
 // 출석하기
 exports.attend = async function (postId, userId) {
-    try {
-        const connection = await pool.getConnection(async (conn) => conn);
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    //start Transaction
+    connection.beginTransaction();
 
-        //RunningPeople에 참석여부 업데이트
-        const updateParams = [userId, postId];
-        const updateRunningA = await runningDao.updateR(connection, updateParams);
-        //유저의 성실도 업데이트
-        const updateParamsU = [userId, userId];
-        const updateUserA = await runningDao.updateU(connection, updateParamsU); //
+    //RunningPeople에 참석여부 업데이트
+    const updateParams = [userId, postId];
+    const updateRunningA = await runningDao.updateR(connection, updateParams);
 
-        connection.release();
+    //유저의 성실도 업데이트
+    const updateParamsU = [userId, userId];
+    const updateUserA = await runningDao.updateU(connection, updateParamsU);
 
-        return updateRunningA;
-    } catch (err) {
-        logger.error(`App - attend Service error\n: ${err.message}`);
-        return errResponse(baseResponse.DB_ERROR);
-    }
+    //commit
+    await connection.commit();
+
+    return 0;
+  } catch (err) {
+    //rollback
+    await connection.rollback();
+    logger.error(`App - attend Service error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
+  }
 };

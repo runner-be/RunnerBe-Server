@@ -6,7 +6,6 @@ const userDao = require("./userDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
-
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { connect } = require("http2");
@@ -22,15 +21,21 @@ exports.createUser = async function (
   officeEmail,
   deviceToken
 ) {
+  const connection = await pool.getConnection(async (conn) => conn);
   try {
+    //start Transaction
+    connection.beginTransaction();
+
     // uuid 중복 확인
     const uuidRows = await userProvider.uuidCheck(uuid);
     if (uuidRows.length > 0)
       return errResponse(baseResponse.SIGNUP_REDUNDANT_UUID);
+
     //nickName 중복 확인
     const nickNameRows = await userProvider.nickNameCheck(nickName);
     if (nickNameRows.length > 0)
       return errResponse(baseResponse.SIGNUP_REDUNDANT_NICKNAME);
+
     // 직군코드 유효 확인
     const checkJob = await userProvider.checkJobExist(job);
     if (checkJob === 0)
@@ -56,15 +61,12 @@ exports.createUser = async function (
         hashedEmail,
         deviceToken,
       ];
-      const connection = await pool.getConnection(async (conn) => conn);
 
       const userResult = await userDao.insertUserInfoEmail(
         connection,
         insertUserInfoParams
       );
       const insertedUserId = userResult[0].insertId;
-      console.log(`추가된 회원 : ${userResult[0].insertId}`);
-      connection.release();
 
       //jwt 발급
       let token = await jwt.sign(
@@ -78,6 +80,9 @@ exports.createUser = async function (
         }
       );
       const result = { insertedUserId, token };
+
+      //commit
+      await connection.commit();
 
       return response(baseResponse.SUCCESS_SIGN_UP, result);
     } else {
@@ -92,15 +97,11 @@ exports.createUser = async function (
         hashedEmail,
         deviceToken,
       ];
-      const connection = await pool.getConnection(async (conn) => conn);
-
       const userResult = await userDao.insertUserInfoPhoto(
         connection,
         insertUserInfoParams
       );
       const insertedUserId = userResult[0].insertId;
-      console.log(`추가된 회원 : ${userResult[0].insertId}`);
-      connection.release();
 
       //jwt 발급
       let token = await jwt.sign(
@@ -115,17 +116,28 @@ exports.createUser = async function (
       );
       const result = { insertedUserId, token };
 
+      //commit
+      await connection.commit();
+
       return response(baseResponse.SUCCESS_PHOTO, result);
     }
   } catch (err) {
+    //rollback
+    await connection.rollback();
     logger.error(`App - createUser Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
   }
 };
 
 //user의 nickname 변경
 exports.patchUserName = async function (changedNickName, userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
   try {
+    //start Transaction
+    connection.beginTransaction();
+
     //변경이력 확인
     const checkRecordRows = await userProvider.checkRecord(userId);
     if (checkRecordRows.length > 0)
@@ -136,93 +148,134 @@ exports.patchUserName = async function (changedNickName, userId) {
     if (nickNameRows.length > 0)
       return errResponse(baseResponse.SIGNUP_REDUNDANT_NICKNAME);
 
-    const connection = await pool.getConnection(async (conn) => conn);
     const patchUserNameList = [changedNickName, userId];
     const patchUserNameResult = await userDao.patchUserName(
       connection,
       patchUserNameList
     );
 
-    connection.release();
-
-    // console.log(`닉네임 변경 유저 ID : ${userId}`);
+    //commit
+    await connection.commit();
 
     return response(baseResponse.SUCCESS);
   } catch (err) {
+    //rollback
+    await connection.rollback();
     logger.error(`App - patchUserName Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
   }
 };
 
 // 찜 등록 및 해제
 exports.addBM = async function (userId, postId, whetherAdd) {
+  const connection = await pool.getConnection(async (conn) => conn);
   try {
-    const connection = await pool.getConnection(async (conn) => conn);
+    //start Transaction
+    connection.beginTransaction();
+
     const addBMParams = [userId, postId];
     if (whetherAdd === "Y") {
       const addBMResult = await userDao.addBMY(connection, addBMParams);
-      connection.release();
-      return addBMResult;
+
+      //commit
+      await connection.commit();
+
+      return 0;
     } else if (whetherAdd === "N") {
       const addBMResult = await userDao.addBMN(connection, addBMParams);
-      connection.release();
-      return addBMResult;
+
+      //commit
+      await connection.commit();
+
+      return 0;
     }
   } catch (err) {
+    //rollback
+    await connection.rollback();
     logger.error(`App - addBM Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
   }
 };
 
 //user의 사진 변경
 exports.patchUserImage = async function (profileImageUrl, userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
   try {
-    const connection = await pool.getConnection(async (conn) => conn);
+    //start Transaction
+    connection.beginTransaction();
+
     const patchUserImageParams = [profileImageUrl, userId];
     const patchUserImageResult = await userDao.patchUserImage(
       connection,
       patchUserImageParams
     );
 
-    connection.release();
+    //commit
+    await connection.commit();
 
-    return patchUserImageResult;
+    return 0;
   } catch (err) {
+    //rollback
+    await connection.rollback();
     logger.error(`App - patchUserImage Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
   }
 };
 
 //user의 job 변경
 exports.patchUserJob = async function (job, userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
   try {
-    const connection = await pool.getConnection(async (conn) => conn);
+    //start Transaction
+    connection.beginTransaction();
+
     const patchUserJobResult = await userDao.patchUserJob(
       connection,
       job,
       userId
     );
 
-    connection.release();
+    //commit
+    await connection.commit();
 
-    return patchUserJobResult;
+    return 0;
   } catch (err) {
+    //rollback
+    await connection.rollback();
     logger.error(`App - patchUserJob Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
   }
 };
 
 // 회원 정보 삭제
 exports.deleteUser = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
   try {
-    const connection = await pool.getConnection(async (conn) => conn);
+    //start Transaction
+    connection.beginTransaction();
+
     const deleteUser = await userDao.deleteUser(connection, userId);
-    connection.release();
     const finalResult = { "deleted userId": userId };
+
+    //commit
+    await connection.commit();
+
     return finalResult;
   } catch (err) {
+    //rollback
+    await connection.rollback();
     logger.error(`User-deleteUser Service error: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
   }
 };
 
@@ -235,15 +288,21 @@ exports.createUserV2 = async function (
   job,
   deviceToken
 ) {
+  const connection = await pool.getConnection(async (conn) => conn);
   try {
+    //start Transaction
+    connection.beginTransaction();
+
     // uuid 중복 확인
     const uuidRows = await userProvider.uuidCheck(uuid);
     if (uuidRows.length > 0)
       return errResponse(baseResponse.SIGNUP_REDUNDANT_UUID);
+
     //nickName 중복 확인
     const nickNameRows = await userProvider.nickNameCheck(nickName);
     if (nickNameRows.length > 0)
       return errResponse(baseResponse.SIGNUP_REDUNDANT_NICKNAME);
+
     // 직군코드 유효 확인
     const checkJob = await userProvider.checkJobExist(job);
     if (checkJob === 0)
@@ -257,15 +316,12 @@ exports.createUserV2 = async function (
       job,
       deviceToken,
     ];
-    const connection = await pool.getConnection(async (conn) => conn);
 
     const userResult = await userDao.insertUserV2(
       connection,
       insertUserInfoParams
     );
     const insertedUserId = userResult[0].insertId;
-    console.log(`추가된 회원 : ${userResult[0].insertId}`);
-    connection.release();
 
     //jwt 발급
     let token = await jwt.sign(
@@ -280,27 +336,43 @@ exports.createUserV2 = async function (
     );
     const result = { insertedUserId, token };
 
+    //commit
+    await connection.commit();
+
     return response(baseResponse.SUCCESS_SIGN_UP, result);
   } catch (err) {
+    //rollback
+    await connection.rollback();
     logger.error(`App - createUser Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
   }
 };
 
 //user의 deviceToken 변경
 exports.patchDeviceToken = async function (deviceToken, userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
   try {
-    const connection = await pool.getConnection(async (conn) => conn);
+    //start Transaction
+    connection.beginTransaction();
+
     const patchUserDeviceTokenParams = [deviceToken, userId];
     const result = await userDao.patchUserDeviceToken(
       connection,
       patchUserDeviceTokenParams
     );
-    connection.release();
+
+    //commit
+    await connection.commit();
 
     return response(baseResponse.SUCCESS);
   } catch (err) {
+    //rollback
+    await connection.rollback();
     logger.error(`App - patcDeviceToken Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
   }
 };

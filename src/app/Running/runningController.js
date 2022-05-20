@@ -8,11 +8,12 @@ const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
 const { logger } = require("../../../config/winston");
 const { emit } = require("nodemon");
+const { pool } = require("../../../config/database");
 
 //푸시알림
 const { initializeApp } = require("firebase-admin/app");
 const admin = require("firebase-admin");
-let serAccount = require("../../../config/runnerne-firebase-adminsdk-5jzt3-826315ed27.json");
+let serAccount = require("../../../config/runnerbe-f1986-firebase-adminsdk-frfin-c125099a1f.json");
 admin.initializeApp({
   credential: admin.credential.cert(serAccount),
 });
@@ -142,10 +143,9 @@ exports.handleRequest = async function (req, res) {
  * [GET] /pushAlarm
  */
 exports.pushAlarm = async function (req, res) {
-  const { userId } = req.verifiedToken;
-
-  const getDeviceTokenRows = await runningDao.getDeviceToken(userId);
-  if (getDeviceToken.length === 0)
+  const connection = await pool.getConnection(async (conn) => conn);
+  const getDeviceTokenRows = await runningDao.getDeviceToken(connection, 125);
+  if (getDeviceTokenRows.length === 0)
     return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
 
   let message = {
@@ -163,14 +163,15 @@ exports.pushAlarm = async function (req, res) {
   admin
     .messaging()
     .send(message)
-    .then(function (response) {
-      console.log("Successfully sent message: : ", response);
+    .then(function (id) {
+      console.log("Successfully sent message: : ", id);
       return res.send(response(baseResponse.SUCCESS));
     })
     .catch(function (err) {
       console.log("Error Sending message!!! : ", err);
       return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
     });
+  connection.release();
 };
 
 /**

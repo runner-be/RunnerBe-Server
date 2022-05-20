@@ -5,7 +5,6 @@ const postingDao = require("./postingDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
-
 const { connect } = require("http2");
 
 // 게시글 생성
@@ -24,7 +23,11 @@ exports.createPosting = async function (
   contents,
   runnerGender
 ) {
+  const connection = await pool.getConnection(async (conn) => conn);
   try {
+    //start Transaction
+    connection.beginTransaction();
+
     //유효한 user인지 확인
     const userIdRows = await postingProvider.userIdCheck(userId);
     if (userIdRows.length === 0)
@@ -45,8 +48,6 @@ exports.createPosting = async function (
       contents,
       runnerGender,
     ];
-
-    const connection = await pool.getConnection(async (conn) => conn);
     // 게시글 생성
     const createPostingResult = await postingDao.createPosting(
       connection,
@@ -70,12 +71,16 @@ exports.createPosting = async function (
       insertRunningPeopleParams
     );
 
-    console.log(`추가된 게시글 : ${createPostingResult[0].insertId}`);
-    connection.release();
+    //commit
+    await connection.commit();
     return response(baseResponse.SUCCESS);
   } catch (err) {
+    //rollback
+    await connection.rollback();
     logger.error(`App - createPosting Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
   }
 };
 
@@ -95,7 +100,10 @@ exports.patchPosting = async function (
   runnerGender,
   postId
 ) {
+  const connection = await pool.getConnection(async (conn) => conn);
   try {
+    //start Transaction
+    connection.beginTransaction();
     const patchPostingParams = [
       title,
       gatheringTime,
@@ -116,18 +124,22 @@ exports.patchPosting = async function (
     if (checkPostingResult.length === 0)
       return errResponse(baseResponse.POSTING_NOT_VALID_POSTID);
 
-    const connection = await pool.getConnection(async (conn) => conn);
     // 게시글 수정
     const patchPostingResult = await postingDao.patchPosting(
       connection,
       patchPostingParams
     );
 
-    connection.release();
+    //commit
+    await connection.commit();
     return response(baseResponse.SUCCESS);
   } catch (err) {
+    //rollback
+    await connection.rollback();
     logger.error(`App - patchPosting Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
   }
 };
 
@@ -136,21 +148,22 @@ exports.dropPosting = async function (postId) {
   // 먼저 pool 생성해서 catch문에서 rollback하도록
   const connection = await pool.getConnection(async (conn) => conn);
   try {
+    //start Transaction
+    connection.beginTransaction();
     //게시글 있는지 확인
     const checkPostingResult = await postingProvider.checkPosting(postId);
     if (checkPostingResult[0].length == 0)
       return errResponse(baseResponse.POSTING_NOT_VALID_POSTID);
 
-    connection.beginTransaction(); // 트랜잭션 적용 시작
-
     // 게시글 수정 - Posting, Running, RunningPeople
     const dropPostingResult = await postingDao.dropPosting(connection, postId);
 
-    await connection.commit(); // 성공시 commit
-
+    //commit
+    await connection.commit();
     return response(baseResponse.SUCCESS);
   } catch (err) {
-    await connection.rollback(); // 실패시 rollback
+    //rollback
+    await connection.rollback();
     logger.error(`App - dropPosting Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
@@ -160,20 +173,28 @@ exports.dropPosting = async function (postId) {
 
 // 게시글 신고
 exports.reportPosting = async function (userId, postId) {
+  const connection = await pool.getConnection(async (conn) => conn);
   try {
+    //start Transaction
+    connection.beginTransaction();
     //게시글 있는지 확인
     const checkPostingResult = await postingProvider.checkPosting(postId);
     if (checkPostingResult[0].length == 0)
       return errResponse(baseResponse.POSTING_NOT_VALID_POSTID);
 
-    const connection = await pool.getConnection(async (conn) => conn);
     // 게시글 신고
     const Params = [postId, userId];
     const reportResult = await postingDao.reportPosting(connection, Params);
-    connection.release();
+
+    //commit
+    await connection.commit();
     return response(baseResponse.SUCCESS);
   } catch (err) {
+    //rollback
+    await connection.rollback();
     logger.error(`App - reportPosting Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
   }
 };

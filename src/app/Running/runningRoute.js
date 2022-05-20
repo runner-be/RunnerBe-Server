@@ -17,7 +17,7 @@ module.exports = function (app) {
   );
 
   // 26. 푸시 알림
-  app.get("/push-alarm", jwtMiddleware, running.pushAlarm);
+  app.post("/push-alarm", running.pushAlarm);
 
   // 27. 출석하기 API
   app.patch(
