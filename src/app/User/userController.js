@@ -519,10 +519,10 @@ exports.addBM = async function (req, res) {
   const checkAddBM = await userProvider.checkAddBM(userId, postId);
   if (whetherAdd == "Y") {
     if (checkAddBM.length != 0)
-      return res.send(response(baseResponse.USER_CANNOT_ADD)); //@@@@
+      return res.send(response(baseResponse.USER_CANNOT_ADD));
   } else if (whetherAdd == "N") {
     if (checkAddBM.length === 0)
-      return res.send(response(baseResponse.USER_CANNOT_DELETE)); //@@@@
+      return res.send(response(baseResponse.USER_CANNOT_DELETE));
   }
 
   //jwt로 userId 확인
