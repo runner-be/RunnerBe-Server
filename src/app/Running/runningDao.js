@@ -75,6 +75,17 @@ async function updateU(connection, updateParamsU) {
 
   return row;
 }
+
+//작성자 이름 가져오기
+async function getTitle(connection, postId) {
+  const query = `
+  select title from Posting where postId = ?;
+                          `;
+
+  const [row] = await connection.query(query, postId);
+
+  return row[0].title;
+}
 module.exports = {
   sendRequest,
   handleRequest,
@@ -82,4 +93,5 @@ module.exports = {
   getDeviceToken,
   updateR,
   updateU,
+  getTitle,
 };

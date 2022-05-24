@@ -2,12 +2,23 @@ const { logger } = require("../../../config/winston");
 const { pool } = require("../../../config/database");
 const runningProvider = require("./runningProvider");
 const messageProvider = require("../../app/Message/messageProvider");
+const messageDao = require("../../app/Message/messageDao");
 const runningDao = require("./runningDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
 const { connect } = require("http2");
 const res = require("express/lib/response");
+
+//푸시알림
+const { initializeApp } = require("firebase-admin/app");
+const admin = require("firebase-admin");
+let serAccount = require("../../../config/runnerbe-f1986-firebase-adminsdk-frfin-c125099a1f.json");
+if (admin.apps.length === 0) {
+  admin.initializeApp({
+    credential: admin.credential.cert(serAccount),
+  });
+}
 
 // 참여 요청 보내기
 exports.sendRequest = async function (postId, userId) {
@@ -24,6 +35,49 @@ exports.sendRequest = async function (postId, userId) {
 
     //commit
     await connection.commit();
+
+    // 작성자에게 push alarm 발송
+    const title = await runningDao.getTitle(connection, postId);
+    const repUserId = await messageDao.getRepUserId(connection, postId);
+    // push alarm 보낼 user의 device token
+    const getDeviceTokenRows = await runningDao.getDeviceToken(
+      connection,
+      repUserId
+    );
+    if (getDeviceTokenRows.length === 0)
+      return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
+
+    let message = {
+      notification: {
+        title: "RunnerBe : 모임 참여 요청 전달",
+        body:
+          getDeviceTokenRows[0].nickName +
+          `님, 작성한 ["` +
+          title +
+          `"]을 다른 러너가 신청했어요! 확인하러 가볼까요?`,
+      },
+      data: {
+        title: "RunnerBe : 모임 참여 요청 전달",
+        body:
+          getDeviceTokenRows[0].nickName +
+          `님, 작성한 ["` +
+          title +
+          `"]을 다른 러너가 신청했어요! 확인하러 가볼까요?`,
+      },
+      token: getDeviceTokenRows[0].deviceToken,
+    };
+
+    admin
+      .messaging()
+      .send(message)
+      .then(function (id) {
+        console.log("Successfully sent message: : ", id);
+        return 0;
+      })
+      .catch(function (err) {
+        console.log("Error Sending message!!! : ", err);
+        return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+      });
 
     return 0;
   } catch (err) {
