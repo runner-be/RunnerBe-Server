@@ -210,6 +210,42 @@ exports.attend = async function (postId, userId) {
     //commit
     await connection.commit();
 
+    //start push alarm
+    const getDeviceTokenRows = await runningDao.getDeviceToken(
+      connection,
+      userId
+    );
+    if (getDeviceTokenRows.length === 0)
+      return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
+
+    let message = {
+      notification: {
+        title: "RunnerBe : 출석체크 완료",
+        body:
+          getDeviceTokenRows[0].nickName +
+          `님, 출석이 완료됐어요! 즐거운 러닝을 시작해볼까요?`,
+      },
+      data: {
+        title: "RunnerBe : 출석체크 완료",
+        body:
+          getDeviceTokenRows[0].nickName +
+          `님, 출석이 완료됐어요! 즐거운 러닝을 시작해볼까요?`,
+      },
+      token: getDeviceTokenRows[0].deviceToken,
+    };
+
+    admin
+      .messaging()
+      .send(message)
+      .then(function (id) {
+        console.log("Successfully sent message: : ", id);
+        return 0;
+      })
+      .catch(function (err) {
+        console.log("Error Sending message!!! : ", err);
+        return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+      });
+
     return 0;
   } catch (err) {
     //rollback
