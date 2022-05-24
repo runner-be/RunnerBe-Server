@@ -107,6 +107,80 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
     //commit
     await connection.commit();
 
+    //start push alarm
+    const title = await runningDao.getTitle(connection, postId);
+    const getDeviceTokenRows = await runningDao.getDeviceToken(
+      connection,
+      applicantId
+    );
+    if (getDeviceTokenRows.length === 0)
+      return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
+
+    //수락 push alarm
+    if (whetherAccept == "Y") {
+      let message = {
+        notification: {
+          title: "RunnerBe : 모임 신청 승인",
+          body:
+            getDeviceTokenRows[0].nickName +
+            `님, ["` +
+            title +
+            `"]이 승인되었어요! 신나게 달릴 준비를 해볼까요?`,
+        },
+        data: {
+          title: "RunnerBe : 모임 신청 승인",
+          body:
+            getDeviceTokenRows[0].nickName +
+            `님, ["` +
+            title +
+            `"]이 승인되었어요! 신나게 달릴 준비를 해볼까요?`,
+        },
+        token: getDeviceTokenRows[0].deviceToken,
+      };
+      admin
+        .messaging()
+        .send(message)
+        .then(function (id) {
+          console.log("Successfully sent message: : ", id);
+          return 0;
+        })
+        .catch(function (err) {
+          console.log("Error Sending message!!! : ", err);
+          return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+        });
+    } else {
+      let message = {
+        notification: {
+          title: "RunnerBe : 모임 신청 거절",
+          body:
+            getDeviceTokenRows[0].nickName +
+            `님, ["` +
+            title +
+            `"]이 승인되지 않았네요. 아쉽지만 다른 모임을 찾아보는 것이 어떨까요?`,
+        },
+        data: {
+          title: "RunnerBe : 모임 신청 거절",
+          body:
+            getDeviceTokenRows[0].nickName +
+            `님, ["` +
+            title +
+            `"]이 승인되지 않았네요. 아쉽지만 다른 모임을 찾아보는 것이 어떨까요?`,
+        },
+        token: getDeviceTokenRows[0].deviceToken,
+      };
+      admin
+        .messaging()
+        .send(message)
+        .then(function (id) {
+          console.log("Successfully sent message: : ", id);
+          return 0;
+        })
+        .catch(function (err) {
+          console.log("Error Sending message!!! : ", err);
+          return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+        });
+    }
+
     return 0;
   } catch (err) {
     //rollback
