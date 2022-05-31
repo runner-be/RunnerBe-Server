@@ -1081,3 +1081,29 @@ exports.patchDeviceToken = async function (req, res) {
   );
   return res.send(patchDeviceTokenResponse);
 };
+
+/**
+ * API No. 36
+ * API Name : firebase token 업데이트 API
+ * [PATCH] /users/:userId/push-alarm/:pushOn
+ * Path variable: userId, pushOn
+ */
+exports.pushOnOff = async function (req, res) {
+  const userId = req.params.userId;
+  const pushOn = req.params.pushOn;
+
+  // 빈 값 체크
+  if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+  if (!pushOn) return res.send(response(baseResponse.PUSH_ON_EMPTY));
+  // 숫자 확인
+  if (isNaN(userId) === true)
+    return res.send(response(baseResponse.USER_USERID_NOTNUM));
+
+  //유효성 검사
+  const pushOnList = ["Y", "N"];
+  if (!pushOnList.includes(pushOn))
+    return res.send(response(baseResponse.PUSH_ON_IS_NOT_VALID));
+
+  const patchPushOnResponse = await userService.patchPushOn(pushOn, userId);
+  return res.send(patchPushOnResponse);
+};

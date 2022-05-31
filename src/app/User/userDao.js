@@ -409,7 +409,7 @@ async function getmyInfo(connection, userId) {
             when job = 'ACC' then '제무/회계'
             when job = 'CUS' then 'CS'
         end as job
-        ,profileImageUrl FROM User U
+        ,profileImageUrl, pushOn FROM User U
         WHERE U.userId = ?;
                   `;
   const [Rows] = await connection.query(Query, userId);
@@ -761,6 +761,18 @@ async function getProfileUrl(connection, postId) {
   return Row[0];
 }
 
+// pushOn 변경
+async function patchPushOn(connection, patchPushOnParams) {
+  const Query = `
+      UPDATE User
+      SET pushOn = ?, updatedAt = current_timestamp()
+      WHERE userId = ?;
+                 `;
+  const Row = await connection.query(Query, patchPushOnParams);
+
+  return Row;
+}
+
 module.exports = {
   selectUser,
   deleteUser,
@@ -801,4 +813,5 @@ module.exports = {
   patchUserDeviceToken,
   getProfileUrl,
   getRunningInfo,
+  patchPushOn,
 };

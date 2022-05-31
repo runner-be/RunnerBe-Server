@@ -222,3 +222,15 @@ exports.attend = async function (req, res) {
     return res.send(response(baseResponse.SUCCESS));
   }
 };
+
+exports.test = async function (req, res) {
+  const repUserId = req.params.repUserId;
+  const connection = await pool.getConnection(async (conn) => conn);
+  const Response = await runningDao.checkPushOn(connection, repUserId);
+
+  if (Response == "N") {
+    return res.send(response(baseResponse.SUCCESS, Response));
+  } else {
+    return res.send(response(baseResponse.SUCCESS, 100));
+  }
+};

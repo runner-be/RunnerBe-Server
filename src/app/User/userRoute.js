@@ -64,4 +64,7 @@ module.exports = function (app) {
 
   // 35. firebase Token 업데이트 API
   app.patch("/users/:userId/deviceToken", user.patchDeviceToken);
+
+  // 36. 푸쉬알림 수신 여부 설정 API
+  app.patch("/users/:userId/push-alarm/:pushOn", user.pushOnOff);
 };
