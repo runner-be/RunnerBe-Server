@@ -754,7 +754,7 @@ async function getProfileUrl(connection, postId) {
   inner join RunningPeople RP on User.userId = RP.userId
   inner join Running R on RP.gatheringId = R.gatheringId
   inner join Posting P on R.postId = P.postId
-  where P.postId = ?;
+  where P.postId = ? and whetherAccept = 'Y';
                  `;
   const Row = await connection.query(query, postId);
 
