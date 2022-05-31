@@ -415,6 +415,22 @@ async function getmyInfo(connection, userId) {
   const [Rows] = await connection.query(Query, userId);
   return Rows;
 }
+// 마이페이지 러닝 정보 - 참여 수, 출석률
+async function getRunningInfo(connection, userId) {
+  const Query = `
+  select R.userId, runningNum, round(ifnull(attendNum/runningNum*100,0),1) as percent
+  from
+  (select userId, COUNT(gatheringId) as attendNum from RunningPeople
+  where attendance = 1
+  group by userId) A
+  right outer join
+  (select userId, COUNT(gatheringId) as runningNum from RunningPeople
+  group by userId) R on A.userId = R.userId
+  where R.userId = ?;
+                  `;
+  const [Rows] = await connection.query(Query, userId);
+  return Rows;
+}
 
 // 마이페이지 참여한 러닝
 async function getMyRunning(connection, userId) {
@@ -782,4 +798,5 @@ module.exports = {
   insertUserV2,
   patchUserDeviceToken,
   getProfileUrl,
+  getRunningInfo,
 };
