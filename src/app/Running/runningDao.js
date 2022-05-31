@@ -54,7 +54,7 @@ async function getDeviceToken(connection, userId) {
 async function updateR(connection, updateParams) {
   const query = `
   UPDATE RunningPeople
-  SET attendance = 1
+  SET attendance = 1 AND whetherCheck = 'Y'
   WHERE userId = ? AND gatheringId = (SELECT gatheringId FROM Running WHERE postId = ?);
                           `;
 

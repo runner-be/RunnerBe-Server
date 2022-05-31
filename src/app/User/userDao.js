@@ -415,6 +415,22 @@ async function getmyInfo(connection, userId) {
   const [Rows] = await connection.query(Query, userId);
   return Rows;
 }
+// 마이페이지 러닝 정보 - 참여 수, 출석률
+async function getRunningInfo(connection, userId) {
+  const Query = `
+  select R.userId, runningNum, round(ifnull(attendNum/runningNum*100,0),1) as percent
+  from
+  (select userId, COUNT(gatheringId) as attendNum from RunningPeople
+  where attendance = 1
+  group by userId) A
+  right outer join
+  (select userId, COUNT(gatheringId) as runningNum from RunningPeople
+  group by userId) R on A.userId = R.userId
+  where R.userId = ?;
+                  `;
+  const [Rows] = await connection.query(Query, userId);
+  return Rows;
+}
 
 // 마이페이지 참여한 러닝
 async function getMyRunning(connection, userId) {
@@ -557,9 +573,10 @@ async function getMain2(
                               cos(radians(gatherLongitude) - radians(${userLongitude})) +
                               sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
     on D.postId = P.postId
-    WHERE DISTANCE < 150 AND runningTag = "${runningTag}" ${distanceCondition}
+    WHERE runningTag = "${runningTag}" ${distanceCondition}
     ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition}
-    ORDER BY "${sortCondition}";
+    ORDER BY "${sortCondition}"
+    LIMIT 10;
                   `;
   const [mainRows] = await connection.query(getMainQuery);
   return mainRows;
@@ -607,9 +624,10 @@ async function getMain2Login(
                               cos(radians(gatherLongitude) - radians(${userLongitude})) +
                               sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
     on D.postId = P.postId
-    WHERE DISTANCE < 150 AND runningTag = "${runningTag}" ${distanceCondition}
+    WHERE runningTag = "${runningTag}" ${distanceCondition}
     ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition}
-    ORDER BY "${sortCondition}";
+    ORDER BY "${sortCondition}"
+    LIMIT 10;
                   `;
   const [mainRows] = await connection.query(getMainQuery);
   return mainRows;
@@ -687,7 +705,7 @@ async function getMyRunning2(connection, userId) {
  case when runnerGender='F' then '여성'
   end end end as gender, whetherEnd, J.job, peopleNum, contents, U.userId,
 EXISTS (SELECT bookmarkId FROM Bookmarks
-        WHERE userId = ${userId} AND postId = P.postId) as bookMark,attendance
+        WHERE userId = ${userId} AND postId = P.postId) as bookMark,attendance, whetherCheck
 FROM Posting P
 INNER JOIN User U on U.userId = P.postUserId
 INNER JOIN Running R on R.postId = P.postId
@@ -736,7 +754,7 @@ async function getProfileUrl(connection, postId) {
   inner join RunningPeople RP on User.userId = RP.userId
   inner join Running R on RP.gatheringId = R.gatheringId
   inner join Posting P on R.postId = P.postId
-  where P.postId = ?;
+  where P.postId = ? and whetherAccept = 'Y';
                  `;
   const Row = await connection.query(query, postId);
 
@@ -782,4 +800,5 @@ module.exports = {
   insertUserV2,
   patchUserDeviceToken,
   getProfileUrl,
+  getRunningInfo,
 };
