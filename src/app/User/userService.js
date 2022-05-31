@@ -376,3 +376,27 @@ exports.patchDeviceToken = async function (deviceToken, userId) {
     connection.release();
   }
 };
+
+//푸쉬 알림 수신 여부 변경
+exports.patchPushOn = async function (pushOn, userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    //start Transaction
+    connection.beginTransaction();
+
+    const patchPushOnParams = [pushOn, userId];
+    const result = await userDao.patchPushOn(connection, patchPushOnParams);
+
+    //commit
+    await connection.commit();
+
+    return response(baseResponse.SUCCESS);
+  } catch (err) {
+    //rollback
+    await connection.rollback();
+    logger.error(`App - patchPushOn Service error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};

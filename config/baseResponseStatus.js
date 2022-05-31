@@ -617,6 +617,18 @@ module.exports = {
     code: 2087,
     message: "device token 값을 입력해주세요.",
   },
+
+  PUSH_ON_EMPTY: {
+    isSuccess: false,
+    code: 2088,
+    message: "pushOn 값을 입력해주세요.",
+  },
+
+  PUSH_ON_IS_NOT_VALID: {
+    isSuccess: false,
+    code: 2089,
+    message: "pushOn 값은 Y나 N로 입력해주세요.",
+  },
   // ----------------------------
 
   // Response error
