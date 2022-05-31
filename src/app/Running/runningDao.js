@@ -86,6 +86,16 @@ async function getTitle(connection, postId) {
 
   return row[0].title;
 }
+//푸쉬알림 수신 여부 확인
+async function checkPushOn(connection, userId) {
+  const query = `
+  select pushOn from User where userId = ?;
+  `;
+
+  const [row] = await connection.query(query, userId);
+
+  return row[0].pushOn;
+}
 module.exports = {
   sendRequest,
   handleRequest,
@@ -94,4 +104,5 @@ module.exports = {
   updateR,
   updateU,
   getTitle,
+  checkPushOn,
 };

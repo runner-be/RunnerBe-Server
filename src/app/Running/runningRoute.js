@@ -25,4 +25,7 @@ module.exports = function (app) {
     jwtMiddleware,
     running.attend
   );
+
+  //test
+  app.get("/testsssss/:repUserId", running.test);
 };
