@@ -2,6 +2,7 @@ const { pool } = require("../../../config/database");
 const { logger } = require("../../../config/winston");
 const baseResponse = require("../../../config/baseResponseStatus");
 const userDao = require("./userDao");
+const postingDao = require("../../../src/app/Posting/postingDao");
 const userProvider = require("./userProvider");
 
 exports.retrieveUserList = async function () {
@@ -354,8 +355,10 @@ exports.getMyPage2 = async function (userId) {
     myPosting[i].DISTANCE = null;
     myPosting[i].attendance = null;
     const postId = myPosting[i].postId;
-    const body = await userDao.getProfileUrl(connection, postId);
-    myPosting[i].profileUrlList = body;
+    const body1 = await userDao.getProfileUrl(connection, postId);
+    const body2 = await postingDao.getRunner(connection, postId);
+    myPosting[i].profileUrlList = body1;
+    myPosting[i].runnerList = body2[0];
   }
   for (i = 0; i < myRunning.length; i++) {
     myRunning[i].DISTANCE = null;
