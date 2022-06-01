@@ -347,7 +347,7 @@ exports.getBM2 = async function (userId) {
 exports.getMyPage2 = async function (userId) {
   const connection = await pool.getConnection(async (conn) => conn);
   const myInfo = await userDao.getmyInfo(connection, userId);
-  const runningInfo = await userDao.getRunningInfo(connection, userId);
+  // const runningInfo = await userDao.getRunningInfo(connection, userId);
   const myPosting = await userDao.getMyPosting2(connection, userId);
   const myRunning = await userDao.getMyRunning2(connection, userId);
   connection.release();
@@ -366,7 +366,7 @@ exports.getMyPage2 = async function (userId) {
     const body = await userDao.getProfileUrl(connection, postId);
     myRunning[i].profileUrlList = body;
   }
-  const finalResult = { myInfo, runningInfo, myPosting, myRunning };
+  const finalResult = { myInfo, myPosting, myRunning };
 
   return finalResult;
 };
