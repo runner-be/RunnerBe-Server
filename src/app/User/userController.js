@@ -1084,7 +1084,7 @@ exports.patchDeviceToken = async function (req, res) {
 
 /**
  * API No. 36
- * API Name : firebase token 업데이트 API
+ * API Name : 푸쉬알림 수신 여부 변경 API
  * [PATCH] /users/:userId/push-alarm/:pushOn
  * Path variable: userId, pushOn
  */
