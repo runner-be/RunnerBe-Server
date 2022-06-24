@@ -655,7 +655,7 @@ async function getBM2(connection, userId) {
   inner join User U on RP.userId = U.userId
   group by postId) J on J.postId = P.postId
   LEFT OUTER JOIN Bookmarks B on P.postId = B.postId
-  WHERE B.userId = ?;
+  WHERE B.userId = ? AND whetherEnd != 'D';
                   `;
   const [getBMRows] = await connection.query(getBMQuery, userId);
   return getBMRows;
