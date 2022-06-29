@@ -16,8 +16,8 @@ module.exports = function (app) {
     running.handleRequest
   );
 
-  // 26. 푸시 알림
-  app.post("/push-alarm", running.pushAlarm);
+  // // 26. 푸시 알림
+  // app.post("/push-alarm", running.pushAlarm);
 
   // 27. 출석하기 API
   app.patch(
@@ -25,7 +25,4 @@ module.exports = function (app) {
     jwtMiddleware,
     running.attend
   );
-
-  //test
-  app.get("/testsssss/:repUserId", running.test);
 };

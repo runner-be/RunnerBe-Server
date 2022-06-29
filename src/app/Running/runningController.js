@@ -138,42 +138,42 @@ exports.handleRequest = async function (req, res) {
   }
 };
 
-/**
- * API No. 26
- * API Name : 푸쉬알림 API
- * [GET] /pushAlarm
- */
-exports.pushAlarm = async function (req, res) {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const getDeviceTokenRows = await runningDao.getDeviceToken(connection, 125);
-  if (getDeviceTokenRows.length === 0)
-    return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
+// /**
+//  * API No. 26
+//  * API Name : 푸쉬알림 API
+//  * [GET] /pushAlarm
+//  */
+// exports.pushAlarm = async function (req, res) {
+//   const connection = await pool.getConnection(async (conn) => conn);
+//   const getDeviceTokenRows = await runningDao.getDeviceToken(connection, 125);
+//   if (getDeviceTokenRows.length === 0)
+//     return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
 
-  let message = {
-    notification: {
-      title: "테스트 제목",
-      body: getDeviceTokenRows[0].nickName + "님 러너비 앱을 확인해보세요!",
-    },
-    data: {
-      title: "테스트 제목",
-      body: getDeviceTokenRows[0].nickName + "님 러너비 앱을 확인해보세요!",
-    },
-    token: getDeviceTokenRows[0].deviceToken,
-  };
+//   let message = {
+//     notification: {
+//       title: "테스트 제목",
+//       body: getDeviceTokenRows[0].nickName + "님 러너비 앱을 확인해보세요!",
+//     },
+//     data: {
+//       title: "테스트 제목",
+//       body: getDeviceTokenRows[0].nickName + "님 러너비 앱을 확인해보세요!",
+//     },
+//     token: getDeviceTokenRows[0].deviceToken,
+//   };
 
-  admin
-    .messaging()
-    .send(message)
-    .then(function (id) {
-      console.log("Successfully sent message: : ", id);
-      return res.send(response(baseResponse.SUCCESS));
-    })
-    .catch(function (err) {
-      console.log("Error Sending message!!! : ", err);
-      return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
-    });
-  connection.release();
-};
+//   admin
+//     .messaging()
+//     .send(message)
+//     .then(function (id) {
+//       console.log("Successfully sent message: : ", id);
+//       return res.send(response(baseResponse.SUCCESS));
+//     })
+//     .catch(function (err) {
+//       console.log("Error Sending message!!! : ", err);
+//       return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+//     });
+//   connection.release();
+// };
 
 /**
  * API No. 27
