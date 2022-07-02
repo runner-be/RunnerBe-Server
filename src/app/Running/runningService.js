@@ -50,26 +50,28 @@ exports.sendRequest = async function (postId, userId) {
       if (getDeviceTokenRows.length === 0)
         return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
 
+      //title, body 설정
+      const title = "RunnerBe : 모임 참여 요청 전달";
+      const body =
+        getDeviceTokenRows[0].nickName +
+        `님, 작성한 ["` +
+        title +
+        `"]을 다른 러너가 신청했어요! 확인하러 가볼까요?`;
+
+      //푸쉬알림 메시지 설정
       let message = {
         notification: {
-          title: "RunnerBe : 모임 참여 요청 전달",
-          body:
-            getDeviceTokenRows[0].nickName +
-            `님, 작성한 ["` +
-            title +
-            `"]을 다른 러너가 신청했어요! 확인하러 가볼까요?`,
+          title: title,
+          body: body,
         },
         data: {
-          title: "RunnerBe : 모임 참여 요청 전달",
-          body:
-            getDeviceTokenRows[0].nickName +
-            `님, 작성한 ["` +
-            title +
-            `"]을 다른 러너가 신청했어요! 확인하러 가볼까요?`,
+          title: title,
+          body: body,
         },
         token: getDeviceTokenRows[0].deviceToken,
       };
 
+      //푸쉬알림 발송
       admin
         .messaging()
         .send(message)
@@ -81,6 +83,13 @@ exports.sendRequest = async function (postId, userId) {
           console.log("Error Sending message!!! : ", err);
           return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
         });
+
+      const savePushalarm = await runningDao.savePushalarm(
+        connection,
+        repUserId,
+        title,
+        body
+      );
     }
 
     return 0;

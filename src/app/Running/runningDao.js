@@ -96,6 +96,16 @@ async function checkPushOn(connection, userId) {
 
   return row[0].pushOn;
 }
+//푸쉬알림 메시지 저장
+async function savePushalarm(connection, repUserId, title, body) {
+  const query = `
+  INSERT INTO Alarm (userId, title, content) VALUES (?,?,?);
+                          `;
+
+  const row = await connection.query(query, repUserId, title, body);
+
+  return row;
+}
 module.exports = {
   sendRequest,
   handleRequest,
@@ -105,4 +115,5 @@ module.exports = {
   updateU,
   getTitle,
   checkPushOn,
+  savePushalarm,
 };
