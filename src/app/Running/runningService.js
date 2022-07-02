@@ -84,7 +84,7 @@ exports.sendRequest = async function (postId, userId) {
           return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
         });
 
-      const savePushalarm = await runningDao.savePushalarm(
+      await runningDao.savePushalarm(
         connection,
         repUserId,
         titleInstance,
