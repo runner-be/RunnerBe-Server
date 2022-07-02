@@ -97,12 +97,12 @@ async function checkPushOn(connection, userId) {
   return row[0].pushOn;
 }
 //푸쉬알림 메시지 저장
-async function savePushalarm(connection, repUserId, title, body) {
+async function savePushalarm(connection, repUserId, titleInstance, content) {
   const query = `
   INSERT INTO Alarm (userId, title, content) VALUES (?,?,?);
                           `;
 
-  const row = await connection.query(query, repUserId, title, body);
+  const row = await connection.query(query, repUserId, titleInstance, content);
 
   return row;
 }

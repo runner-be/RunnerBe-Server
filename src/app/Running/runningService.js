@@ -51,8 +51,8 @@ exports.sendRequest = async function (postId, userId) {
         return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
 
       //title, body 설정
-      const title = "RunnerBe : 모임 참여 요청 전달";
-      const body =
+      const titleInstance = "RunnerBe : 모임 참여 요청 전달";
+      const content =
         getDeviceTokenRows[0].nickName +
         `님, 작성한 ["` +
         title +
@@ -61,12 +61,12 @@ exports.sendRequest = async function (postId, userId) {
       //푸쉬알림 메시지 설정
       let message = {
         notification: {
-          title: title,
-          body: body,
+          title: titleInstance,
+          body: content,
         },
         data: {
-          title: title,
-          body: body,
+          title: titleInstance,
+          body: content,
         },
         token: getDeviceTokenRows[0].deviceToken,
       };
@@ -87,8 +87,8 @@ exports.sendRequest = async function (postId, userId) {
       const savePushalarm = await runningDao.savePushalarm(
         connection,
         repUserId,
-        title,
-        body
+        titleInstance,
+        content
       );
     }
 
