@@ -84,6 +84,7 @@ exports.sendRequest = async function (postId, userId) {
           return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
         });
 
+      //메시지 저장
       await runningDao.savePushalarm(
         connection,
         repUserId,
@@ -134,25 +135,28 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
 
       //수락 push alarm
       if (whetherAccept == "Y") {
+        //title, body 설정
+        const titleInstance = "RunnerBe : 모임 신청 승인";
+        const content =
+          getDeviceTokenRows[0].nickName +
+          `님, ["` +
+          title +
+          `"]이 승인되었어요! 신나게 달릴 준비를 해볼까요?`;
+
+        //푸쉬알림 메시지 설정
         let message = {
           notification: {
-            title: "RunnerBe : 모임 신청 승인",
-            body:
-              getDeviceTokenRows[0].nickName +
-              `님, ["` +
-              title +
-              `"]이 승인되었어요! 신나게 달릴 준비를 해볼까요?`,
+            title: titleInstance,
+            body: content,
           },
           data: {
-            title: "RunnerBe : 모임 신청 승인",
-            body:
-              getDeviceTokenRows[0].nickName +
-              `님, ["` +
-              title +
-              `"]이 승인되었어요! 신나게 달릴 준비를 해볼까요?`,
+            title: titleInstance,
+            body: content,
           },
           token: getDeviceTokenRows[0].deviceToken,
         };
+
+        //푸쉬알림 발송
         admin
           .messaging()
           .send(message)
@@ -164,26 +168,37 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
             console.log("Error Sending message!!! : ", err);
             return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
           });
+
+        //메시지 저장
+        await runningDao.savePushalarm(
+          connection,
+          applicantId,
+          titleInstance,
+          content
+        );
       } else {
+        //title, body 설정
+        const titleInstance = "RunnerBe : 모임 신청 거절";
+        const content =
+          getDeviceTokenRows[0].nickName +
+          `님, ["` +
+          title +
+          `"]이 승인되지 않았네요. 아쉽지만 다른 모임을 찾아보는 것이 어떨까요?`;
+
+        //푸쉬알림 메시지 설정
         let message = {
           notification: {
-            title: "RunnerBe : 모임 신청 거절",
-            body:
-              getDeviceTokenRows[0].nickName +
-              `님, ["` +
-              title +
-              `"]이 승인되지 않았네요. 아쉽지만 다른 모임을 찾아보는 것이 어떨까요?`,
+            title: titleInstance,
+            body: content,
           },
           data: {
-            title: "RunnerBe : 모임 신청 거절",
-            body:
-              getDeviceTokenRows[0].nickName +
-              `님, ["` +
-              title +
-              `"]이 승인되지 않았네요. 아쉽지만 다른 모임을 찾아보는 것이 어떨까요?`,
+            title: titleInstance,
+            body: content,
           },
           token: getDeviceTokenRows[0].deviceToken,
         };
+
+        //푸쉬알림 발송
         admin
           .messaging()
           .send(message)
@@ -195,6 +210,14 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
             console.log("Error Sending message!!! : ", err);
             return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
           });
+
+        //메시지 저장
+        await runningDao.savePushalarm(
+          connection,
+          applicantId,
+          titleInstance,
+          content
+        );
       }
     }
 
@@ -237,22 +260,26 @@ exports.attend = async function (postId, userId) {
       if (getDeviceTokenRows.length === 0)
         return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
 
+      //title, body 설정
+      const titleInstance = "RunnerBe : 출석체크 완료";
+      const content =
+        getDeviceTokenRows[0].nickName +
+        `님, 출석이 완료됐어요! 즐거운 러닝을 시작해볼까요?`;
+
+      //푸쉬알림 메시지 설정
       let message = {
         notification: {
-          title: "RunnerBe : 출석체크 완료",
-          body:
-            getDeviceTokenRows[0].nickName +
-            `님, 출석이 완료됐어요! 즐거운 러닝을 시작해볼까요?`,
+          title: titleInstance,
+          body: content,
         },
         data: {
-          title: "RunnerBe : 출석체크 완료",
-          body:
-            getDeviceTokenRows[0].nickName +
-            `님, 출석이 완료됐어요! 즐거운 러닝을 시작해볼까요?`,
+          title: titleInstance,
+          body: content,
         },
         token: getDeviceTokenRows[0].deviceToken,
       };
 
+      //푸쉬알림 발송
       admin
         .messaging()
         .send(message)
@@ -264,6 +291,14 @@ exports.attend = async function (postId, userId) {
           console.log("Error Sending message!!! : ", err);
           return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
         });
+
+      //메시지 저장
+      await runningDao.savePushalarm(
+        connection,
+        repUserId,
+        titleInstance,
+        content
+      );
     }
 
     return 0;
