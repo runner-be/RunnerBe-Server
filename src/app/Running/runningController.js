@@ -178,26 +178,33 @@ exports.handleRequest = async function (req, res) {
 /**
  * API No. 27
  * API Name : 출석하기 API
- * [PATCH] /runnings/:postId/attendees/:userId
+ * [PATCH] /runnings/:postId/attend/:runnerId/:whetherAttend
  */
 exports.attend = async function (req, res) {
   /**
    * Header : jwt
-   * Path Variable : postId, userId
+   * Path Variable : postId, runnerId, whetherAttend
    */
   const postId = req.params.postId;
-  const userId = req.params.userId;
-  const userIdFromJWT = req.verifiedToken.userId;
+  const userId = req.params.runnerId;
+  const whetherAttend = req.params.whetherAttend;
 
   // 필수 값 : 빈 값 체크 (text를 제외한 나머지)
   if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
   if (!postId) return res.send(response(baseResponse.POSTID_EMPTY));
+  if (!whetherAttend)
+    return res.send(response(baseResponse.WHETHER_ATTEND_EMPTY));
 
   // 숫자 확인
   if (isNaN(userId) === true)
     return res.send(response(baseResponse.USER_USERID_NOTNUM));
   if (isNaN(postId) === true)
     return res.send(response(baseResponse.POSTID_NOTNUM));
+
+  //유효성 검사
+  const whetherAttendList = ["Y", "N"];
+  if (!whetherAttendList.includes(whetherAttend))
+    return res.send(response(baseResponse.WHETHER_ATTEND_IS_NOT_VALID));
 
   // 해당 유저가 러닝에 속하는지 확인
   const checkAlreadyapplyNotD = await messageProvider.checkAlreadyapplyNotD(
@@ -208,29 +215,7 @@ exports.attend = async function (req, res) {
     return res.send(response(baseResponse.USER_NOT_BELONG_RUNNING));
   }
 
-  //jwt로 userId 확인
-  if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
-  } else {
-    // 인증 대기 회원 확인
-    const checkUserAuth = await userProvider.checkUserAuth(userId);
-    if (checkUserAuth.length === 0) {
-      return res.send(response(baseResponse.USER_NON_AUTH));
-    }
-    const Response = await runningService.attend(postId, userId);
+  const Response = await runningService.attend(postId, userId, whetherAttend);
 
-    return res.send(response(baseResponse.SUCCESS));
-  }
-};
-
-exports.test = async function (req, res) {
-  const repUserId = req.params.repUserId;
-  const connection = await pool.getConnection(async (conn) => conn);
-  const Response = await runningDao.checkPushOn(connection, repUserId);
-
-  if (Response == "N") {
-    return res.send(response(baseResponse.SUCCESS, Response));
-  } else {
-    return res.send(response(baseResponse.SUCCESS, 100));
-  }
+  return res.send(response(baseResponse.SUCCESS));
 };

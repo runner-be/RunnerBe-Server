@@ -629,6 +629,18 @@ module.exports = {
     code: 2089,
     message: "pushOn 값은 Y나 N로 입력해주세요.",
   },
+
+  WHETHER_ATTEND_EMPTY: {
+    isSuccess: false,
+    code: 2090,
+    message: "whetherAttend 값을 입력해주세요.",
+  },
+
+  WHETHER_ATTEND_IS_NOT_VALID: {
+    isSuccess: false,
+    code: 2091,
+    message: "whetherAttend 값은 Y나 N로 입력해주세요.",
+  },
   // ----------------------------
 
   // Response error

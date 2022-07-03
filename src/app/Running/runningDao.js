@@ -51,10 +51,21 @@ async function getDeviceToken(connection, userId) {
 }
 
 // RP에 참석여부 업데이트
-async function updateR(connection, updateParams) {
+async function updateRPY(connection, updateParams) {
   const query = `
   UPDATE RunningPeople
   SET attendance = 1 AND whetherCheck = 'Y'
+  WHERE userId = ? AND gatheringId = (SELECT gatheringId FROM Running WHERE postId = ?);
+                          `;
+
+  const row = await connection.query(query, updateParams);
+
+  return row;
+}
+async function updateRPN(connection, updateParams) {
+  const query = `
+  UPDATE RunningPeople
+  SET attendance = 0 AND whetherCheck = 'Y'
   WHERE userId = ? AND gatheringId = (SELECT gatheringId FROM Running WHERE postId = ?);
                           `;
 
@@ -111,7 +122,8 @@ module.exports = {
   handleRequest,
   checkApplicant,
   getDeviceToken,
-  updateR,
+  updateRPY,
+  updateRPN,
   updateU,
   getTitle,
   checkPushOn,
