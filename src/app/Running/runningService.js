@@ -233,7 +233,7 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
 };
 
 // 출석하기
-exports.attend = async function (postId, userId) {
+exports.attend = async function (postId, userId, whetherAttend) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
@@ -241,14 +241,16 @@ exports.attend = async function (postId, userId) {
 
     //RunningPeople에 참석여부 업데이트
     const updateParams = [userId, postId];
-    const updateRunningA = await runningDao.updateR(connection, updateParams);
+    if (whetherAttend == "Y") {
+      await runningDao.updateRPY(connection, updateParams);
+    } else {
+      await runningDao.updateRPN(connection, updateParams);
+    }
 
     //유저의 성실도 업데이트
     const updateParamsU = [userId, userId];
-    const updateUserA = await runningDao.updateU(connection, updateParamsU);
+    await runningDao.updateU(connection, updateParamsU);
 
-    //commit
-    await connection.commit();
     //수신 여부 확인
     const pushOn = await runningDao.checkPushOn(connection, userId);
     if (pushOn == "Y") {
@@ -295,11 +297,14 @@ exports.attend = async function (postId, userId) {
       //메시지 저장
       await runningDao.savePushalarm(
         connection,
-        repUserId,
+        userId,
         titleInstance,
         content
       );
     }
+
+    //commit
+    await connection.commit();
 
     return 0;
   } catch (err) {
