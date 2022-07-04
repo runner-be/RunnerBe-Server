@@ -67,4 +67,7 @@ module.exports = function (app) {
 
   // 36. 푸쉬알림 수신 여부 설정 API
   app.patch("/users/:userId/push-alarm/:pushOn", user.pushOnOff);
+
+  // 37. 알림 메시지 목록 API
+  app.get("/users/alarms", jwtMiddleware, user.getMyAlarms);
 };
