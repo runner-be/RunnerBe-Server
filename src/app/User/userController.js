@@ -1124,7 +1124,7 @@ exports.getMyAlarms = async function (req, res) {
     return res.send(response(baseResponse.USER_USERID_NOTNUM));
 
   // 인증 대기 회원 확인
-  const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+  const checkUserAuth = await userProvider.checkUserAuth(userId);
   if (checkUserAuth.length === 0) {
     return res.send(response(baseResponse.USER_NON_AUTH));
   }

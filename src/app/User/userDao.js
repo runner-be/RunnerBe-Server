@@ -776,7 +776,7 @@ async function patchPushOn(connection, patchPushOnParams) {
 // 알림 메시지 목록 가져오기
 async function getMyAlarms(connection, userId) {
   const Query = `
-      Select alarmId, userId, createdAt, title, content From Alarm Where userId = ?;
+      Select alarmId, userId, createdAt, title, content, whetherRead From Alarm Where userId = ?;
                  `;
   const Row = await connection.query(Query, userId);
 
