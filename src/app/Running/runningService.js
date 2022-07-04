@@ -242,66 +242,120 @@ exports.attend = async function (postId, userId, whetherAttend) {
     //RunningPeople에 참석여부 업데이트
     const updateParams = [userId, postId];
     if (whetherAttend == "Y") {
+      //update RP if user attend
       await runningDao.updateRPY(connection, updateParams);
+
+      //수신 여부 확인
+      const pushOn = await runningDao.checkPushOn(connection, userId);
+      if (pushOn == "Y") {
+        //start push alarm
+        const getDeviceTokenRows = await runningDao.getDeviceToken(
+          connection,
+          userId
+        );
+        if (getDeviceTokenRows.length === 0)
+          return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
+
+        //title, body 설정
+        const titleInstance = "RunnerBe : 출석 완료";
+        const content =
+          getDeviceTokenRows[0].nickName +
+          `님, 출석이 완료됐어요! 즐거운 러닝을 시작해볼까요?`;
+
+        //푸쉬알림 메시지 설정
+        let message = {
+          notification: {
+            title: titleInstance,
+            body: content,
+          },
+          data: {
+            title: titleInstance,
+            body: content,
+          },
+          token: getDeviceTokenRows[0].deviceToken,
+        };
+
+        //푸쉬알림 발송
+        admin
+          .messaging()
+          .send(message)
+          .then(function (id) {
+            console.log("Successfully sent message: : ", id);
+            return 0;
+          })
+          .catch(function (err) {
+            console.log("Error Sending message!!! : ", err);
+            return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+          });
+
+        //메시지 저장
+        await runningDao.savePushalarm(
+          connection,
+          userId,
+          titleInstance,
+          content
+        );
+      }
     } else {
+      //update RP if user didn't attend
       await runningDao.updateRPN(connection, updateParams);
+
+      //수신 여부 확인
+      const pushOn = await runningDao.checkPushOn(connection, userId);
+      if (pushOn == "Y") {
+        //start push alarm
+        const getDeviceTokenRows = await runningDao.getDeviceToken(
+          connection,
+          userId
+        );
+        if (getDeviceTokenRows.length === 0)
+          return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
+
+        //title, body 설정
+        const titleInstance = "RunnerBe : 출석 미완료";
+        const content =
+          getDeviceTokenRows[0].nickName +
+          `님, 러닝 모임에 불참하신 것 같아요. 다음에는 조금 더 분발해볼까요?`;
+
+        //푸쉬알림 메시지 설정
+        let message = {
+          notification: {
+            title: titleInstance,
+            body: content,
+          },
+          data: {
+            title: titleInstance,
+            body: content,
+          },
+          token: getDeviceTokenRows[0].deviceToken,
+        };
+
+        //푸쉬알림 발송
+        admin
+          .messaging()
+          .send(message)
+          .then(function (id) {
+            console.log("Successfully sent message: : ", id);
+            return 0;
+          })
+          .catch(function (err) {
+            console.log("Error Sending message!!! : ", err);
+            return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+          });
+
+        //메시지 저장
+        await runningDao.savePushalarm(
+          connection,
+          userId,
+          titleInstance,
+          content
+        );
+      }
     }
 
     //유저의 성실도 업데이트
     const updateParamsU = [userId, userId];
     await runningDao.updateU(connection, updateParamsU);
-
-    //수신 여부 확인
-    const pushOn = await runningDao.checkPushOn(connection, userId);
-    if (pushOn == "Y") {
-      //start push alarm
-      const getDeviceTokenRows = await runningDao.getDeviceToken(
-        connection,
-        userId
-      );
-      if (getDeviceTokenRows.length === 0)
-        return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
-
-      //title, body 설정
-      const titleInstance = "RunnerBe : 출석체크 완료";
-      const content =
-        getDeviceTokenRows[0].nickName +
-        `님, 출석이 완료됐어요! 즐거운 러닝을 시작해볼까요?`;
-
-      //푸쉬알림 메시지 설정
-      let message = {
-        notification: {
-          title: titleInstance,
-          body: content,
-        },
-        data: {
-          title: titleInstance,
-          body: content,
-        },
-        token: getDeviceTokenRows[0].deviceToken,
-      };
-
-      //푸쉬알림 발송
-      admin
-        .messaging()
-        .send(message)
-        .then(function (id) {
-          console.log("Successfully sent message: : ", id);
-          return 0;
-        })
-        .catch(function (err) {
-          console.log("Error Sending message!!! : ", err);
-          return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
-        });
-
-      //메시지 저장
-      await runningDao.savePushalarm(
-        connection,
-        userId,
-        titleInstance,
-        content
-      );
-    }
 
     //commit
     await connection.commit();
