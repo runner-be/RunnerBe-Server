@@ -773,6 +773,26 @@ async function patchPushOn(connection, patchPushOnParams) {
   return Row;
 }
 
+// 알림 메시지 목록 가져오기
+async function getMyAlarms(connection, userId) {
+  const Query = `
+      Select alarmId, userId, createdAt, title, content From Alarm Where userId = ?;
+                 `;
+  const Row = await connection.query(Query, userId);
+
+  return Row[0];
+}
+
+// 읽음 처리
+async function changeWhetherRead(connection, userId) {
+  const Query = `
+      UPDATE Alarm SET whetherRead = 'Y' where userId = ?;
+                 `;
+  const Row = await connection.query(Query, userId);
+
+  return Row;
+}
+
 module.exports = {
   selectUser,
   deleteUser,
@@ -814,4 +834,6 @@ module.exports = {
   getProfileUrl,
   getRunningInfo,
   patchPushOn,
+  getMyAlarms,
+  changeWhetherRead,
 };

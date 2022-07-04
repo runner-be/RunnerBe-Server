@@ -1107,3 +1107,29 @@ exports.pushOnOff = async function (req, res) {
   const patchPushOnResponse = await userService.patchPushOn(pushOn, userId);
   return res.send(patchPushOnResponse);
 };
+
+/**
+ * API No. 37
+ * API Name : 알림 메시지 목록
+ * [GET] /users/alarms
+ * Header : jwt
+ */
+exports.getMyAlarms = async function (req, res) {
+  const userId = req.verifiedToken.userId;
+
+  // 빈 값 체크
+  if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+  // 숫자 확인
+  if (isNaN(userId) === true)
+    return res.send(response(baseResponse.USER_USERID_NOTNUM));
+
+  // 인증 대기 회원 확인
+  const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+  if (checkUserAuth.length === 0) {
+    return res.send(response(baseResponse.USER_NON_AUTH));
+  }
+
+  //알림 메시지 목록 조회 및 읽음 처리
+  const getMyAlarmsResult = await userService.getMyAlarms(userId);
+  return res.send(response(baseResponse.SUCCESS, getMyAlarmsResult));
+};

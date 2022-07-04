@@ -400,3 +400,30 @@ exports.patchPushOn = async function (pushOn, userId) {
     connection.release();
   }
 };
+
+// 알림 메시지 목록 조회 및 읽음 처리
+exports.getMyAlarms = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    //start Transaction
+    connection.beginTransaction();
+
+    //알림 메시지 목록
+    const alarmList = await userDao.getMyAlarms(connection, userId);
+
+    //읽음 처리
+    await userDao.changeWhetherRead(connection, userId);
+
+    //commit
+    await connection.commit();
+
+    return alarmList;
+  } catch (err) {
+    //rollback
+    await connection.rollback();
+    logger.error(`App - getMyAlarms Provider error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
