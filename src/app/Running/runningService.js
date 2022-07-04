@@ -56,7 +56,7 @@ exports.sendRequest = async function (postId, userId) {
         getDeviceTokenRows[0].nickName +
         `님, 작성한 ["` +
         title +
-        `"]을 다른 러너가 신청했어요! 확인하러 가볼까요?`;
+        `"]에 다른 러너가 신청했어요! 모임글 페이지로 확인하러 가볼까요?`;
 
       //푸쉬알림 메시지 설정
       let message = {
@@ -141,7 +141,7 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
           getDeviceTokenRows[0].nickName +
           `님, ["` +
           title +
-          `"]이 승인되었어요! 신나게 달릴 준비를 해볼까요?`;
+          `"] 참여가 승인되었어요! 신나게 달릴 준비를 해볼까요?`;
 
         //푸쉬알림 메시지 설정
         let message = {
@@ -183,7 +183,7 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
           getDeviceTokenRows[0].nickName +
           `님, ["` +
           title +
-          `"]이 승인되지 않았네요. 아쉽지만 다른 모임을 찾아보는 것이 어떨까요?`;
+          `"] 참여가 승인되지 않았네요. 아쉽지만 다른 모임을 찾아보는 것이 어떨까요?`;
 
         //푸쉬알림 메시지 설정
         let message = {
