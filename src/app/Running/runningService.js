@@ -176,6 +176,10 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
           titleInstance,
           content
         );
+
+        //대화방에 초대
+        const roomId = await messageDao.getRoomId(connection, postId);
+        await messageDao.insertUserPerRoom(connection, [roomId, applicantId]);
       } else {
         //title, body 설정
         const titleInstance = "RunnerBe : 모임 신청 거절";

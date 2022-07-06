@@ -113,7 +113,11 @@ async function savePushalarm(connection, repUserId, titleInstance, content) {
   INSERT INTO Alarm (userId, title, content) VALUES (?,?,?);
                           `;
 
-  const row = await connection.query(query, repUserId, titleInstance, content);
+  const row = await connection.query(query, [
+    repUserId,
+    titleInstance,
+    content,
+  ]);
 
   return row;
 }

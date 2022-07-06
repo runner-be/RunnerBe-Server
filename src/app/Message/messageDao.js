@@ -21,15 +21,22 @@ async function createRoom(connection, postId) {
 
 // UPR에 추가
 async function insertUserPerRoom(connection, insertUserPerRoomParams) {
-  const createRoomQuery = `
+  const Query = `
         INSERT INTO UserPerRoom (roomId, userId) VALUES (?,?);
                    `;
-  const createRoomRow = await connection.query(
-    createRoomQuery,
-    insertUserPerRoomParams
-  );
+  const Row = await connection.query(Query, insertUserPerRoomParams);
 
-  return createRoomRow;
+  return Row;
+}
+// roomId 가져오기
+async function getRoomId(connection, postId) {
+  const query = `
+    select roomId FROM Room where postId = ?;
+                    `;
+
+  const row = await connection.query(query, postId);
+
+  return row[0][0]["roomId"];
 }
 
 // 이전에 참여신청해서 거절당했는지 확인
@@ -269,4 +276,5 @@ module.exports = {
   checkUserInRoom,
   checkApplyChanged,
   insertUserPerRoom,
+  getRoomId,
 };
