@@ -131,25 +131,18 @@ async function MPR(connection, MPRParams) {
   return MPRRow;
 }
 
-// 쪽지 목록창 조회
-async function getMessageList(connection, userId) {
+// 대화방 목록창 조회
+async function getRoomList(connection, userId) {
   const query = `
-  SELECT R.roomId, title, counterId, nickName, profileImageUrl
-  FROM Room R
-  INNER JOIN Posting P on R.postId = P.postId
-  INNER JOIN (SELECT roomId, case when receiverId = ${userId} then senderId
-              when senderId = ${userId} then receiverId
-      end as counterId
-  FROM Room R
-  INNER JOIN Posting P on R.postId = P.postId
-  WHERE senderId = ${userId} or receiverId = ${userId}) D on D.roomId = R.roomId
-  INNER JOIN User U on U.userId = D.counterId
-  WHERE senderId = ${userId} or receiverId = ${userId};
+    SELECT R.roomId, title, nickName as repUserName, profileImageUrl, recentMessage FROM Room R
+    INNER JOIN Posting P on R.postId = P.postId
+    INNER JOIN User U on U.userId = P.postUserId
+    INNER JOIN UserPerRoom UPR on R.roomId = UPR.roomId
+    where UPR.userId = ?;
                           `;
+  const row = await connection.query(query, userId);
 
-  const row = await connection.query(query);
-
-  return row;
+  return row[0];
 }
 
 // 대화방 myChat
@@ -185,7 +178,7 @@ async function getRoomInfo(connection, roomId) {
 
   const row = await connection.query(query, roomId);
 
-  return row;
+  return row[0];
 }
 
 // 읽음 처리
@@ -255,6 +248,43 @@ async function checkApplyChanged(connection, roomId) {
 
   return row;
 }
+
+// 메시지 리스트 가져오기
+async function getMessageList(connection, getMessageListParams) {
+  const query = `
+    SELECT messageId, content, M.createdAt, U.userId, nickName, profileImageUrl,
+    case when U.userId = ? then 'Me' else 'Others' end as messageFrom,
+    case when U.userId = postUserId then 'Y' else 'N' end as whetherPostUser
+    FROM Message M
+    INNER JOIN User U on M.userId = U.userId
+    INNER JOIN Room R on M.roomId = R.roomId
+    INNER JOIN Posting P on R.postId = P.postId
+    WHERE M.roomId = ?;
+                                      `;
+  const row = await connection.query(query, getMessageListParams);
+
+  return row[0];
+}
+
+// recentMessage Y로 변경
+async function updateRecentMessageY(connection, roomId) {
+  const query = `
+        UPDATE UserPerRoom SET recentMessage = 'Y' where roomId = ?;
+                                      `;
+  const row = await connection.query(query, roomId);
+
+  return row;
+}
+
+// 조회한 사람은 recentMessage N로 변경
+async function updateRecentMessageN(connection, updateRecentMessageNParams) {
+  const query = `
+        UPDATE UserPerRoom SET recentMessage = 'N' where roomId = ? and userId = ?;
+                                        `;
+  const row = await connection.query(query, updateRecentMessageNParams);
+
+  return row;
+}
 module.exports = {
   getRepUserId,
   createRoom,
@@ -266,7 +296,7 @@ module.exports = {
   getReceiver,
   sendMessage,
   MPR,
-  getMessageList,
+  getRoomList,
   getChat,
   getRoomInfo,
   reading,
@@ -277,4 +307,7 @@ module.exports = {
   checkApplyChanged,
   insertUserPerRoom,
   getRoomId,
+  updateRecentMessageY,
+  updateRecentMessageN,
+  getMessageList,
 };
