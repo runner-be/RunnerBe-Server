@@ -403,7 +403,7 @@ module.exports = {
   CONTENT_LENGTH: {
     isSuccess: false,
     code: 2050,
-    message: "content는 100자 이내로 입력해주세요.",
+    message: "content는 300자 이내로 입력해주세요.",
   },
 
   MESSAGE_NOT_MATCH_USERID: {

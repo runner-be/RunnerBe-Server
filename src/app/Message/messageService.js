@@ -8,25 +8,34 @@ const { errResponse } = require("../../../config/response");
 const { connect } = require("http2");
 const res = require("express/lib/response");
 
-// 쪽지 보내기
-exports.sendMessage = async function (roomId, senderId, receiverId, content) {
+// 메시지 전송
+exports.sendMessage = async function (roomId, userId, content) {
+  const connection = await pool.getConnection(async (conn) => conn);
   try {
-    const connection = await pool.getConnection(async (conn) => conn);
-    const sendMessageParams = [senderId, receiverId, content];
-    const sendMessageResult = await messageDao.sendMessage(
-      connection,
-      sendMessageParams
-    );
+    //start Transaction
+    connection.beginTransaction();
 
-    const messageId = sendMessageResult.insertId;
-    const MPRParams = [roomId, messageId];
-    const messagePerRoom = await messageDao.MPR(connection, MPRParams);
+    //메시지 전송
+    await messageDao.sendMessage(connection, [userId, roomId, content]);
+
+    //나머지 사람들의 recentMessage를 Y로 변경
+    //1. 모두 Y로 변경
+    await messageDao.updateRecentMessageY(connection, roomId);
+    //2.현재 유저의 recentMessage을 N으로 변경
+    await messageDao.updateRecentMessageN(connection, [roomId, userId]);
+
+    //commit
+    await connection.commit();
 
     connection.release();
 
-    return sendMessageResult;
+    return 0;
   } catch (err) {
+    //rollback
+    await connection.rollback();
     logger.error(`App - sendMessage Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
   }
 };
