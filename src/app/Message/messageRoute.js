@@ -8,10 +8,6 @@ module.exports = function (app) {
   // 39. 대화방 상세 페이지 API
   app.get("/messages/rooms/:roomId", jwtMiddleware, message.getRoom);
 
-  // 14. 쪽지 보내기 API
-  app.post(
-    "/messages/:roomId/users/:userId",
-    jwtMiddleware,
-    message.sendMessage
-  );
+  // 40. 메시지 전송 API
+  app.post("/messages/rooms/:roomId", jwtMiddleware, message.sendMessage);
 };

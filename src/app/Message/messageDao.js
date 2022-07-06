@@ -113,13 +113,10 @@ async function checkReceiver(connection, senderParams) {
 // 쪽지 보내기 sendMessage
 async function sendMessage(connection, sendMessageParams) {
   const sendMessageQuery = `
-        INSERT INTO Message (senderId, receiverId, content) VALUES (?,?,?);
+        INSERT INTO Message (userId, roomId, content) VALUES (?,?,?);
                      `;
-  const [sendMessageRow] = await connection.query(
-    sendMessageQuery,
-    sendMessageParams
-  );
-  return sendMessageRow;
+  await connection.query(sendMessageQuery, sendMessageParams);
+  return 0;
 }
 
 // MPR
