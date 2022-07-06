@@ -2,6 +2,7 @@ const { logger } = require("../../../config/winston");
 const { pool } = require("../../../config/database");
 const postingProvider = require("./postingProvider");
 const postingDao = require("./postingDao");
+const messageDao = require("../Message/messageDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
@@ -54,8 +55,8 @@ exports.createPosting = async function (
       insertPostingParams
     );
 
-    const insertId = createPostingResult[0].insertId; //위 쿼리에서 A.I로 생성된 postId
-    const createRunningParams = [userId, insertId];
+    const postId = createPostingResult[0].insertId; //위 쿼리에서 A.I로 생성된 postId
+    const createRunningParams = [userId, postId];
 
     //러닝 모임 생성
     const createRunning = await postingDao.createRunning(
@@ -66,10 +67,15 @@ exports.createPosting = async function (
     //방장 모임 인원에 추가
     const insertRunningId = createRunning[0].insertId;
     const insertRunningPeopleParams = [insertRunningId, userId];
-    const createRunningPeople = await postingDao.createRunningPeople(
-      connection,
-      insertRunningPeopleParams
-    );
+    await postingDao.createRunningPeople(connection, insertRunningPeopleParams);
+
+    // 대화방 생성
+    const createRoom = await messageDao.createRoom(connection, postId);
+
+    // 방장 대화방에 추가
+    const roomId = createRoom[0].insertId;
+    const insertUserPerRoomParams = [roomId, userId];
+    await messageDao.insertUserPerRoom(connection, insertUserPerRoomParams);
 
     //commit
     await connection.commit();
