@@ -1117,11 +1117,11 @@ exports.pushOnOff = async function (req, res) {
 exports.getMyAlarms = async function (req, res) {
   const userId = req.verifiedToken.userId;
 
-  // 빈 값 체크
-  if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
-  // 숫자 확인
-  if (isNaN(userId) === true)
-    return res.send(response(baseResponse.USER_USERID_NOTNUM));
+  // // 빈 값 체크   jwt로 가져오므로 할 필요가 없다
+  // if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+  // // 숫자 확인
+  // if (isNaN(userId) === true)
+  //   return res.send(response(baseResponse.USER_USERID_NOTNUM));
 
   // 인증 대기 회원 확인
   const checkUserAuth = await userProvider.checkUserAuth(userId);
