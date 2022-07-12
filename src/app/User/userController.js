@@ -122,8 +122,7 @@ exports.kakaoLogin = async function (req, res) {
       );
     }
   } catch (err) {
-    res.send(errResponse(baseResponse.SUCCESS, err));
-    return errResponse(baseResponse.DB_ERROR);
+    return res.send(errResponse(baseResponse.DB_ERROR, err));
   }
 };
 
@@ -193,8 +192,7 @@ exports.naverLogin = async function (req, res) {
       );
     }
   } catch (err) {
-    res.send(errResponse(baseResponse.SUCCESS, err));
-    return errResponse(baseResponse.DB_ERROR);
+    return res.send(errResponse(baseResponse.DB_ERROR, err));
   }
 };
 
@@ -300,7 +298,7 @@ exports.patchUserName = async function (req, res) {
     return res.send(response(baseResponse.USER_USERID_NOTNUM));
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
@@ -527,7 +525,7 @@ exports.addBM = async function (req, res) {
 
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userId);
@@ -563,7 +561,7 @@ exports.getBM = async function (req, res) {
 
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userId);
@@ -596,7 +594,7 @@ exports.patchUserImage = async function (req, res) {
     return res.send(response(baseResponse.USER_USERID_NOTNUM));
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
@@ -656,7 +654,7 @@ exports.patchUserJob = async function (req, res) {
 
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
@@ -686,7 +684,7 @@ exports.getMyPage = async function (req, res) {
     return res.send(response(baseResponse.USER_USERID_NOTNUM));
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
@@ -752,8 +750,7 @@ exports.appleLogin = async function (req, res) {
       );
     }
   } catch (err) {
-    res.send(errResponse(baseResponse.SUCCESS, err));
-    return errResponse(baseResponse.DB_ERROR);
+    return res.send(errResponse(baseResponse.DB_ERROR, err));
   }
 };
 
@@ -975,7 +972,7 @@ exports.getBM2 = async function (req, res) {
 
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userId);
@@ -1006,7 +1003,7 @@ exports.getMyPage2 = async function (req, res) {
     return res.send(response(baseResponse.USER_USERID_NOTNUM));
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);

@@ -41,7 +41,7 @@ exports.getRoom = async function (req, res) {
 
   const getRoomResponse = await messageProvider.getRoom(roomId, userId);
 
-  res.send(response(baseResponse.SUCCESS, getRoomResponse));
+  return res.send(response(baseResponse.SUCCESS, getRoomResponse));
 };
 
 /**
