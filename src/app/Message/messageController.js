@@ -62,8 +62,6 @@ exports.sendMessage = async function (req, res) {
   if (!content) return res.send(response(baseResponse.CONTENT_EMPTY));
 
   // 숫자 확인
-  if (isNaN(userId) === true)
-    return res.send(response(baseResponse.USER_USERID_NOTNUM));
   if (isNaN(roomId) === true)
     return res.send(response(baseResponse.ROOM_ID_NOTNUM));
 
