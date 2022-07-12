@@ -572,7 +572,8 @@ module.exports = {
   USER_NOT_BELONG_RUNNING: {
     isSuccess: false,
     code: 2077,
-    message: "유저가 해당 러닝모임에 속하지 않습니다.",
+    message:
+      "유저가 해당 러닝모임에 속하지 않습니다. userId를 정확히 입력해주세요.",
   },
 
   CANNOT_CHANGE_JOB: {
@@ -640,6 +641,12 @@ module.exports = {
     isSuccess: false,
     code: 2091,
     message: "whetherAttend 값은 Y나 N로 입력해주세요.",
+  },
+
+  USERID_AND_WHETHER_ATTEND_NOT_MATCH: {
+    isSuccess: false,
+    code: 2092,
+    message: "유저 수와 출석 여부 개수가 일치하지 않습니다.",
   },
   // ----------------------------
 
