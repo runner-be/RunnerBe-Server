@@ -9,39 +9,6 @@ const { logger } = require("../../../config/winston");
 const { emit } = require("nodemon");
 
 /**
- * API No. 40
- * API Name : 메시지 전송 API
- * [POST] /messages/rooms/:roomId
- * Header : jwt
- * Path Variable : roomId
- * body : content
- */
-exports.sendMessage = async function (req, res) {
-  const roomId = req.params.roomId;
-  const userId = req.verifiedToken.userId;
-  const content = req.body.content;
-
-  // 빈 값 체크
-  if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
-  if (!roomId) return res.send(response(baseResponse.ROOM_ID_EMPTY));
-  if (!content) return res.send(response(baseResponse.CONTENT_EMPTY));
-
-  // 숫자 확인
-  if (isNaN(userId) === true)
-    return res.send(response(baseResponse.USER_USERID_NOTNUM));
-  if (isNaN(roomId) === true)
-    return res.send(response(baseResponse.ROOM_ID_NOTNUM));
-
-  // 길이 확인
-  if (content.length > 300)
-    return res.send(response(baseResponse.CONTENT_LENGTH));
-
-  await messageService.sendMessage(roomId, userId, content);
-
-  return res.send(response(baseResponse.SUCCESS));
-};
-
-/**
  * API No. 38
  * API Name : 대화방 목록창 API
  * [GET] /messages
@@ -74,5 +41,35 @@ exports.getRoom = async function (req, res) {
 
   const getRoomResponse = await messageProvider.getRoom(roomId, userId);
 
-  res.send(response(baseResponse.SUCCESS, getRoomResponse));
+  return res.send(response(baseResponse.SUCCESS, getRoomResponse));
+};
+
+/**
+ * API No. 40
+ * API Name : 메시지 전송 API
+ * [POST] /messages/rooms/:roomId
+ * Header : jwt
+ * Path Variable : roomId
+ * body : content
+ */
+exports.sendMessage = async function (req, res) {
+  const roomId = req.params.roomId;
+  const userId = req.verifiedToken.userId;
+  const content = req.body.content;
+
+  // 빈 값 체크
+  if (!roomId) return res.send(response(baseResponse.ROOM_ID_EMPTY));
+  if (!content) return res.send(response(baseResponse.CONTENT_EMPTY));
+
+  // 숫자 확인
+  if (isNaN(roomId) === true)
+    return res.send(response(baseResponse.ROOM_ID_NOTNUM));
+
+  // 길이 확인
+  if (content.length > 300)
+    return res.send(response(baseResponse.CONTENT_LENGTH));
+
+  await messageService.sendMessage(roomId, userId, content);
+
+  return res.send(response(baseResponse.SUCCESS));
 };

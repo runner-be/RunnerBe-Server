@@ -2,6 +2,7 @@ const jwtMiddleware = require("../../../config/jwtMiddleware");
 const runningProvider = require("../../app/Running/runningProvider");
 const userProvider = require("../../app/User/userProvider");
 const messageProvider = require("../../app/Message/messageProvider");
+const postingProvider = require("../../app/Posting/postingProvider");
 const runningService = require("../../app/Running/runningService");
 const runningDao = require("./runningDao");
 const baseResponse = require("../../../config/baseResponseStatus");
@@ -55,7 +56,7 @@ exports.sendRequest = async function (req, res) {
 
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userId);
@@ -121,7 +122,7 @@ exports.handleRequest = async function (req, res) {
 
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userId);
@@ -178,44 +179,63 @@ exports.handleRequest = async function (req, res) {
 /**
  * API No. 27
  * API Name : 출석하기 API
- * [PATCH] /runnings/:postId/attend/:runnerId/:whetherAttend
+ * [PATCH] /runnings/:postId/attend
  */
 exports.attend = async function (req, res) {
   /**
    * Header : jwt
-   * Path Variable : postId, runnerId, whetherAttend
+   * Body : userId와 whetherAttend의 Array
    */
+  const userIdFromJWT = req.verifiedToken.userId;
   const postId = req.params.postId;
-  const userId = req.params.runnerId;
-  const whetherAttend = req.params.whetherAttend;
+
+  const userIdBody = req.body.userId;
+  const userIdArray = userIdBody.split(",");
+  const IntUserIdArray = userIdArray.map((userId) => parseInt(userId));
+
+  const whetherAttendBody = req.body.whetherAttend;
+  const whetherAttendArray = whetherAttendBody.split(",");
+
+  //jwt가 작성자의 것인지 확인
+  const checkWriter = await postingProvider.checkWriter(postId, userIdFromJWT);
+  if (checkWriter.length == 0) {
+    return res.send(response(baseResponse.USER_NOT_WRITER));
+  }
 
   // 필수 값 : 빈 값 체크 (text를 제외한 나머지)
-  if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
   if (!postId) return res.send(response(baseResponse.POSTID_EMPTY));
-  if (!whetherAttend)
+  if (!userIdBody) return res.send(response(baseResponse.USER_USERID_EMPTY));
+  if (!whetherAttendBody)
     return res.send(response(baseResponse.WHETHER_ATTEND_EMPTY));
 
   // 숫자 확인
-  if (isNaN(userId) === true)
-    return res.send(response(baseResponse.USER_USERID_NOTNUM));
   if (isNaN(postId) === true)
     return res.send(response(baseResponse.POSTID_NOTNUM));
 
-  //유효성 검사
-  const whetherAttendList = ["Y", "N"];
-  if (!whetherAttendList.includes(whetherAttend))
-    return res.send(response(baseResponse.WHETHER_ATTEND_IS_NOT_VALID));
-
-  // 해당 유저가 러닝에 속하는지 확인
-  const checkAlreadyapplyNotD = await messageProvider.checkAlreadyapplyNotD(
-    userId,
-    postId
-  );
-  if (checkAlreadyapplyNotD.length === 0) {
-    return res.send(response(baseResponse.USER_NOT_BELONG_RUNNING));
+  //개수 불일치
+  if (IntUserIdArray.length != whetherAttendArray.length) {
+    return res.send(response(baseResponse.USERID_AND_WHETHER_ATTEND_NOT_MATCH));
   }
 
-  const Response = await runningService.attend(postId, userId, whetherAttend);
+  //다수의 유저 출석 관리하기
+  for (let i = 0; i < IntUserIdArray.length; i++) {
+    const userId = IntUserIdArray[i];
+    const whetherAttend = whetherAttendArray[i];
+
+    //유효성 검사
+    const whetherAttendList = ["Y", "N"];
+    if (!whetherAttendList.includes(whetherAttend))
+      return res.send(response(baseResponse.WHETHER_ATTEND_IS_NOT_VALID));
+
+    // 해당 유저가 러닝에 속하는지 확인
+    const check = await messageProvider.checkAlreadyapplyNotD(userId, postId);
+    if (check.length === 0) {
+      return res.send(response(baseResponse.USER_NOT_BELONG_RUNNING));
+    }
+
+    //출석 관리 실시
+    await runningService.attend(postId, userId, whetherAttend);
+  }
 
   return res.send(response(baseResponse.SUCCESS));
 };

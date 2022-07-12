@@ -54,7 +54,7 @@ async function getDeviceToken(connection, userId) {
 async function updateRPY(connection, updateParams) {
   const query = `
   UPDATE RunningPeople
-  SET attendance = 1 AND whetherCheck = 'Y'
+  SET attendance = 1 , whetherCheck = 'Y'
   WHERE userId = ? AND gatheringId = (SELECT gatheringId FROM Running WHERE postId = ?);
                           `;
 
@@ -65,7 +65,7 @@ async function updateRPY(connection, updateParams) {
 async function updateRPN(connection, updateParams) {
   const query = `
   UPDATE RunningPeople
-  SET attendance = 0 AND whetherCheck = 'Y'
+  SET attendance = 0 , whetherCheck = 'Y'
   WHERE userId = ? AND gatheringId = (SELECT gatheringId FROM Running WHERE postId = ?);
                           `;
 

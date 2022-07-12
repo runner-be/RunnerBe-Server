@@ -226,9 +226,9 @@ exports.closePosting = async function (req, res) {
   const checkWriter = await postingProvider.checkWriter(postId, userIdFromJWT);
   if (checkWriter.length > 0) {
     const closePostingResult = await postingProvider.closePosting(postId);
-    res.send(response(baseResponse.SUCCESS));
+    return res.send(response(baseResponse.SUCCESS));
   } else {
-    res.send(response(baseResponse.USER_NOT_WRITER));
+    return res.send(response(baseResponse.USER_NOT_WRITER));
   }
 };
 
