@@ -58,7 +58,6 @@ exports.sendMessage = async function (req, res) {
   const content = req.body.content;
 
   // 빈 값 체크
-  if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
   if (!roomId) return res.send(response(baseResponse.ROOM_ID_EMPTY));
   if (!content) return res.send(response(baseResponse.CONTENT_EMPTY));
 
