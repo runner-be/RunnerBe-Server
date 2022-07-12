@@ -189,11 +189,11 @@ exports.attend = async function (req, res) {
   const userIdFromJWT = req.verifiedToken.userId;
   const postId = req.params.postId;
 
-  const userIdBody = req.body.userId;
+  const userIdBody = req.body.userIdList;
   const userIdArray = userIdBody.split(",");
   const IntUserIdArray = userIdArray.map((userId) => parseInt(userId));
 
-  const whetherAttendBody = req.body.whetherAttend;
+  const whetherAttendBody = req.body.whetherAttendList;
   const whetherAttendArray = whetherAttendBody.split(",");
 
   //jwt가 작성자의 것인지 확인
