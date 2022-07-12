@@ -2,6 +2,7 @@ const jwtMiddleware = require("../../../config/jwtMiddleware");
 const runningProvider = require("../../app/Running/runningProvider");
 const userProvider = require("../../app/User/userProvider");
 const messageProvider = require("../../app/Message/messageProvider");
+const postingProvider = require("../../app/Posting/postingProvider");
 const runningService = require("../../app/Running/runningService");
 const runningDao = require("./runningDao");
 const baseResponse = require("../../../config/baseResponseStatus");
@@ -55,7 +56,7 @@ exports.sendRequest = async function (req, res) {
 
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userId);
@@ -121,7 +122,7 @@ exports.handleRequest = async function (req, res) {
 
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userId);
@@ -185,6 +186,7 @@ exports.attend = async function (req, res) {
    * Header : jwt
    * Body : userId와 whetherAttend의 Array
    */
+  const userIdFromJWT = req.verifiedToken.userId;
   const postId = req.params.postId;
 
   const userIdBody = req.body.userId;
@@ -193,6 +195,12 @@ exports.attend = async function (req, res) {
 
   const whetherAttendBody = req.body.whetherAttend;
   const whetherAttendArray = whetherAttendBody.split(",");
+
+  //jwt가 작성자의 것인지 확인
+  const checkWriter = await postingProvider.checkWriter(postId, userIdFromJWT);
+  if (checkWriter.length == 0) {
+    return res.send(response(baseResponse.USER_NOT_WRITER));
+  }
 
   // 필수 값 : 빈 값 체크 (text를 제외한 나머지)
   if (!postId) return res.send(response(baseResponse.POSTID_EMPTY));

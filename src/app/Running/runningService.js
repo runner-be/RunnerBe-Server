@@ -367,6 +367,7 @@ exports.attend = async function (postId, userId, whetherAttend) {
     return 0;
   } catch (err) {
     //rollback
+    console.log("rollback");
     await connection.rollback();
     logger.error(`App - attend Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
