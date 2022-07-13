@@ -122,7 +122,7 @@ exports.kakaoLogin = async function (req, res) {
       );
     }
   } catch (err) {
-    return res.send(errResponse(baseResponse.DB_ERROR, err));
+    return res.send(errResponse(baseResponse.DB_ERROR));
   }
 };
 
@@ -192,7 +192,7 @@ exports.naverLogin = async function (req, res) {
       );
     }
   } catch (err) {
-    return res.send(errResponse(baseResponse.DB_ERROR, err));
+    return res.send(errResponse(baseResponse.DB_ERROR));
   }
 };
 
@@ -750,7 +750,7 @@ exports.appleLogin = async function (req, res) {
       );
     }
   } catch (err) {
-    return res.send(errResponse(baseResponse.DB_ERROR, err));
+    return res.send(errResponse(baseResponse.DB_ERROR));
   }
 };
 
