@@ -161,7 +161,7 @@ exports.dropPosting = async function (postId) {
     if (checkPostingResult[0].length == 0)
       return errResponse(baseResponse.POSTING_NOT_VALID_POSTID);
 
-    // 게시글 수정 - Posting, Running, RunningPeople
+    // 게시글 삭제 - Posting, Running, RunningPeople
     const dropPostingResult = await postingDao.dropPosting(connection, postId);
 
     //commit
