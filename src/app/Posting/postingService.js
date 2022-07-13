@@ -7,6 +7,7 @@ const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
 const { connect } = require("http2");
+const schedule = require("node-schedule");
 
 // 게시글 생성
 exports.createPosting = async function (
@@ -76,6 +77,15 @@ exports.createPosting = async function (
     const roomId = createRoom[0].insertId;
     const insertUserPerRoomParams = [roomId, userId];
     await messageDao.insertUserPerRoom(connection, insertUserPerRoomParams);
+
+    // 러닝 모임 시간에 맞춰 출석 관리에 대한 푸시 알림 전송을 위한 schedule 등록
+    // 1. UTC 기준 Date Object로 변환
+    const KSTDate = new Date(gatheringTime);
+    const UTCDate = new Date(KSTDate - 9 * 60 * 60 * 1000);
+    // 2. schedule 등록
+    const job = schedule.scheduleJob(UTCDate, () => {
+      // push alarm code
+    });
 
     //commit
     await connection.commit();
