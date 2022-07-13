@@ -350,7 +350,7 @@ exports.getMyPage2 = async function (userId) {
   // const runningInfo = await userDao.getRunningInfo(connection, userId);
   const myPosting = await userDao.getMyPosting2(connection, userId);
   const myRunning = await userDao.getMyRunning2(connection, userId);
-  connection.release();
+
   for (i = 0; i < myPosting.length; i++) {
     myPosting[i].DISTANCE = null;
     myPosting[i].attendance = null;
@@ -366,6 +366,9 @@ exports.getMyPage2 = async function (userId) {
     const body = await userDao.getProfileUrl(connection, postId);
     myRunning[i].profileUrlList = body;
   }
+
+  connection.release();
+
   const finalResult = { myInfo, myPosting, myRunning };
 
   return finalResult;
