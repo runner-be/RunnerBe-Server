@@ -82,64 +82,64 @@ exports.createPosting = async function (
     // 1. UTC 기준 Date Object로 변환
     const KSTDate = new Date(gatheringTime);
     const UTCDate = new Date(KSTDate - 9 * 60 * 60 * 1000);
-    
+
     // 2. schedule 등록 - gatheringTime에 발송할 푸시알림 전송 예약
-    const job = schedule.scheduleJob(UTCDate, () => {
-    // 게시글 제목 가져오기
-    const title = await runningDao.getTitle(connection, postId);
-    //수신 여부 확인
-    const pushOn = await runningDao.checkPushOn(connection, userId);
-    if (pushOn == "Y") {
-      // push alarm 보낼 user의 device token
-      const getDeviceTokenRows = await runningDao.getDeviceToken(
-        connection,
-        userId
-      );
-      if (getDeviceTokenRows.length === 0)
-        return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
+    const job = schedule.scheduleJob(UTCDate, async () => {
+      // 게시글 제목 가져오기
+      const title = await runningDao.getTitle(connection, postId);
+      //수신 여부 확인
+      const pushOn = await runningDao.checkPushOn(connection, userId);
+      if (pushOn == "Y") {
+        // push alarm 보낼 user의 device token
+        const getDeviceTokenRows = await runningDao.getDeviceToken(
+          connection,
+          userId
+        );
+        if (getDeviceTokenRows.length === 0)
+          return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
 
-      //title, body 설정
-      const titleInstance = "RunnerBe : 출석 체크 요청";
-      const content =
-        getDeviceTokenRows[0].nickName +
-        `님, 작성한 ["` +
-        title +
-        `"] 모임이 시작됐어요! 다들 모였다면 마이페이지에서 출석 체크를 진행해 볼까요?`;
+        //title, body 설정
+        const titleInstance = "RunnerBe : 출석 체크 요청";
+        const content =
+          getDeviceTokenRows[0].nickName +
+          `님, 작성한 ["` +
+          title +
+          `"] 모임이 시작됐어요! 다들 모였다면 마이페이지에서 출석 체크를 진행해 볼까요?`;
 
-      //푸쉬알림 메시지 설정
-      let message = {
-        notification: {
-          title: titleInstance,
-          body: content,
-        },
-        data: {
-          title: titleInstance,
-          body: content,
-        },
-        token: getDeviceTokenRows[0].deviceToken,
-      };
+        //푸쉬알림 메시지 설정
+        let message = {
+          notification: {
+            title: titleInstance,
+            body: content,
+          },
+          data: {
+            title: titleInstance,
+            body: content,
+          },
+          token: getDeviceTokenRows[0].deviceToken,
+        };
 
-      //푸쉬알림 발송
-      admin
-        .messaging()
-        .send(message)
-        .then(function (id) {
-          console.log("Successfully sent message: : ", id);
-          return 0;
-        })
-        .catch(function (err) {
-          console.log("Error Sending message!!! : ", err);
-          return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
-        });
+        //푸쉬알림 발송
+        admin
+          .messaging()
+          .send(message)
+          .then(function (id) {
+            console.log("Successfully sent message: : ", id);
+            return 0;
+          })
+          .catch(function (err) {
+            console.log("Error Sending message!!! : ", err);
+            return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+          });
 
-      //메시지 저장
-      await runningDao.savePushalarm(
-        connection,
-        userId,
-        titleInstance,
-        content
-      );
-    }
+        //메시지 저장
+        await runningDao.savePushalarm(
+          connection,
+          userId,
+          titleInstance,
+          content
+        );
+      }
     });
 
     //commit
