@@ -73,3 +73,31 @@ exports.sendMessage = async function (req, res) {
 
   return res.send(response(baseResponse.SUCCESS));
 };
+
+/**
+ * API No. 41
+ * API Name : 메시지 신고 API
+ * [POST] /messages/:messageId/report
+ * Header : jwt
+ * Path Variable : messageId
+ */
+exports.reportMessage = async function (req, res) {
+  const messageId = req.params.messageId;
+  const userId = req.verifiedToken.userId;
+
+  // 빈 값 체크
+  if (!messageId) return res.send(response(baseResponse.MESSAGE_ID_EMPTY));
+
+  // 숫자 확인
+  if (isNaN(messageId) === true)
+    return res.send(response(baseResponse.MESSAGE_ID_NOTNUM));
+
+  // messageId 존재 확인
+  const checkMessageId = await messageProvider.getMessageId(messageId);
+  if (checkMessageId.length == 0)
+    return res.send(response(baseResponse.MESSAGE_ID_NOT_EXIST));
+
+  await messageService.reportMessage(messageId, userId);
+
+  return res.send(response(baseResponse.SUCCESS));
+};

@@ -184,3 +184,15 @@ exports.checkApplyChanged = async function (roomId) {
     return errResponse(baseResponse.DB_ERROR);
   }
 };
+
+//  messageId 존재 확인
+exports.getMessageId = async function (messageId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const getMessageIdResult = await messageDao.getMessageId(
+    connection,
+    messageId
+  );
+  connection.release();
+
+  return getMessageIdResult;
+};

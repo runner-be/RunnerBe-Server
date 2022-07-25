@@ -594,6 +594,24 @@ module.exports = {
     message: "비밀 키값이 유효하지 않습니다.",
   },
 
+  MESSAGE_ID_EMPTY: {
+    isSuccess: false,
+    code: 2081,
+    message: "messageId를 입력해주세요.",
+  },
+
+  MESSAGE_ID_NOTNUM: {
+    isSuccess: false,
+    code: 2082,
+    message: "messageId는 숫자로 입력해주세요.",
+  },
+
+  MESSAGE_ID_NOT_EXIST: {
+    isSuccess: false,
+    code: 2083,
+    message: "존재하지 않는 messageId입니다.",
+  },
+
   // ----------------------------
   ACCESS_TOKEN_IS_EMPTY: {
     isSuccess: false,

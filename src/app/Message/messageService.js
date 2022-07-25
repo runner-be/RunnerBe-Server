@@ -39,3 +39,29 @@ exports.sendMessage = async function (roomId, userId, content) {
     connection.release();
   }
 };
+
+// 메시지 신고
+exports.reportMessage = async function (messageId, userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    //start Transaction
+    connection.beginTransaction();
+
+    //메시지 신고
+    await messageDao.reportMessage(connection, [messageId, userId]);
+
+    //commit
+    await connection.commit();
+
+    connection.release();
+
+    return 0;
+  } catch (err) {
+    //rollback
+    await connection.rollback();
+    logger.error(`App - reportMessage Service error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
