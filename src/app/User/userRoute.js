@@ -70,4 +70,7 @@ module.exports = function (app) {
 
   // 37. 알림 메시지 목록 API
   app.get("/users/alarms", jwtMiddleware, user.getMyAlarms);
+
+  // 42. 활동 기록 조회 API
+  app.get("/users/records", jwtMiddleware, user.getRecord);
 };
