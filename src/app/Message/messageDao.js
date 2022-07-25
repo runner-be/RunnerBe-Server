@@ -282,6 +282,26 @@ async function updateRecentMessageN(connection, updateRecentMessageNParams) {
 
   return row;
 }
+
+// 메시지 신고
+async function reportMessage(connection, [messageId, userId]) {
+  const query = `
+        INSERT INTO MessageReport (messageId, reporterId) VALUES (?,?);
+                                        `;
+  const row = await connection.query(query, [messageId, userId]);
+
+  return row;
+}
+
+// messageId 존재 확인
+async function getMessageId(connection, messageId) {
+  const query = `
+        select messageId from Message where messageId = ?;
+                                        `;
+  const row = await connection.query(query, messageId);
+
+  return row[0];
+}
 module.exports = {
   getRepUserId,
   createRoom,
@@ -307,4 +327,6 @@ module.exports = {
   updateRecentMessageY,
   updateRecentMessageN,
   getMessageList,
+  reportMessage,
+  getMessageId,
 };

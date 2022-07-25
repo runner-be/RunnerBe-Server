@@ -10,4 +10,7 @@ module.exports = function (app) {
 
   // 40. 메시지 전송 API
   app.post("/messages/rooms/:roomId", jwtMiddleware, message.sendMessage);
+
+  // 41. 메시지 신고 API
+  app.post("/messages/:messageId/report", jwtMiddleware, message.reportMessage);
 };
