@@ -1114,12 +1114,6 @@ exports.pushOnOff = async function (req, res) {
 exports.getMyAlarms = async function (req, res) {
   const userId = req.verifiedToken.userId;
 
-  // // 빈 값 체크   jwt로 가져오므로 할 필요가 없다
-  // if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
-  // // 숫자 확인
-  // if (isNaN(userId) === true)
-  //   return res.send(response(baseResponse.USER_USERID_NOTNUM));
-
   // 인증 대기 회원 확인
   const checkUserAuth = await userProvider.checkUserAuth(userId);
   if (checkUserAuth.length === 0) {
@@ -1129,4 +1123,23 @@ exports.getMyAlarms = async function (req, res) {
   //알림 메시지 목록 조회 및 읽음 처리
   const getMyAlarmsResult = await userService.getMyAlarms(userId);
   return res.send(response(baseResponse.SUCCESS, getMyAlarmsResult));
+};
+
+/**
+ * API No. 42
+ * API Name : 활동 기록 조회
+ * [GET] /users/record
+ * Header : jwt
+ */
+exports.getRecord = async function (req, res) {
+  const userId = req.verifiedToken.userId;
+
+  // 인증 대기 회원 확인
+  const checkUserAuth = await userProvider.checkUserAuth(userId);
+  if (checkUserAuth.length === 0) {
+    return res.send(response(baseResponse.USER_NON_AUTH));
+  }
+
+  const getRecordResult = await userProvider.getRecord(userId);
+  return res.send(response(baseResponse.SUCCESS, getRecordResult));
 };

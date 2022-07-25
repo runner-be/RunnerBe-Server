@@ -373,3 +373,22 @@ exports.getMyPage2 = async function (userId) {
 
   return finalResult;
 };
+
+// 활동 기록 조회
+exports.getRecord = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  const myInfo = await userDao.getmyInfoSimple(connection, userId);
+  const myRecord = await userDao.getMyRunning2(connection, userId);
+  for (i = 0; i < myRecord.length; i++) {
+    myRecord[i].DISTANCE = null;
+    const postId = myRecord[i].postId;
+    const body = await userDao.getProfileUrl(connection, postId);
+    myRecord[i].profileUrlList = body;
+  }
+
+  connection.release();
+
+  const finalResult = { myInfo, myRecord };
+
+  return finalResult;
+};
