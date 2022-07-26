@@ -409,8 +409,12 @@ async function getmyInfo(connection, userId) {
             when job = 'ACC' then '제무/회계'
             when job = 'CUS' then 'CS'
         end as job
-        ,profileImageUrl, pushOn, nameChanged FROM User U
-        WHERE U.userId = ?;
+        ,profileImageUrl, pushOn, nameChanged,
+       case when DATEDIFF(DATE_FORMAT(now(),'%Y-%m-%d'), jobChanged) > 90
+           then 'Y'
+        else 'N' end as jobChangePossible
+      FROM User U
+      WHERE U.userId = ?;
                   `;
   const [Rows] = await connection.query(Query, userId);
   return Rows;
