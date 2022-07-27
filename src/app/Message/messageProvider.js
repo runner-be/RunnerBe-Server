@@ -5,35 +5,55 @@ const messageDao = require("./messageDao");
 
 // 반장 Id 가져오기
 exports.getRepUserId = async function (postId) {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const getRepUserIdResult = await messageDao.getRepUserId(connection, postId);
-  connection.release();
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const getRepUserIdResult = await messageDao.getRepUserId(
+      connection,
+      postId
+    );
+    connection.release();
 
-  return getRepUserIdResult;
+    return getRepUserIdResult;
+  } catch (err) {
+    logger.error(`Message-getRepUserId Provider error: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
 };
 
 // 이전에 참여신청해서 거절 당했는지 확인
 exports.checkAlreadyapply = async function (senderId, postId) {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const checkAlreadyParams = [senderId, postId];
-  const checkAlreadyResult = await messageDao.checkAlreadyapply(
-    connection,
-    checkAlreadyParams
-  );
-  connection.release();
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const checkAlreadyParams = [senderId, postId];
+    const checkAlreadyResult = await messageDao.checkAlreadyapply(
+      connection,
+      checkAlreadyParams
+    );
+    connection.release();
 
-  return checkAlreadyResult;
+    return checkAlreadyResult;
+  } catch (err) {
+    logger.error(`Message-checkAlreadyapply Provider error: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
 };
 // 이전에 참여 신청했는지만 확인
 exports.checkAlreadyapplyNotD = async function (senderId, postId) {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const checkAlreadyParams = [senderId, postId];
-  const checkAlreadyResult = await messageDao.checkAlreadyapplyNotD(
-    connection,
-    checkAlreadyParams
-  );
-  connection.release();
-  return checkAlreadyResult;
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const checkAlreadyParams = [senderId, postId];
+    const checkAlreadyResult = await messageDao.checkAlreadyapplyNotD(
+      connection,
+      checkAlreadyParams
+    );
+    connection.release();
+    return checkAlreadyResult;
+  } catch (err) {
+    logger.error(
+      `Message-checkAlreadyapplyNotD Provider error: ${err.message}`
+    );
+    return errResponse(baseResponse.DB_ERROR);
+  }
 };
 
 // 수신자 Id 가져오기
@@ -70,11 +90,16 @@ exports.getReceiverId = async function (roomId, senderId) {
 
 // 대화방 목록창 조회
 exports.getRoomList = async function (userId) {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const getRoomListResult = await messageDao.getRoomList(connection, userId);
-  connection.release();
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const getRoomListResult = await messageDao.getRoomList(connection, userId);
+    connection.release();
 
-  return getRoomListResult;
+    return getRoomListResult;
+  } catch (err) {
+    logger.error(`Message-getRoomList Provider error: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
 };
 
 // 대화방 상세페이지
@@ -114,7 +139,7 @@ exports.checkMaster = async function (userId) {
 
     return checkMaster[0];
   } catch (err) {
-    logger.error(`App - getRoom Provider error\n: ${err.message}`);
+    logger.error(`App - checkMaster Provider error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   }
 };
@@ -187,12 +212,17 @@ exports.checkApplyChanged = async function (roomId) {
 
 //  messageId 존재 확인
 exports.getMessageId = async function (messageId) {
-  const connection = await pool.getConnection(async (conn) => conn);
-  const getMessageIdResult = await messageDao.getMessageId(
-    connection,
-    messageId
-  );
-  connection.release();
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const getMessageIdResult = await messageDao.getMessageId(
+      connection,
+      messageId
+    );
+    connection.release();
 
-  return getMessageIdResult;
+    return getMessageIdResult;
+  } catch (err) {
+    logger.error(`App - getMessageId Provider error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
 };
