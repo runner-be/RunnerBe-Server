@@ -14,16 +14,6 @@ const { emit } = require("nodemon");
 
 /**
  * API No. 0
- * API Name : 테스트 API, RDS 연결 확인
- * [GET] /test
- */
-exports.getTest = async function (req, res) {
-  const userListResult = await userProvider.retrieveUserList();
-  return res.send(response(baseResponse.SUCCESS, userListResult));
-};
-
-/**
- * API No. 0
  * API Name : 테스트용 jwt 발급 API
  * [GET] /jwtTest/:userId
  */
@@ -40,17 +30,6 @@ exports.getJwt = async function (req, res) {
     }
   );
   return res.send(response(baseResponse.SUCCESS, token));
-};
-
-/**
- * API No. 0
- * API Name : 테스트용 회원 삭제 API
- * [GET] /FORTESTdeleteUser/:uuid
- */
-exports.deleteUser = async function (req, res) {
-  const uuid = req.params.uuid;
-  const deleteResult = await userProvider.deleteUser(uuid);
-  return res.send(response(baseResponse.SUCCESS));
 };
 
 /**
