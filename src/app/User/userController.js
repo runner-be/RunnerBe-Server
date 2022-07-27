@@ -55,6 +55,7 @@ exports.kakaoLogin = async function (req, res) {
         },
       });
     } catch (err) {
+      logger.error(`User-kakaoLogin Controller axios error: ${err.message}`);
       return res.send(errResponse(baseResponse.ACCESS_TOKEN_IS_NOT_VALID)); // 2085
     }
     const uuid = kakao_profile.data.id.toString();
@@ -101,6 +102,7 @@ exports.kakaoLogin = async function (req, res) {
       );
     }
   } catch (err) {
+    logger.error(`User-kakaoLogin Controller error: ${err.message}`);
     return res.send(errResponse(baseResponse.DB_ERROR));
   }
 };
@@ -125,6 +127,7 @@ exports.naverLogin = async function (req, res) {
         },
       });
     } catch (err) {
+      logger.error(`User-naverLogin Controller axios error: ${err.message}`);
       return res.send(errResponse(baseResponse.ACCESS_TOKEN_IS_NOT_VALID)); // 2085
     }
 
@@ -171,6 +174,7 @@ exports.naverLogin = async function (req, res) {
       );
     }
   } catch (err) {
+    logger.error(`User-naverLogin Controller error: ${err.message}`);
     return res.send(errResponse(baseResponse.DB_ERROR));
   }
 };
