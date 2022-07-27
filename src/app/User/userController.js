@@ -64,6 +64,13 @@ exports.kakaoLogin = async function (req, res) {
 
     if (checkUuid.length > 0) {
       const selectUserId = await userProvider.selectUserId(uuid);
+      //유저 이용 제한 상태 확인
+      const checkUserRestricted = await userProvider.checkUserRestricted(
+        selectUserId
+      );
+      if (checkUserRestricted.length > 0) {
+        return res.send(baseResponse.USER_IS_RESTRICTED);
+      }
       let token = await jwt.sign(
         {
           userId: selectUserId,
@@ -136,7 +143,13 @@ exports.naverLogin = async function (req, res) {
 
     if (checkUuid.length > 0) {
       const selectUserId = await userProvider.selectUserId(uuid);
-
+      //유저 이용 제한 상태 확인
+      const checkUserRestricted = await userProvider.checkUserRestricted(
+        selectUserId
+      );
+      if (checkUserRestricted.length > 0) {
+        return res.send(baseResponse.USER_IS_RESTRICTED);
+      }
       let token = await jwt.sign(
         {
           userId: selectUserId,

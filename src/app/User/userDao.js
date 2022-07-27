@@ -839,6 +839,15 @@ async function changeWhetherRead(connection, userId) {
   return Row;
 }
 
+//유저 이용 제한 상태 확인
+async function checkUserRestricted(connection, userId) {
+  const Query = `
+  SELECT userId FROM User WHERE userId = ? AND status = 'R';
+                  `;
+  const [Rows] = await connection.query(Query, userId);
+  return Rows;
+}
+
 module.exports = {
   selectUser,
   deleteUser,
@@ -883,4 +892,5 @@ module.exports = {
   getMyAlarms,
   changeWhetherRead,
   getmyInfoSimple,
+  checkUserRestricted,
 };
