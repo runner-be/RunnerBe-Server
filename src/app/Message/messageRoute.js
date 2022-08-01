@@ -11,6 +11,6 @@ module.exports = function (app) {
   // 40. 메시지 전송 API
   app.post("/messages/rooms/:roomId", jwtMiddleware, message.sendMessage);
 
-  // 41. 메시지 신고 API
+  // 41. 메시지 신고 API -> to do : 여러 개 처리로 수정
   app.post("/messages/:messageId/report", jwtMiddleware, message.reportMessage);
 };
