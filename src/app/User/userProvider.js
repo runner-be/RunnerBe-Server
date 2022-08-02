@@ -439,3 +439,16 @@ exports.getRecord = async function (userId) {
     return errResponse(baseResponse.DB_ERROR);
   }
 };
+
+// 유저 이용 제한 상태 확인
+exports.checkUserRestricted = async function (userId) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const result = await userDao.checkUserRestricted(connection, userId);
+    connection.release();
+    return result;
+  } catch (err) {
+    logger.error(`User-checkUserRestricted Provider error: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+};

@@ -55,6 +55,7 @@ exports.kakaoLogin = async function (req, res) {
         },
       });
     } catch (err) {
+      logger.error(`User-kakaoLogin Controller axios error: ${err.message}`);
       return res.send(errResponse(baseResponse.ACCESS_TOKEN_IS_NOT_VALID)); // 2085
     }
     const uuid = kakao_profile.data.id.toString();
@@ -63,6 +64,13 @@ exports.kakaoLogin = async function (req, res) {
 
     if (checkUuid.length > 0) {
       const selectUserId = await userProvider.selectUserId(uuid);
+      //유저 이용 제한 상태 확인
+      const checkUserRestricted = await userProvider.checkUserRestricted(
+        selectUserId
+      );
+      if (checkUserRestricted.length > 0) {
+        return res.send(baseResponse.USER_IS_RESTRICTED);
+      }
       let token = await jwt.sign(
         {
           userId: selectUserId,
@@ -101,6 +109,7 @@ exports.kakaoLogin = async function (req, res) {
       );
     }
   } catch (err) {
+    logger.error(`User-kakaoLogin Controller error: ${err.message}`);
     return res.send(errResponse(baseResponse.DB_ERROR));
   }
 };
@@ -125,6 +134,7 @@ exports.naverLogin = async function (req, res) {
         },
       });
     } catch (err) {
+      logger.error(`User-naverLogin Controller axios error: ${err.message}`);
       return res.send(errResponse(baseResponse.ACCESS_TOKEN_IS_NOT_VALID)); // 2085
     }
 
@@ -133,7 +143,13 @@ exports.naverLogin = async function (req, res) {
 
     if (checkUuid.length > 0) {
       const selectUserId = await userProvider.selectUserId(uuid);
-
+      //유저 이용 제한 상태 확인
+      const checkUserRestricted = await userProvider.checkUserRestricted(
+        selectUserId
+      );
+      if (checkUserRestricted.length > 0) {
+        return res.send(baseResponse.USER_IS_RESTRICTED);
+      }
       let token = await jwt.sign(
         {
           userId: selectUserId,
@@ -171,6 +187,7 @@ exports.naverLogin = async function (req, res) {
       );
     }
   } catch (err) {
+    logger.error(`User-naverLogin Controller error: ${err.message}`);
     return res.send(errResponse(baseResponse.DB_ERROR));
   }
 };

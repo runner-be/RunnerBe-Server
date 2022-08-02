@@ -612,7 +612,6 @@ module.exports = {
     message: "존재하지 않는 messageId입니다.",
   },
 
-  // ----------------------------
   ACCESS_TOKEN_IS_EMPTY: {
     isSuccess: false,
     code: 2084,
@@ -665,6 +664,12 @@ module.exports = {
     isSuccess: false,
     code: 2092,
     message: "유저 수와 출석 여부 개수가 일치하지 않습니다.",
+  },
+
+  USER_IS_RESTRICTED: {
+    isSuccess: false,
+    code: 2093,
+    message: "현재 이용이 제한된 유저입니다.",
   },
   // ----------------------------
 
