@@ -82,22 +82,28 @@ exports.sendMessage = async function (req, res) {
  * Path Variable : messageId
  */
 exports.reportMessage = async function (req, res) {
-  const messageId = req.params.messageId;
   const userId = req.verifiedToken.userId;
+  const messageIdBody = req.body.messageIdList;
+  const messageIdArray = messageIdBody.split(",");
+  const IntMessageIdArray = messageIdArray.map((messageId) =>
+    parseInt(messageId)
+  );
 
   // 빈 값 체크
-  if (!messageId) return res.send(response(baseResponse.MESSAGE_ID_EMPTY));
+  if (!messageIdBody) return res.send(response(baseResponse.MESSAGE_ID_EMPTY));
 
-  // 숫자 확인
-  if (isNaN(messageId) === true)
-    return res.send(response(baseResponse.MESSAGE_ID_NOTNUM));
-
-  // messageId 존재 확인
-  const checkMessageId = await messageProvider.getMessageId(messageId);
-  if (checkMessageId.length == 0)
-    return res.send(response(baseResponse.MESSAGE_ID_NOT_EXIST));
-
-  await messageService.reportMessage(messageId, userId);
-
-  return res.send(response(baseResponse.SUCCESS));
+  try {
+    for (let i = 0; i < IntMessageIdArray.length; i++) {
+      const messageId = IntMessageIdArray[i];
+      // messageId 존재 확인
+      const checkMessageId = await messageProvider.getMessageId(messageId);
+      if (checkMessageId.length == 0)
+        return res.send(response(baseResponse.MESSAGE_ID_NOT_EXIST));
+      await messageService.reportMessage(messageId, userId);
+    }
+    return res.send(response(baseResponse.SUCCESS));
+  } catch (err) {
+    logger.error(`App - reportMessage Controller error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
 };
