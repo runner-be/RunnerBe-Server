@@ -621,6 +621,7 @@ async function getMain2(
     on D.postId = P.postId
     WHERE runningTag = "${runningTag}" ${distanceCondition}
     ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition}
+    and U.status != 'R'
     ORDER BY "${sortCondition}"
     LIMIT 10;
                   `;
@@ -672,6 +673,7 @@ async function getMain2Login(
     on D.postId = P.postId
     WHERE runningTag = "${runningTag}" ${distanceCondition}
     ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition}
+    and U.status != 'R'
     ORDER BY "${sortCondition}"
     LIMIT 10;
                   `;
