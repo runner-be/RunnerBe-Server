@@ -719,7 +719,7 @@ async function getMyPosting2(connection, userId) {
   case when runnerGender='M' then '남성'
   else
   case when runnerGender='F' then '여성'
-  end end end as gender, whetherEnd, J.job, peopleNum, contents, U.userId,
+  end end end as gender, whetherEnd, J.job, peopleNum, contents, ${userId} as userId,
   EXISTS (SELECT bookmarkId FROM Bookmarks
   WHERE userId = ${userId} AND postId = P.postId) as bookMark
   FROM Posting P
@@ -749,7 +749,7 @@ async function getMyRunning2(connection, userId) {
  case when runnerGender='M' then '남성'
  else
  case when runnerGender='F' then '여성'
-  end end end as gender, whetherEnd, J.job, peopleNum, contents, U.userId,
+  end end end as gender, whetherEnd, J.job, peopleNum, contents, ${userId} as userId,
 EXISTS (SELECT bookmarkId FROM Bookmarks
         WHERE userId = ${userId} AND postId = P.postId) as bookMark,attendance, whetherCheck
 FROM Posting P
@@ -760,7 +760,8 @@ FROM RunningPeople RP
 inner join Running R on RP.gatheringId = R.gatheringId
 inner join User U on RP.userId = U.userId
 group by postId) J on J.postId = P.postId
-INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId;
+INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId
+WHERE postUserId != ${userId};
                   `;
   const [Rows] = await connection.query(Query, userId);
   return Rows;
