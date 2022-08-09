@@ -69,7 +69,7 @@ exports.kakaoLogin = async function (req, res) {
         selectUserId
       );
       if (checkUserRestricted.length > 0) {
-        return res.send(baseResponse.USER_IS_RESTRICTED);
+        return res.send(response(baseResponse.USER_IS_RESTRICTED));
       }
       let token = await jwt.sign(
         {
@@ -148,7 +148,7 @@ exports.naverLogin = async function (req, res) {
         selectUserId
       );
       if (checkUserRestricted.length > 0) {
-        return res.send(baseResponse.USER_IS_RESTRICTED);
+        return res.send(response(baseResponse.USER_IS_RESTRICTED));
       }
       let token = await jwt.sign(
         {
@@ -459,20 +459,20 @@ exports.main = async function (req, res) {
 
 /**
  * API No.  9
- * API Name : jwt로 유저 인증 여부 확인API
+ * API Name : jwt로 유저 정지 여부 확인API
  * [GET] /users/auth
  */
 exports.authCheck = async function (req, res) {
   const userIdFromJWT = req.verifiedToken.userId;
-  const checkFirst = await userProvider.checkFirst(userIdFromJWT);
-  const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
-  if (checkFirst.length > 0)
-    return res.send(response(baseResponse.SUCCESS_MEMBER_AUTH_FIRST));
 
-  if (checkUserAuth.length > 0) {
-    return res.send(response(baseResponse.SUCCESS_MEMBER_AUTH));
+  //유저 이용 제한 상태 확인
+  const checkUserRestricted = await userProvider.checkUserRestricted(
+    userIdFromJWT
+  );
+  if (checkUserRestricted.length > 0) {
+    return res.send(response(baseResponse.USER_IS_RESTRICTED));
   } else {
-    return res.send(response(baseResponse.SUCCESS_MEMBER_NON_AUTH));
+    return res.send(response(baseResponse.SUCCESS_MEMBER_AUTH));
   }
 };
 
