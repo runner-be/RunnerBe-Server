@@ -171,21 +171,21 @@ exports.checkUserAuth = async function (userIdFromJWT) {
   }
 };
 
-// 인증 이후 최초 접속인지 확인
-exports.checkFirst = async function (userIdFromJWT) {
-  try {
-    const connection = await pool.getConnection(async (conn) => conn);
-    const result = await userDao.checkFirst(connection, userIdFromJWT);
-    if (result.length > 0) {
-      const change = await userDao.changeStatus(connection, userIdFromJWT);
-    }
-    connection.release();
-    return result;
-  } catch (err) {
-    logger.error(`User-checkFirst Provider error: ${err.message}`);
-    return errResponse(baseResponse.DB_ERROR);
-  }
-};
+// // 인증 이후 최초 접속인지 확인- 폐기
+// exports.checkFirst = async function (userIdFromJWT) {
+//   try {
+//     const connection = await pool.getConnection(async (conn) => conn);
+//     const result = await userDao.checkFirst(connection, userIdFromJWT);
+//     if (result.length > 0) {
+//       const change = await userDao.changeStatus(connection, userIdFromJWT);
+//     }
+//     connection.release();
+//     return result;
+//   } catch (err) {
+//     logger.error(`User-checkFirst Provider error: ${err.message}`);
+//     return errResponse(baseResponse.DB_ERROR);
+//   }
+// };
 
 // BM에 있는지 확인
 exports.checkAddBM = async function (userId, postId) {

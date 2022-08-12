@@ -161,7 +161,7 @@ async function getChat(connection, getChatParams) {
 // 대화방 정보
 async function getRoomInfo(connection, roomId) {
   const query = `
-    SELECT case when runningTag = 'A'
+    SELECT P.postId, case when runningTag = 'A'
     then '퇴근 후'
       else case when runningTag = 'B'
     then '출근 전'
