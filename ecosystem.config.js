@@ -3,7 +3,7 @@ module.exports = {
     {
       name: "runnerbeApp",
       script: "./index.js",
-      instances: max,
+      instances: 0,
       exec_mode: "cluster",
       wait_ready: true, // load하기 전에 ready
       listen_timeout: 50000,
