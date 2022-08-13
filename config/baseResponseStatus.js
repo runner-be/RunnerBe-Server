@@ -671,6 +671,18 @@ module.exports = {
     code: 2093,
     message: "현재 이용이 제한된 유저입니다.",
   },
+
+  POST_USER_NOT_EXIST: {
+    isSuccess: false,
+    code: 2094,
+    message: "해당 게시글의 작성자는 탈퇴한 유저입니다.",
+  },
+
+  POST_ID_NOT_EXIST: {
+    isSuccess: false,
+    code: 2095,
+    message: "해당 postId는 존재하지 않습니다.",
+  },
   // ----------------------------
 
   // Response error

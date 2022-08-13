@@ -191,3 +191,32 @@ exports.getPostingWriter2 = async function (postId) {
     return errResponse(baseResponse.DB_ERROR);
   }
 };
+
+// postUser 확인
+exports.checkPostUser = async function (postId) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const checkPostUserResult = await postingDao.checkPostUser(
+      connection,
+      postId
+    );
+
+    return checkPostUserResult;
+  } catch (err) {
+    logger.error(`Posting-checkPostUser Provider error: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+};
+
+// postId 확인
+exports.checkPostId = async function (postId) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const checkPostIdResult = await postingDao.checkPostId(connection, postId);
+
+    return checkPostIdResult;
+  } catch (err) {
+    logger.error(`Posting-checkPostId Provider error: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+};
