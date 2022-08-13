@@ -294,13 +294,15 @@ exports.getMain2 = async function (
       keywordCondition
     );
     connection.release();
-    for (i = 0; i < getMainResult.length; i++) {
-      getMainResult[i].userId = null;
-      getMainResult[i].bookMark = null;
-      getMainResult[i].attendance = null;
-      const postId = getMainResult[i].postId;
-      const body = await userDao.getProfileUrl(connection, postId);
-      getMainResult[i].profileUrlList = body;
+    if (getMainResult.length !== 0) {
+      for (i = 0; i < getMainResult.length; i++) {
+        getMainResult[i].userId = null;
+        getMainResult[i].bookMark = null;
+        getMainResult[i].attendance = null;
+        const postId = getMainResult[i].postId;
+        const body = await userDao.getProfileUrl(connection, postId);
+        getMainResult[i].profileUrlList = body;
+      }
     }
 
     return getMainResult;
@@ -341,12 +343,14 @@ exports.getMain2Login = async function (
       userId
     );
     connection.release();
-    for (i = 0; i < getMainResult.length; i++) {
-      getMainResult[i].userId = null;
-      getMainResult[i].attendance = null;
-      const postId = getMainResult[i].postId;
-      const body = await userDao.getProfileUrl(connection, postId);
-      getMainResult[i].profileUrlList = body;
+    if (getMainResult.length !== 0) {
+      for (i = 0; i < getMainResult.length; i++) {
+        getMainResult[i].userId = null;
+        getMainResult[i].attendance = null;
+        const postId = getMainResult[i].postId;
+        const body = await userDao.getProfileUrl(connection, postId);
+        getMainResult[i].profileUrlList = body;
+      }
     }
 
     return getMainResult;
@@ -364,13 +368,16 @@ exports.getBM2 = async function (userId) {
     // const bookMarkNum = bookMarkNumB[0];
     const bookMarkList = await userDao.getBM2(connection, userId);
     connection.release();
-    for (i = 0; i < bookMarkList.length; i++) {
-      bookMarkList[i].DISTANCE = null;
-      bookMarkList[i].attendance = null;
-      const postId = bookMarkList[i].postId;
-      const body = await userDao.getProfileUrl(connection, postId);
-      bookMarkList[i].profileUrlList = body;
+    if (bookMarkList.length !== 0) {
+      for (i = 0; i < bookMarkList.length; i++) {
+        bookMarkList[i].DISTANCE = null;
+        bookMarkList[i].attendance = null;
+        const postId = bookMarkList[i].postId;
+        const body = await userDao.getProfileUrl(connection, postId);
+        bookMarkList[i].profileUrlList = body;
+      }
     }
+
     // const finalResult = { bookMarkNum, bookMarkList };
     const finalResult = { bookMarkList };
 
@@ -390,20 +397,25 @@ exports.getMyPage2 = async function (userId) {
     const myPosting = await userDao.getMyPosting2(connection, userId);
     const myRunning = await userDao.getMyRunning2(connection, userId);
 
-    for (i = 0; i < myPosting.length; i++) {
-      myPosting[i].DISTANCE = null;
-      myPosting[i].attendance = null;
-      const postId = myPosting[i].postId;
-      const body1 = await userDao.getProfileUrl(connection, postId);
-      const body2 = await postingDao.getRunner(connection, postId);
-      myPosting[i].profileUrlList = body1;
-      myPosting[i].runnerList = body2[0];
+    if (myPosting.length !== 0) {
+      for (i = 0; i < myPosting.length; i++) {
+        myPosting[i].DISTANCE = null;
+        myPosting[i].attendance = null;
+        const postId = myPosting[i].postId;
+        const body1 = await userDao.getProfileUrl(connection, postId);
+        const body2 = await postingDao.getRunner(connection, postId);
+        myPosting[i].profileUrlList = body1;
+        myPosting[i].runnerList = body2[0];
+      }
     }
-    for (i = 0; i < myRunning.length; i++) {
-      myRunning[i].DISTANCE = null;
-      const postId = myRunning[i].postId;
-      const body = await userDao.getProfileUrl(connection, postId);
-      myRunning[i].profileUrlList = body;
+
+    if (myRunning.length !== 0) {
+      for (i = 0; i < myRunning.length; i++) {
+        myRunning[i].DISTANCE = null;
+        const postId = myRunning[i].postId;
+        const body = await userDao.getProfileUrl(connection, postId);
+        myRunning[i].profileUrlList = body;
+      }
     }
 
     connection.release();
@@ -423,11 +435,14 @@ exports.getRecord = async function (userId) {
     const connection = await pool.getConnection(async (conn) => conn);
     const myInfo = await userDao.getmyInfoSimple(connection, userId);
     const myRecord = await userDao.getMyRunning2(connection, userId);
-    for (i = 0; i < myRecord.length; i++) {
-      myRecord[i].DISTANCE = null;
-      const postId = myRecord[i].postId;
-      const body = await userDao.getProfileUrl(connection, postId);
-      myRecord[i].profileUrlList = body;
+
+    if (myRecord.length !== 0) {
+      for (i = 0; i < myRecord.length; i++) {
+        myRecord[i].DISTANCE = null;
+        const postId = myRecord[i].postId;
+        const body = await userDao.getProfileUrl(connection, postId);
+        myRecord[i].profileUrlList = body;
+      }
     }
 
     connection.release();
