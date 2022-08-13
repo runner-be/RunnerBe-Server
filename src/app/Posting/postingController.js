@@ -84,7 +84,7 @@ exports.createPosting = async function (req, res) {
 
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
@@ -136,7 +136,7 @@ exports.getPosting = async function (req, res) {
 
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
@@ -154,11 +154,11 @@ exports.getPosting = async function (req, res) {
         postId
       );
       if (checkBookMark.length != 0) {
-        res.send(
+        return res.send(
           response(baseResponse.SUCCESS_WRITER_BMY, getPostingWriterResponse)
         );
       } else {
-        res.send(
+        return res.send(
           response(baseResponse.SUCCESS_WRITER_BMN, getPostingWriterResponse)
         );
       }
@@ -173,21 +173,21 @@ exports.getPosting = async function (req, res) {
 
       if (checkAlreadyapplyNotD.length != 0) {
         if (checkBookMark.length != 0) {
-          res.send(
+          return res.send(
             response(baseResponse.SUCCESS_NON_WRITER_AA_BMY, getPostingResponse)
           );
         } else {
-          res.send(
+          return res.send(
             response(baseResponse.SUCCESS_NON_WRITER_AA_BMN, getPostingResponse)
           );
         }
       } else {
         if (checkBookMark.length != 0) {
-          res.send(
+          return res.send(
             response(baseResponse.SUCCESS_NON_WRITER_BMY, getPostingResponse)
           );
         } else {
-          res.send(
+          return res.send(
             response(baseResponse.SUCCESS_NON_WRITER_BMN, getPostingResponse)
           );
         }
@@ -313,11 +313,11 @@ exports.patchPosting = async function (req, res) {
   //jwt로 들어온 userId가 작성자 id와 일치하는지 확인
   const checkWriter = await postingProvider.checkWriter(postId, userIdFromJWT);
   if (checkWriter.length == 0) {
-    res.send(response(baseResponse.USER_NOT_WRITER));
+    return res.send(response(baseResponse.USER_NOT_WRITER));
   } else {
     //jwt로 userId 확인
     if (userIdFromJWT != userId) {
-      res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+      return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
     } else {
       // 인증 대기 회원 확인
       const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
@@ -371,11 +371,11 @@ exports.dropPosting = async function (req, res) {
   const checkWriter = await postingProvider.checkWriter(postId, userIdFromJWT);
   console.log(checkWriter);
   if (checkWriter.length == 0) {
-    res.send(response(baseResponse.USER_NOT_WRITER));
+    return res.send(response(baseResponse.USER_NOT_WRITER));
   } else {
     //jwt로 userId 확인
     if (userIdFromJWT != userId) {
-      res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+      return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
     } else {
       // 인증 대기 회원 확인
       const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
@@ -414,7 +414,7 @@ exports.reportPosting = async function (req, res) {
 
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     const Response = await postingService.reportPosting(userId, postId);
     return res.send(Response);
@@ -445,14 +445,26 @@ exports.getPosting2 = async function (req, res) {
   if (isNaN(postId) === true)
     return res.send(response(baseResponse.POSTID_NOTNUM));
 
+  // postId 존재 확인
+  const checkPostId = await postingProvider.checkPostId(postId);
+  if (checkPostId.length === 0) {
+    return res.send(response(baseResponse.POST_ID_NOT_EXIST));
+  }
+
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
-    res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
     const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
     if (checkUserAuth.length === 0) {
       return res.send(response(baseResponse.USER_NON_AUTH));
+    }
+
+    // 게시글 작성자 탈퇴 및 정지 확인
+    const checkPostUser = await postingProvider.checkPostUser(postId);
+    if (checkPostUser.length === 0) {
+      return res.send(response(baseResponse.POST_USER_NOT_EXIST));
     }
 
     // 작성자, 비작성자 구분하기
@@ -462,7 +474,7 @@ exports.getPosting2 = async function (req, res) {
       const getPostingWriterResponse = await postingProvider.getPostingWriter2(
         postId
       );
-      res.send(
+      return res.send(
         response(baseResponse.SUCCESS_WRITER_BMY, getPostingWriterResponse)
       );
     } else {
@@ -474,11 +486,11 @@ exports.getPosting2 = async function (req, res) {
         postId
       );
       if (checkAlreadyapplyNotD.length != 0) {
-        res.send(
+        return res.send(
           response(baseResponse.SUCCESS_NON_WRITER_AA_BMY, getPostingResponse)
         );
       } else {
-        res.send(
+        return res.send(
           response(baseResponse.SUCCESS_NON_WRITER_BMY, getPostingResponse)
         );
       }

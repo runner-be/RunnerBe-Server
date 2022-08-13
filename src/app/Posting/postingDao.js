@@ -302,6 +302,27 @@ async function getPosting2(connection, postId) {
   return getPostingRow;
 }
 
+// postUser 확인
+async function checkPostUser(connection, postId) {
+  const Query = `
+  select userId from Posting P
+  inner join User U on P.postUserId = U.userId
+  where postId = ?;
+                   `;
+  const Row = await connection.query(Query, postId);
+
+  return Row[0];
+}
+
+// postUser 확인
+async function checkPostId(connection, postId) {
+  const Query = `
+  select postId from Posting where postId = ?;
+                   `;
+  const Row = await connection.query(Query, postId);
+
+  return Row[0];
+}
 module.exports = {
   createPosting,
   userIdCheck,
@@ -318,4 +339,6 @@ module.exports = {
   checkBookMark,
   reportPosting,
   getPosting2,
+  checkPostUser,
+  checkPostId,
 };
