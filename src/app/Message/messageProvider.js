@@ -1,6 +1,7 @@
 const { pool } = require("../../../config/database");
 const { logger } = require("../../../config/winston");
 const baseResponse = require("../../../config/baseResponseStatus");
+const { response, errResponse } = require("../../../config/response");
 const messageDao = require("./messageDao");
 
 // 반장 Id 가져오기
