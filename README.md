@@ -12,50 +12,59 @@ Password : a2ia76
 
 ## 📁Structure
 
-앞에 (\*)이 붙어있는 파일(or 폴더)은 추가적인 과정 이후에 생성된다.
-
 ```
-├── config
-│ ├── baseResponseStatus.js
-│ ├── database.js
-│ ├── express.js
-│ ├── jwtMiddleware.js
-│ ├── secret.js
-│ ├── winston.js
-├── * log
-├── * node_modules
-├── src
-│ ├── app
-│ │ ├── User
-│ │ │ ├── userDao.js
-│ │ │ ├── userController.js
-│ │ │ ├── userProvider.js
-│ │ │ ├── userService.js
-│ │ │ ├── userRoute.js
-│ │ ├── Running
-│ │ │ ├── runningDao.js
-│ │ │ ├── runningController.js
-│ │ │ ├── runningProvider.js
-│ │ │ ├── runningService.js
-│ │ │ ├── runningRoute.js
-│ │ ├── Posting
-│ │ │ ├── postingDao.js
-│ │ │ ├── postingController.js
-│ │ │ ├── postingProvider.js
-│ │ │ ├── postingService.js
-│ │ │ ├── postingRoute.js
-│ │ ├── Message
-│ │ │ ├── messageDao.js
-│ │ │ ├── messageController.js
-│ │ │ ├── messageProvider.js
-│ │ │ ├── messageService.js
-│ │ │ ├── messageRoute.js
+RunnerBe-Server
+├─ .github
+│  ├─ ISSUE_TEMPLATE
+│  │  ├─ api-template.md
+│  │  ├─ bug_report.md
+│  │  └─ feature_request.md
+│  └─ workflows
+│     └─ node.js.yml
+├─ .gitignore
+├─ config
+│  ├─ baseResponseStatus.js
+│  ├─ database.js
+│  ├─ express.js
+│  ├─ jwtMiddleware.js
+│  ├─ response.js
+│  └─ winston.js
+├─ package-lock.json
+├─ package.json
+├─ LICENSE
+├─ README.md
+├─ ecosystem.config.js
+├─ index.js
+├─ log
+├─ node_modules
+└─ src
+   └─ app
+      ├─ Controller
+      │  ├─ messageController.js
+      │  ├─ postingController.js
+      │  ├─ runningController.js
+      │  └─ userController.js
+      ├─ Dao
+      │  ├─ messageDao.js
+      │  ├─ postingDao.js
+      │  ├─ runningDao.js
+      │  └─ userDao.js
+      ├─ Provider
+      │  ├─ messageProvider.js
+      │  ├─ postingProvider.js
+      │  ├─ runningProvider.js
+      │  └─ userProvider.js
+      ├─ Route
+      │  ├─ messageRoute.js
+      │  ├─ postingRoute.js
+      │  ├─ runningRoute.js
+      │  └─ userRoute.js
+      └─ Service
+         ├─ messageService.js
+         ├─ postingService.js
+         ├─ runningService.js
+         └─ userService.js
 
-├── .gitignore
-├── index.js
-├── * package-lock.json
-├── package.json
-└── README.md
 ```
 
 ## ✨License
