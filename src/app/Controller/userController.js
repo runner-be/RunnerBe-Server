@@ -1,6 +1,6 @@
 const jwtMiddleware = require("../../../config/jwtMiddleware");
-const userProvider = require("../../app/User/userProvider");
-const userService = require("../../app/User/userService");
+const userProvider = require("../Provider/userProvider");
+const userService = require("../Service/userService");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
 const secret = require("../../../config/secret");

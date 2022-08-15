@@ -2,8 +2,8 @@ const { pool } = require("../../../config/database");
 const { logger } = require("../../../config/winston");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
-const userDao = require("./userDao");
-const postingDao = require("../../../src/app/Posting/postingDao");
+const userDao = require("../Dao/userDao");
+const postingDao = require("../Dao/postingDao");
 const userProvider = require("./userProvider");
 
 // UUID 존재 여부
