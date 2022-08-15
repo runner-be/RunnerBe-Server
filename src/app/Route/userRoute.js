@@ -1,5 +1,5 @@
 module.exports = function (app) {
-  const user = require("./userController");
+  const user = require("../Controller/userController");
   const jwtMiddleware = require("../../../config/jwtMiddleware");
 
   // 0. 테스트용 jwt 발급 API
