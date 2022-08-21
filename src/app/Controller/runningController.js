@@ -139,42 +139,61 @@ exports.handleRequest = async function (req, res) {
   }
 };
 
-// /**
-//  * API No. 26
-//  * API Name : 푸쉬알림 API
-//  * [GET] /pushAlarm
-//  */
-// exports.pushAlarm = async function (req, res) {
-//   const connection = await pool.getConnection(async (conn) => conn);
-//   const getDeviceTokenRows = await runningDao.getDeviceToken(connection, 125);
-//   if (getDeviceTokenRows.length === 0)
-//     return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
+/**
+ * API No. 26
+ * API Name : 푸쉬알림 테스트용 API
+ * [POST] /push-alarm-test
+ */
+exports.pushAlarm = async function (req, res) {
+  const userIdFromJWT = req.verifiedToken.userId;
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    //start Transaction
+    connection.beginTransaction();
 
-//   let message = {
-//     notification: {
-//       title: "테스트 제목",
-//       body: getDeviceTokenRows[0].nickName + "님 러너비 앱을 확인해보세요!",
-//     },
-//     data: {
-//       title: "테스트 제목",
-//       body: getDeviceTokenRows[0].nickName + "님 러너비 앱을 확인해보세요!",
-//     },
-//     token: getDeviceTokenRows[0].deviceToken,
-//   };
+    const getDeviceTokenRows = await runningDao.getDeviceToken(
+      connection,
+      userIdFromJWT
+    );
+    if (getDeviceTokenRows.length === 0)
+      return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
 
-//   admin
-//     .messaging()
-//     .send(message)
-//     .then(function (id) {
-//       console.log("Successfully sent message: : ", id);
-//       return res.send(response(baseResponse.SUCCESS));
-//     })
-//     .catch(function (err) {
-//       console.log("Error Sending message!!! : ", err);
-//       return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
-//     });
-//   connection.release();
-// };
+    //commit
+    await connection.commit();
+
+    let message = {
+      notification: {
+        title: "테스트 제목",
+        body: getDeviceTokenRows[0].nickName + "님 러너비 앱을 확인해보세요!",
+      },
+      data: {
+        title: "테스트 제목",
+        body: getDeviceTokenRows[0].nickName + "님 러너비 앱을 확인해보세요!",
+      },
+      token: getDeviceTokenRows[0].deviceToken,
+    };
+
+    admin
+      .messaging()
+      .send(message)
+      .then(function (id) {
+        console.log("Successfully sent message: : ", id);
+        return res.send(response(baseResponse.SUCCESS));
+      })
+      .catch(function (err) {
+        console.log("Error Sending message!!! : ", err);
+        return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+      });
+  } catch (err) {
+    //rollback
+    await connection.rollback();
+    logger.error(`App - push-alarm-test Controller error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+  return res.send(response(baseResponse.SUCCESS));
+};
 
 /**
  * API No. 27
