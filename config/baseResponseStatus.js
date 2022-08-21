@@ -725,6 +725,12 @@ module.exports = {
     code: 3007,
     message: "메세지 전송에 실패했습니다.",
   },
+
+  FALSE: {
+    isSuccess: false,
+    code: 3008,
+    message: "관리자 로그인 실패",
+  },
   // -----------------
 
   //Connection, Transaction 등의 서버 오류
