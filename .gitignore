@@ -5,3 +5,6 @@ log/*
 config/secret.js
 config/kakao_config.js
 config/runnerbe-f1986-firebase-adminsdk-frfin-c125099a1f.json
+src/app/Admin/adminRoute.js
+src/app/Admin/adminController.js
+src/app/Admin/adminDao.js
