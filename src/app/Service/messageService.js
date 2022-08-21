@@ -27,8 +27,6 @@ exports.sendMessage = async function (roomId, userId, content) {
     //commit
     await connection.commit();
 
-    connection.release();
-
     return 0;
   } catch (err) {
     //rollback
@@ -52,8 +50,6 @@ exports.reportMessage = async function (messageId, userId) {
 
     //commit
     await connection.commit();
-
-    connection.release();
 
     return 0;
   } catch (err) {
