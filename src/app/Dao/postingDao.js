@@ -138,7 +138,7 @@ async function getRunner(connection, postId) {
                  `;
   const getRunnerRow = await connection.query(getRunnerQuery, postId);
 
-  return getRunnerRow;
+  return getRunnerRow[0];
 }
 // 신청하고 수락 대기중인 러너들
 async function getWaitingRunner(connection, postId) {
@@ -323,6 +323,27 @@ async function checkPostId(connection, postId) {
 
   return Row[0];
 }
+
+// 출석 관리 시간 마감 확인 : gatheringTime + runningTime + 3시간 > 현재 시간  ---> 마감
+async function getAttendTimeOver(connection, postId) {
+  const Query = `  
+    select
+           case when
+           TIMESTAMPDIFF(SECOND, 
+              DATE_ADD(DATE_FORMAT(gatheringTime+runningTime, '%Y-%m-%d %H:%i:%S'), INTERVAL 3 HOUR),
+              now()) 
+              > 0
+               then 'Y'
+               else 'N'
+               end as attendTimeOver
+    from Posting
+    where postId = ?;
+    `;
+  const Row = await connection.query(Query, postId);
+
+  return Row[0][0]["attendTimeOver"];
+}
+
 module.exports = {
   createPosting,
   userIdCheck,
@@ -341,4 +362,5 @@ module.exports = {
   getPosting2,
   checkPostUser,
   checkPostId,
+  getAttendTimeOver,
 };

@@ -402,10 +402,15 @@ exports.getMyPage2 = async function (userId) {
         myPosting[i].DISTANCE = null;
         myPosting[i].attendance = null;
         const postId = myPosting[i].postId;
-        const body1 = await userDao.getProfileUrl(connection, postId);
-        const body2 = await postingDao.getRunner(connection, postId);
-        myPosting[i].profileUrlList = body1;
-        myPosting[i].runnerList = body2[0];
+        const profileUrlList = await userDao.getProfileUrl(connection, postId);
+        const runnerList = await postingDao.getRunner(connection, postId);
+        const attendTimeOver = await postingDao.getAttendTimeOver(
+          connection,
+          postId
+        );
+        myPosting[i].profileUrlList = profileUrlList;
+        myPosting[i].runnerList = runnerList;
+        myPosting[i].attendTimeOver = attendTimeOver;
       }
     }
 
