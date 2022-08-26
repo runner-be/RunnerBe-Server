@@ -1,3 +1,5 @@
+[![RunnerBe CI/CD](https://github.com/runner-be/RunnerBe-Server/actions/workflows/node.js.yml/badge.svg)](https://github.com/runner-be/RunnerBe-Server/actions/workflows/node.js.yml)
+
 ## 📁Structure
 
 ```
