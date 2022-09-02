@@ -473,3 +473,20 @@ exports.checkUserRestricted = async function (userId) {
     return errResponse(baseResponse.DB_ERROR);
   }
 };
+
+// 새로운 푸쉬 알림 메시지 여부 조회
+exports.getWhetherNewAlarms = async function (userId) {
+  try {
+    const connection = await pool.getConnection(async (conn) => conn);
+    const getWhetherNewAlarmsResult = await userDao.getWhetherNewAlarms(
+      connection,
+      userId
+    );
+    connection.release();
+
+    return getWhetherNewAlarmsResult;
+  } catch (err) {
+    logger.error(`User-getWhetherNewAlarms Provider error: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  }
+};
