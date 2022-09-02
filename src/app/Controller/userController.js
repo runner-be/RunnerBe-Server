@@ -1139,3 +1139,24 @@ exports.getRecord = async function (req, res) {
   const getRecordResult = await userProvider.getRecord(userId);
   return res.send(response(baseResponse.SUCCESS, getRecordResult));
 };
+
+/**
+ * API No. 43
+ * API Name : 새로운 푸쉬 알림 메시지 여부 조회
+ * [GET] /users/whether-new-messages
+ * Header : jwt
+ */
+exports.getWhetherNewAlarms = async function (req, res) {
+  const userId = req.verifiedToken.userId;
+
+  // 인증 대기 회원 확인
+  const checkUserAuth = await userProvider.checkUserAuth(userId);
+  if (checkUserAuth.length === 0) {
+    return res.send(response(baseResponse.USER_NON_AUTH));
+  }
+
+  const getWhetherNewAlarmsResult = await userProvider.getWhetherNewAlarms(
+    userId
+  );
+  return res.send(response(baseResponse.SUCCESS, getWhetherNewAlarmsResult));
+};

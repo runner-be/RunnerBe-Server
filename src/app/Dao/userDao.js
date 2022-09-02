@@ -851,6 +851,18 @@ async function checkUserRestricted(connection, userId) {
   return Rows;
 }
 
+//새로운 알림 메시지 여부 조회
+async function getWhetherNewAlarms(connection, userId) {
+  const Query = `
+  select case when
+       exists(select * from Alarm where whetherRead = 'N' and userId = ?) = 1
+       then 'Y'
+       else 'N' end as whetherNewAlarm;
+                  `;
+  const [Rows] = await connection.query(Query, userId);
+  return Rows[0]["whetherNewAlarm"];
+}
+
 module.exports = {
   selectUser,
   deleteUser,
@@ -896,4 +908,5 @@ module.exports = {
   changeWhetherRead,
   getmyInfoSimple,
   checkUserRestricted,
+  getWhetherNewAlarms,
 };
