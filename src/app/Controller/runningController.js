@@ -161,17 +161,30 @@ exports.pushAlarm = async function (req, res) {
     //commit
     await connection.commit();
 
+    //title, body 설정
+    const titleInstance = "테스트 푸쉬알림";
+    const content =
+      getDeviceTokenRows[0].nickName + `님, 테스트 푸쉬알림입니다.`;
+
     let message = {
       notification: {
-        title: "테스트 제목",
-        body: getDeviceTokenRows[0].nickName + "님 러너비 앱을 확인해보세요!",
+        title: titleInstance,
+        body: content,
       },
       data: {
-        title: "테스트 제목",
-        body: getDeviceTokenRows[0].nickName + "님 러너비 앱을 확인해보세요!",
+        title: titleInstance,
+        body: content,
       },
       token: getDeviceTokenRows[0].deviceToken,
     };
+
+    //메시지 저장  repUserId, titleInstance, content
+    await runningDao.savePushalarm(
+      connection,
+      userIdFromJWT,
+      titleInstance,
+      content
+    );
 
     admin
       .messaging()
