@@ -149,7 +149,7 @@ exports.getPosting2 = async function (postId) {
     const body = await userDao.getProfileUrl(connection, postId);
     postingInfo[0].profileUrlList = body;
 
-    const runnerInfo = getRunnerResult[0];
+    const runnerInfo = getRunnerResult;
     const getPostingFinalResult = { postingInfo, runnerInfo };
     return getPostingFinalResult;
   } catch (err) {
