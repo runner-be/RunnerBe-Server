@@ -27,7 +27,7 @@ exports.getPosting = async function (postId) {
     const getRunnerResult = await postingDao.getRunner(connection, postId);
     connection.release();
     const postingInfo = getPostingResult[0];
-    const runnerInfo = getRunnerResult[0];
+    const runnerInfo = getRunnerResult;
     const getPostingFinalResult = { postingInfo, runnerInfo };
     return getPostingFinalResult;
   } catch (err) {
@@ -48,7 +48,7 @@ exports.getPostingWriter = async function (postId) {
     );
     connection.release();
     const postingInfo = getPostingResult[0];
-    const runnerInfo = getRunnerResult[0];
+    const runnerInfo = getRunnerResult;
     const waitingRunnerInfo = getWaitingRunnerResult[0];
     const getPostingFinalResult = {
       postingInfo,
@@ -178,7 +178,7 @@ exports.getPostingWriter2 = async function (postId) {
     const body = await userDao.getProfileUrl(connection, postId);
     postingInfo[0].profileUrlList = body;
 
-    const runnerInfo = getRunnerResult[0];
+    const runnerInfo = getRunnerResult;
     const waitingRunnerInfo = getWaitingRunnerResult[0];
     const getPostingFinalResult = {
       postingInfo,
