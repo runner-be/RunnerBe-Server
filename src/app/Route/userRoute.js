@@ -4,6 +4,9 @@ module.exports = function (app) {
 
   // 0. 테스트용 jwt 발급 API
   app.get("/jwtTest/:userId", user.getJwt);
+  app.get("/test", async function (req, res) {
+    return res.send("success");
+  });
 
   // 1. 카카오 로그인 API, aceess token은 Frontend에서 발급 후 req.body로 제출
   app.post("/users/kakao-login", user.kakaoLogin);

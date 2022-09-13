@@ -7,8 +7,6 @@ const runningDao = require("../Dao/runningDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
-const { connect } = require("http2");
-const res = require("express/lib/response");
 
 //푸시알림
 const { initializeApp } = require("firebase-admin/app");
@@ -25,16 +23,13 @@ exports.sendRequest = async function (postId, userId) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     const sendRequestParams = [postId, userId];
     const sendRequestResult = await runningDao.sendRequest(
       connection,
       sendRequestParams
     );
-
-    //commit
-    await connection.commit();
 
     // 작성자에게 push alarm 발송
     const title = await runningDao.getTitle(connection, postId);
@@ -72,7 +67,7 @@ exports.sendRequest = async function (postId, userId) {
       };
 
       //푸쉬알림 발송
-      admin
+      await admin
         .messaging()
         .send(message)
         .then(function (id) {
@@ -93,14 +88,17 @@ exports.sendRequest = async function (postId, userId) {
       );
     }
 
+    //commit
+    await connection.commit();
+
     return 0;
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - sendRequest Service error\n: ${err.message}`);
+    await logger.error(`App - sendRequest Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -109,7 +107,7 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     const sendRequestParams = [postId, applicantId];
     const sendRequestResult = await runningDao.handleRequest(
@@ -117,9 +115,6 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
       sendRequestParams,
       whetherAccept
     );
-
-    //commit
-    await connection.commit();
 
     //수신 여부 확인
     const pushOn = await runningDao.checkPushOn(connection, applicantId);
@@ -157,7 +152,7 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
         };
 
         //푸쉬알림 발송
-        admin
+        await admin
           .messaging()
           .send(message)
           .then(function (id) {
@@ -203,7 +198,7 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
         };
 
         //푸쉬알림 발송
-        admin
+        await admin
           .messaging()
           .send(message)
           .then(function (id) {
@@ -224,15 +219,17 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
         );
       }
     }
+    //commit
+    await connection.commit();
 
     return 0;
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - handleRequest Service error\n: ${err.message}`);
+    await logger.error(`App - handleRequest Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -241,7 +238,7 @@ exports.attend = async function (postId, userId, whetherAttend) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     //RunningPeople에 참석여부 업데이트
     const updateParams = [userId, postId];
@@ -280,7 +277,7 @@ exports.attend = async function (postId, userId, whetherAttend) {
         };
 
         //푸쉬알림 발송
-        admin
+        await admin
           .messaging()
           .send(message)
           .then(function (id) {
@@ -335,7 +332,7 @@ exports.attend = async function (postId, userId, whetherAttend) {
         };
 
         //푸쉬알림 발송
-        admin
+        await admin
           .messaging()
           .send(message)
           .then(function (id) {
@@ -369,9 +366,9 @@ exports.attend = async function (postId, userId, whetherAttend) {
     //rollback
     console.log("rollback");
     await connection.rollback();
-    logger.error(`App - attend Service error\n: ${err.message}`);
+    await logger.error(`App - attend Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
