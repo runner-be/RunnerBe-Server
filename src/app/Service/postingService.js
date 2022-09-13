@@ -3,10 +3,10 @@ const { pool } = require("../../../config/database");
 const postingProvider = require("../Provider/postingProvider");
 const postingDao = require("../Dao/postingDao");
 const messageDao = require("../Dao/messageDao");
+const runningDao = require("../Dao/runningDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
-const { connect } = require("http2");
 const schedule = require("node-schedule");
 
 // 게시글 생성
@@ -28,7 +28,7 @@ exports.createPosting = async function (
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     //유효한 user인지 확인
     const userIdRows = await postingProvider.userIdCheck(userId);
@@ -120,7 +120,7 @@ exports.createPosting = async function (
         };
 
         //푸쉬알림 발송
-        admin
+        await admin
           .messaging()
           .send(message)
           .then(function (id) {
@@ -148,10 +148,10 @@ exports.createPosting = async function (
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - createPosting Service error\n: ${err.message}`);
+    await logger.error(`App - createPosting Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -174,7 +174,7 @@ exports.patchPosting = async function (
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
     const patchPostingParams = [
       title,
       gatheringTime,
@@ -207,10 +207,10 @@ exports.patchPosting = async function (
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - patchPosting Service error\n: ${err.message}`);
+    await logger.error(`App - patchPosting Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -220,7 +220,7 @@ exports.dropPosting = async function (postId) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
     //게시글 있는지 확인
     const checkPostingResult = await postingProvider.checkPosting(postId);
     if (checkPostingResult[0].length == 0)
@@ -235,10 +235,10 @@ exports.dropPosting = async function (postId) {
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - dropPosting Service error\n: ${err.message}`);
+    await logger.error(`App - dropPosting Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -247,7 +247,7 @@ exports.reportPosting = async function (userId, postId) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
     //게시글 있는지 확인
     const checkPostingResult = await postingProvider.checkPosting(postId);
     if (checkPostingResult[0].length == 0)
@@ -263,9 +263,9 @@ exports.reportPosting = async function (userId, postId) {
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - reportPosting Service error\n: ${err.message}`);
+    await logger.error(`App - reportPosting Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };

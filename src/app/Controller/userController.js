@@ -10,7 +10,6 @@ const axios = require("axios");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 const regexEmail = require("regex-email");
-const { emit } = require("nodemon");
 
 /**
  * API No. 0

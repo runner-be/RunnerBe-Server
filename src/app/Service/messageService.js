@@ -5,15 +5,13 @@ const messageDao = require("../Dao/messageDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
-const { connect } = require("http2");
-const res = require("express/lib/response");
 
 // 메시지 전송
 exports.sendMessage = async function (roomId, userId, content) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     //메시지 전송
     await messageDao.sendMessage(connection, [userId, roomId, content]);
@@ -31,10 +29,10 @@ exports.sendMessage = async function (roomId, userId, content) {
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - sendMessage Service error\n: ${err.message}`);
+    await logger.error(`App - sendMessage Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -43,7 +41,7 @@ exports.reportMessage = async function (messageId, userId) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     //메시지 신고
     await messageDao.reportMessage(connection, [messageId, userId]);
@@ -55,9 +53,9 @@ exports.reportMessage = async function (messageId, userId) {
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - reportMessage Service error\n: ${err.message}`);
+    await logger.error(`App - reportMessage Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
