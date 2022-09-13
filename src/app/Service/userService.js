@@ -24,7 +24,7 @@ exports.createUser = async function (
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     // uuid 중복 확인
     const uuidRows = await userProvider.uuidCheck(uuid);
@@ -124,10 +124,10 @@ exports.createUser = async function (
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - createUser Service error\n: ${err.message}`);
+    await logger.error(`App - createUser Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -136,7 +136,7 @@ exports.patchUserName = async function (changedNickName, userId) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     //변경이력 확인
     const checkRecordRows = await userProvider.checkRecord(userId);
@@ -161,10 +161,10 @@ exports.patchUserName = async function (changedNickName, userId) {
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - patchUserName Service error\n: ${err.message}`);
+    await logger.error(`App - patchUserName Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -173,7 +173,7 @@ exports.addBM = async function (userId, postId, whetherAdd) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     const addBMParams = [userId, postId];
     if (whetherAdd === "Y") {
@@ -194,10 +194,10 @@ exports.addBM = async function (userId, postId, whetherAdd) {
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - addBM Service error\n: ${err.message}`);
+    await logger.error(`App - addBM Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -206,7 +206,7 @@ exports.patchUserImage = async function (profileImageUrl, userId) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     const patchUserImageParams = [profileImageUrl, userId];
     const patchUserImageResult = await userDao.patchUserImage(
@@ -221,10 +221,10 @@ exports.patchUserImage = async function (profileImageUrl, userId) {
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - patchUserImage Service error\n: ${err.message}`);
+    await logger.error(`App - patchUserImage Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -233,7 +233,7 @@ exports.patchUserJob = async function (job, userId) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     const patchUserJobResult = await userDao.patchUserJob(
       connection,
@@ -248,10 +248,10 @@ exports.patchUserJob = async function (job, userId) {
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - patchUserJob Service error\n: ${err.message}`);
+    await logger.error(`App - patchUserJob Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -260,7 +260,7 @@ exports.deleteUser = async function (userId) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     const deleteUser = await userDao.deleteUser(connection, userId);
     const finalResult = { "deleted userId": userId };
@@ -272,10 +272,10 @@ exports.deleteUser = async function (userId) {
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`User-deleteUser Service error: ${err.message}`);
+    await logger.error(`User-deleteUser Service error: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -291,7 +291,7 @@ exports.createUserV2 = async function (
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     // uuid 중복 확인
     const uuidRows = await userProvider.uuidCheck(uuid);
@@ -343,10 +343,10 @@ exports.createUserV2 = async function (
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - createUser Service error\n: ${err.message}`);
+    await logger.error(`App - createUser Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -355,7 +355,7 @@ exports.patchDeviceToken = async function (deviceToken, userId) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     const patchUserDeviceTokenParams = [deviceToken, userId];
     const result = await userDao.patchUserDeviceToken(
@@ -370,10 +370,10 @@ exports.patchDeviceToken = async function (deviceToken, userId) {
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - patcDeviceToken Service error\n: ${err.message}`);
+    await logger.error(`App - patcDeviceToken Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -382,7 +382,7 @@ exports.patchPushOn = async function (pushOn, userId) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     const patchPushOnParams = [pushOn, userId];
     const result = await userDao.patchPushOn(connection, patchPushOnParams);
@@ -394,10 +394,10 @@ exports.patchPushOn = async function (pushOn, userId) {
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - patchPushOn Service error\n: ${err.message}`);
+    await logger.error(`App - patchPushOn Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
 
@@ -406,7 +406,7 @@ exports.getMyAlarms = async function (userId) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     //start Transaction
-    connection.beginTransaction();
+    await connection.beginTransaction();
 
     //알림 메시지 목록
     const alarmList = await userDao.getMyAlarms(connection, userId);
@@ -421,9 +421,9 @@ exports.getMyAlarms = async function (userId) {
   } catch (err) {
     //rollback
     await connection.rollback();
-    logger.error(`App - getMyAlarms Provider error\n: ${err.message}`);
+    await logger.error(`App - getMyAlarms Provider error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
-    connection.release();
+    await connection.release();
   }
 };
