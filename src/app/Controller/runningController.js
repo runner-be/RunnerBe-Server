@@ -59,10 +59,10 @@ exports.sendRequest = async function (req, res) {
     return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
-    const checkUserAuth = await userProvider.checkUserAuth(userId);
-    if (checkUserAuth.length === 0) {
-      return res.send(response(baseResponse.USER_NON_AUTH));
-    }
+    // const checkUserAuth = await userProvider.checkUserAuth(userId);
+    // if (checkUserAuth.length === 0) {
+    //   return res.send(response(baseResponse.USER_NON_AUTH));
+    // }
     const Response = await runningService.sendRequest(postId, userId);
     //푸쉬알림
 
@@ -125,10 +125,10 @@ exports.handleRequest = async function (req, res) {
     return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
-    const checkUserAuth = await userProvider.checkUserAuth(userId);
-    if (checkUserAuth.length === 0) {
-      return res.send(response(baseResponse.USER_NON_AUTH));
-    }
+    // const checkUserAuth = await userProvider.checkUserAuth(userId);
+    // if (checkUserAuth.length === 0) {
+    //   return res.send(response(baseResponse.USER_NON_AUTH));
+    // }
     const Response = await runningService.handleRequest(
       postId,
       applicantId,
