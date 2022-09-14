@@ -296,10 +296,10 @@ exports.patchUserName = async function (req, res) {
     return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
-    const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
-    if (checkUserAuth.length === 0) {
-      return res.send(response(baseResponse.USER_NON_AUTH));
-    }
+    // const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+    // if (checkUserAuth.length === 0) {
+    //   return res.send(response(baseResponse.USER_NON_AUTH));
+    // }
     const patchUserNameResponse = await userService.patchUserName(
       changedNickName,
       userId
@@ -523,10 +523,10 @@ exports.addBM = async function (req, res) {
     return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
-    const checkUserAuth = await userProvider.checkUserAuth(userId);
-    if (checkUserAuth.length === 0) {
-      return res.send(response(baseResponse.USER_NON_AUTH));
-    }
+    // const checkUserAuth = await userProvider.checkUserAuth(userId);
+    // if (checkUserAuth.length === 0) {
+    //   return res.send(response(baseResponse.USER_NON_AUTH));
+    // }
     const Response = await userService.addBM(userId, postId, whetherAdd);
 
     return res.send(response(baseResponse.SUCCESS));
@@ -559,10 +559,10 @@ exports.getBM = async function (req, res) {
     return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
-    const checkUserAuth = await userProvider.checkUserAuth(userId);
-    if (checkUserAuth.length === 0) {
-      return res.send(response(baseResponse.USER_NON_AUTH));
-    }
+    // const checkUserAuth = await userProvider.checkUserAuth(userId);
+    // if (checkUserAuth.length === 0) {
+    //   return res.send(response(baseResponse.USER_NON_AUTH));
+    // }
     const Response = await userProvider.getBM(userId);
 
     return res.send(response(baseResponse.SUCCESS, Response));
@@ -592,10 +592,10 @@ exports.patchUserImage = async function (req, res) {
     return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
-    const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
-    if (checkUserAuth.length === 0) {
-      return res.send(response(baseResponse.USER_NON_AUTH));
-    }
+    // const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+    // if (checkUserAuth.length === 0) {
+    //   return res.send(response(baseResponse.USER_NON_AUTH));
+    // }
     const changeImage = await userService.patchUserImage(
       profileImageUrl,
       userId
@@ -652,10 +652,10 @@ exports.patchUserJob = async function (req, res) {
     return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
-    const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
-    if (checkUserAuth.length === 0) {
-      return res.send(response(baseResponse.USER_NON_AUTH));
-    }
+    // const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+    // if (checkUserAuth.length === 0) {
+    //   return res.send(response(baseResponse.USER_NON_AUTH));
+    // }
     const changeJob = await userService.patchUserJob(job, userId);
     return res.send(response(baseResponse.SUCCESS));
   }
@@ -682,10 +682,10 @@ exports.getMyPage = async function (req, res) {
     return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
-    const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
-    if (checkUserAuth.length === 0) {
-      return res.send(response(baseResponse.USER_NON_AUTH));
-    }
+    // const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+    // if (checkUserAuth.length === 0) {
+    //   return res.send(response(baseResponse.USER_NON_AUTH));
+    // }
     const getMyPageResult = await userProvider.getMyPage(userId);
     return res.send(response(baseResponse.SUCCESS, getMyPageResult));
   }
@@ -970,10 +970,10 @@ exports.getBM2 = async function (req, res) {
     return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
-    const checkUserAuth = await userProvider.checkUserAuth(userId);
-    if (checkUserAuth.length === 0) {
-      return res.send(response(baseResponse.USER_NON_AUTH));
-    }
+    // const checkUserAuth = await userProvider.checkUserAuth(userId);
+    // if (checkUserAuth.length === 0) {
+    //   return res.send(response(baseResponse.USER_NON_AUTH));
+    // }
     const Response = await userProvider.getBM2(userId);
 
     return res.send(response(baseResponse.SUCCESS, Response));
@@ -1001,10 +1001,10 @@ exports.getMyPage2 = async function (req, res) {
     return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
   } else {
     // 인증 대기 회원 확인
-    const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
-    if (checkUserAuth.length === 0) {
-      return res.send(response(baseResponse.USER_NON_AUTH));
-    }
+    // const checkUserAuth = await userProvider.checkUserAuth(userIdFromJWT);
+    // if (checkUserAuth.length === 0) {
+    //   return res.send(response(baseResponse.USER_NON_AUTH));
+    // }
     const getMyPageResult = await userProvider.getMyPage2(userId);
     return res.send(response(baseResponse.SUCCESS, getMyPageResult));
   }
@@ -1110,10 +1110,10 @@ exports.getMyAlarms = async function (req, res) {
   const userId = req.verifiedToken.userId;
 
   // 인증 대기 회원 확인
-  const checkUserAuth = await userProvider.checkUserAuth(userId);
-  if (checkUserAuth.length === 0) {
-    return res.send(response(baseResponse.USER_NON_AUTH));
-  }
+  // const checkUserAuth = await userProvider.checkUserAuth(userId);
+  // if (checkUserAuth.length === 0) {
+  //   return res.send(response(baseResponse.USER_NON_AUTH));
+  // }
 
   //알림 메시지 목록 조회 및 읽음 처리
   const getMyAlarmsResult = await userService.getMyAlarms(userId);
@@ -1130,10 +1130,10 @@ exports.getRecord = async function (req, res) {
   const userId = req.verifiedToken.userId;
 
   // 인증 대기 회원 확인
-  const checkUserAuth = await userProvider.checkUserAuth(userId);
-  if (checkUserAuth.length === 0) {
-    return res.send(response(baseResponse.USER_NON_AUTH));
-  }
+  // const checkUserAuth = await userProvider.checkUserAuth(userId);
+  // if (checkUserAuth.length === 0) {
+  //   return res.send(response(baseResponse.USER_NON_AUTH));
+  // }
 
   const getRecordResult = await userProvider.getRecord(userId);
   return res.send(response(baseResponse.SUCCESS, getRecordResult));
@@ -1149,10 +1149,10 @@ exports.getWhetherNewAlarms = async function (req, res) {
   const userId = req.verifiedToken.userId;
 
   // 인증 대기 회원 확인
-  const checkUserAuth = await userProvider.checkUserAuth(userId);
-  if (checkUserAuth.length === 0) {
-    return res.send(response(baseResponse.USER_NON_AUTH));
-  }
+  // const checkUserAuth = await userProvider.checkUserAuth(userId);
+  // if (checkUserAuth.length === 0) {
+  //   return res.send(response(baseResponse.USER_NON_AUTH));
+  // }
 
   const getWhetherNewAlarmsResult = await userProvider.getWhetherNewAlarms(
     userId
