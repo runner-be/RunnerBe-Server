@@ -160,8 +160,10 @@ exports.getPosting2 = async function (postId) {
     const body = await userDao.getProfileUrl(connection, postId);
     postingInfo[0].profileUrlList = body;
 
+    const roomId = await postingDao.getRoomId(connection, postId);
+
     const runnerInfo = getRunnerResult;
-    const getPostingFinalResult = { postingInfo, runnerInfo };
+    const getPostingFinalResult = { postingInfo, runnerInfo, roomId };
     return getPostingFinalResult;
   } catch (err) {
     await logger.error(`Posting-getPosting2 Provider error: ${err.message}`);
@@ -191,12 +193,15 @@ exports.getPostingWriter2 = async function (postId) {
     const body = await userDao.getProfileUrl(connection, postId);
     postingInfo[0].profileUrlList = body;
 
+    const roomId = await postingDao.getRoomId(connection, postId);
+
     const runnerInfo = getRunnerResult;
     const waitingRunnerInfo = getWaitingRunnerResult[0];
     const getPostingFinalResult = {
       postingInfo,
       runnerInfo,
       waitingRunnerInfo,
+      roomId,
     };
     return getPostingFinalResult;
   } catch (err) {
