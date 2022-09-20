@@ -78,23 +78,19 @@ exports.sendRequest = async function (req, res) {
 exports.handleRequest = async function (req, res) {
   /**
    * Header : jwt
-   * Path Variable : postId, applicantId, whetherAccept, userId
+   * Path Variable : postId, applicantId, whetherAccept
    */
   const postId = req.params.postId;
   const applicantId = req.params.applicantId;
   const whetherAccept = req.params.whetherAccept;
-  const userId = req.params.userId;
   const userIdFromJWT = req.verifiedToken.userId;
 
   // 필수 값 : 빈 값 체크 (text를 제외한 나머지)
-  if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
   if (!postId) return res.send(response(baseResponse.POSTID_EMPTY));
   if (!applicantId) return res.send(response(baseResponse.APPLICANTID_EMPTY));
   if (!whetherAccept) return res.send(response(baseResponse.WACCEPT_EMPTY));
 
   // 숫자 확인
-  if (isNaN(userId) === true)
-    return res.send(response(baseResponse.USER_USERID_NOTNUM));
   if (isNaN(postId) === true)
     return res.send(response(baseResponse.POSTID_NOTNUM));
   if (isNaN(applicantId) === true)
@@ -109,7 +105,7 @@ exports.handleRequest = async function (req, res) {
   //repUserId 뽑아내기
   const repUserId = await messageProvider.getRepUserId(postId);
   // 비교
-  if (userId != repUserId)
+  if (userIdFromJWT != repUserId)
     return res.send(response(baseResponse.USERID_NOT_WRITER));
 
   //applicantId로 RP에 있는지, 그리고 whetherAccept가 N(대기)인지 확인
@@ -120,23 +116,18 @@ exports.handleRequest = async function (req, res) {
   if (checkApplicant.length === 0)
     return res.send(response(baseResponse.USER_CANNOT_REQUEST));
 
-  //jwt로 userId 확인
-  if (userIdFromJWT != userId) {
-    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
-  } else {
-    // 인증 대기 회원 확인
-    // const checkUserAuth = await userProvider.checkUserAuth(userId);
-    // if (checkUserAuth.length === 0) {
-    //   return res.send(response(baseResponse.USER_NON_AUTH));
-    // }
-    const Response = await runningService.handleRequest(
-      postId,
-      applicantId,
-      whetherAccept
-    );
+  // 인증 대기 회원 확인
+  // const checkUserAuth = await userProvider.checkUserAuth(userId);
+  // if (checkUserAuth.length === 0) {
+  //   return res.send(response(baseResponse.USER_NON_AUTH));
+  // }
+  const Response = await runningService.handleRequest(
+    postId,
+    applicantId,
+    whetherAccept
+  );
 
-    return res.send(response(baseResponse.SUCCESS));
-  }
+  return res.send(response(baseResponse.SUCCESS));
 };
 
 /**

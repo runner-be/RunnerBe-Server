@@ -11,7 +11,7 @@ module.exports = function (app) {
 
   // 19. 참여 신청 처리하기 API
   app.patch(
-    "/runnings/request/:postId/:userId/handling/:applicantId/:whetherAccept",
+    "/runnings/request/:postId/handling/:applicantId/:whetherAccept",
     jwtMiddleware,
     running.handleRequest
   );
