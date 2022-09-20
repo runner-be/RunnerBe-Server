@@ -318,7 +318,12 @@ exports.getMain2 = async function (
         getMainResult[i].bookMark = null;
         getMainResult[i].attendance = null;
         const postId = getMainResult[i].postId;
-        const body = await userDao.getProfileUrl(connection, postId);
+        let body;
+        try {
+          body = await userDao.getProfileUrl(connection, postId);
+        } catch (err) {
+          body = null;
+        }
         getMainResult[i].profileUrlList = body;
       }
     }
@@ -368,7 +373,12 @@ exports.getMain2Login = async function (
         getMainResult[i].userId = null;
         getMainResult[i].attendance = null;
         const postId = getMainResult[i].postId;
-        const body = await userDao.getProfileUrl(connection, postId);
+        let body;
+        try {
+          body = await userDao.getProfileUrl(connection, postId);
+        } catch (err) {
+          body = null;
+        }
         getMainResult[i].profileUrlList = body;
       }
     }
