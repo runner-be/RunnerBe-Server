@@ -344,6 +344,16 @@ async function getAttendTimeOver(connection, postId) {
   return Row[0][0]["attendTimeOver"];
 }
 
+// 게시글 상세 페이지 roomId 가져오기
+async function getRoomId(connection, postId) {
+  const Query = `  
+  select R.roomId from Room R inner join Posting P on R.postId = P.postId where P.postId = ?; 
+    `;
+  const Row = await connection.query(Query, postId);
+
+  return Row[0][0]["roomId"];
+}
+
 module.exports = {
   createPosting,
   userIdCheck,
@@ -363,4 +373,5 @@ module.exports = {
   checkPostUser,
   checkPostId,
   getAttendTimeOver,
+  getRoomId,
 };
