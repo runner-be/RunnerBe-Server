@@ -531,3 +531,21 @@ exports.getWhetherNewAlarms = async function (userId) {
     await connection.release();
   }
 };
+
+
+// 유저 이용 제한 상태 확인
+exports.getUserGender = async function (userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const result = await userDao.getUserGender(connection, userId);
+
+    return result;
+  } catch (err) {
+    await logger.error(
+      `User-getUserGender Provider error: ${err.message}`
+    );
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    await connection.release();
+  }
+};

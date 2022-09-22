@@ -82,6 +82,14 @@ exports.createPosting = async function (req, res) {
   if (!genderList.includes(runnerGender))
     return res.send(response(baseResponse.GENDER_IS_NOT_VALID));
 
+  // 자신과 다른 성별 게시 불가
+  if (runnerGender !== 'A'){
+    const userGender = await userProvider.getUserGender(userId);
+    if (userGender !== runnerGender){
+      return res.send(response(baseResponse.GENDER_NOT_ALLOWED));
+    }
+  }
+
   //jwt로 userId 확인
   if (userIdFromJWT != userId) {
     return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));

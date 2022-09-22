@@ -683,6 +683,12 @@ module.exports = {
     code: 2095,
     message: "해당 postId는 존재하지 않습니다.",
   },
+  
+  GENDER_NOT_ALLOWED: {
+    isSuccess: false,
+    code: 2095,
+    message: "자신과 다른 성별의 글을 게시할 수 없습니다.",
+  },
   // ----------------------------
 
   // Response error
