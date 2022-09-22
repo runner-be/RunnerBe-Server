@@ -863,6 +863,16 @@ async function getWhetherNewAlarms(connection, userId) {
   return Rows[0]["whetherNewAlarm"];
 }
 
+
+// 유저 성별 조회
+async function getUserGender(connection, userId) {
+  const Query = `
+  select gender from User where userId = ?;
+                  `;
+  const [Rows] = await connection.query(Query, userId);
+  return Rows[0]["gender"];
+}
+
 module.exports = {
   selectUser,
   deleteUser,
@@ -909,4 +919,5 @@ module.exports = {
   getmyInfoSimple,
   checkUserRestricted,
   getWhetherNewAlarms,
+  getUserGender
 };
