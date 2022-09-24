@@ -873,6 +873,28 @@ async function getUserGender(connection, userId) {
   return Rows[0]["gender"];
 }
 
+// 발신자를 제외한 대화방 전체 인원의 deviceToken
+async function getDeviceTokenList(connection, userId, roomId) {
+  const Query = `
+  select deviceToken from User U
+inner join UserPerRoom UPR on U.userId = UPR.userId
+inner join Room R on UPR.roomId = R.roomId
+where U.userId != ${userId} and R.roomId = ${roomId};
+                  `;
+  const [Rows] = await connection.query(Query);
+  return Rows;
+}
+
+// 본인 제외 대화방 인원 Id
+async function getOtherId(connection, userId, roomId) {
+  const Query = `
+  select userId from Room R
+  inner join UserPerRoom UPR on R.roomId = UPR.roomId
+  where R.roomId = ${roomId} and UPR.userId != ${userId};
+                  `;
+  const [Rows] = await connection.query(Query);
+  return Rows;
+}
 module.exports = {
   selectUser,
   deleteUser,
@@ -919,5 +941,7 @@ module.exports = {
   getmyInfoSimple,
   checkUserRestricted,
   getWhetherNewAlarms,
-  getUserGender
+  getUserGender,
+  getDeviceTokenList,
+  getOtherId
 };

@@ -48,10 +48,7 @@ exports.sendRequest = async function (postId, userId) {
       //title, body 설정
       const titleInstance = "RunnerBe : 모임 참여 요청 전달";
       const content =
-        getDeviceTokenRows[0].nickName +
-        `님, 작성한 ["` +
-        title +
-        `"]에 다른 러너가 신청했어요! 모임글 페이지로 확인하러 가볼까요?`;
+      `${getDeviceTokenRows[0].nickName} 님, 작성한 [${title}]에 다른 러너가 신청했어요! 모임글 페이지로 확인하러 가볼까요?`;
 
       //푸쉬알림 메시지 설정
       let message = {
@@ -132,11 +129,7 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
       if (whetherAccept == "Y") {
         //title, body 설정
         const titleInstance = "RunnerBe : 모임 신청 승인";
-        const content =
-          getDeviceTokenRows[0].nickName +
-          `님, ["` +
-          title +
-          `"] 참여가 승인되었어요! 신나게 달릴 준비를 해볼까요?`;
+        const content = `${getDeviceTokenRows[0].nickName}님, [${title}] 참여가 승인되었어요! 신나게 달릴 준비를 해볼까요?`;
 
         //푸쉬알림 메시지 설정
         let message = {
@@ -178,11 +171,7 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
       } else {
         //title, body 설정
         const titleInstance = "RunnerBe : 모임 신청 거절";
-        const content =
-          getDeviceTokenRows[0].nickName +
-          `님, ["` +
-          title +
-          `"] 참여가 승인되지 않았네요. 아쉽지만 다른 모임을 찾아보는 것이 어떨까요?`;
+        const content = `${getDeviceTokenRows[0].nickName}님, [${title}] 참여가 승인되지 않았네요. 아쉽지만 다른 모임을 찾아보는 것이 어떨까요?`;
 
         //푸쉬알림 메시지 설정
         let message = {
@@ -259,9 +248,7 @@ exports.attend = async function (postId, userId, whetherAttend) {
 
         //title, body 설정
         const titleInstance = "RunnerBe : 출석 완료";
-        const content =
-          getDeviceTokenRows[0].nickName +
-          `님, 출석이 완료됐어요! 즐거운 러닝을 시작해볼까요?`;
+        const content = `${getDeviceTokenRows[0].nickName}님, 출석이 완료됐어요! 즐거운 러닝을 시작해볼까요?`;
 
         //푸쉬알림 메시지 설정
         let message = {
@@ -314,9 +301,7 @@ exports.attend = async function (postId, userId, whetherAttend) {
 
         //title, body 설정
         const titleInstance = "RunnerBe : 출석 미완료";
-        const content =
-          getDeviceTokenRows[0].nickName +
-          `님, 러닝 모임에 불참하신 것 같아요. 다음에는 조금 더 분발해볼까요?`;
+        const content = `${getDeviceTokenRows[0].nickName}님, 러닝 모임에 불참하신 것 같아요. 다음에는 조금 더 분발해볼까요?`;
 
         //푸쉬알림 메시지 설정
         let message = {

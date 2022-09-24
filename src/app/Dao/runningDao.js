@@ -97,6 +97,19 @@ async function getTitle(connection, postId) {
 
   return row[0].title;
 }
+
+async function getRoomInfo(connection, roomId) {
+  const query = `
+  select title, nickName from Posting P
+  inner join Room R on P.postId = R.postId
+  inner join User U on P.postUserId = U.userId
+  where R.roomId = ?;
+                          `;
+
+  const [row] = await connection.query(query, roomId);
+
+  return row[0].title;
+}
 //푸쉬알림 수신 여부 확인
 async function checkPushOn(connection, userId) {
   const query = `
@@ -130,6 +143,7 @@ module.exports = {
   updateRPN,
   updateU,
   getTitle,
+  getRoomInfo,
   checkPushOn,
   savePushalarm,
 };

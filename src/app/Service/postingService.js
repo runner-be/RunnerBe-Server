@@ -101,10 +101,7 @@ exports.createPosting = async function (
         //title, body 설정
         const titleInstance = "RunnerBe : 출석 체크 요청";
         const content =
-          getDeviceTokenRows[0].nickName +
-          `님, 작성한 ["` +
-          title +
-          `"] 모임이 시작됐어요! 다들 모였다면 마이페이지에서 출석 체크를 진행해 볼까요?`;
+          `${getDeviceTokenRows[0].nickName} 님, 작성한 [${title}] 모임이 시작됐어요! 다들 모였다면 마이페이지에서 출석 체크를 진행해 볼까요?`;
 
         //푸쉬알림 메시지 설정
         let message = {
