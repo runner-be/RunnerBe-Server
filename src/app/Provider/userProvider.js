@@ -441,7 +441,12 @@ exports.getMyPage2 = async function (userId) {
         myPosting[i].DISTANCE = null;
         myPosting[i].attendance = null;
         const postId = myPosting[i].postId;
-        const profileUrlList = await userDao.getProfileUrl(connection, postId) ?? "";
+        let body;
+        try {
+          body = await userDao.getProfileUrl(connection, postId);
+        } catch (err) {
+          body = null;
+        }
         const runnerList = await postingDao.getRunner(connection, postId);
         const attendTimeOver = await postingDao.getAttendTimeOver(
           connection,
