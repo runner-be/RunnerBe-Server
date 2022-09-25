@@ -318,12 +318,7 @@ exports.getMain2 = async function (
         getMainResult[i].bookMark = null;
         getMainResult[i].attendance = null;
         const postId = getMainResult[i].postId;
-        let body;
-        try {
-          body = await userDao.getProfileUrl(connection, postId);
-        } catch (err) {
-          body = null;
-        }
+        const body = await userDao.getProfileUrl(connection, postId);
         getMainResult[i].profileUrlList = body;
       }
     }
@@ -373,12 +368,7 @@ exports.getMain2Login = async function (
         getMainResult[i].userId = null;
         getMainResult[i].attendance = null;
         const postId = getMainResult[i].postId;    
-        let body;
-        try {
-          body = await userDao.getProfileUrl(connection, postId);
-        } catch (err) {
-          body = null;
-        }
+        const body = await userDao.getProfileUrl(connection, postId);
         getMainResult[i].profileUrlList = body;
       }
     }
@@ -405,12 +395,7 @@ exports.getBM2 = async function (userId) {
         bookMarkList[i].DISTANCE = null;
         bookMarkList[i].attendance = null;
         const postId = bookMarkList[i].postId;
-        let body;
-        try {
-          body = await userDao.getProfileUrl(connection, postId);
-        } catch (err) {
-          body = null;
-        }
+        const body = await userDao.getProfileUrl(connection, postId);
         bookMarkList[i].profileUrlList = body;
       }
     }
@@ -441,12 +426,7 @@ exports.getMyPage2 = async function (userId) {
         myPosting[i].DISTANCE = null;
         myPosting[i].attendance = null;
         const postId = myPosting[i].postId;
-        let body;
-        try {
-          body = await userDao.getProfileUrl(connection, postId);
-        } catch (err) {
-          body = null;
-        }
+        const profileUrlList = await userDao.getProfileUrl(connection, postId);
         const runnerList = await postingDao.getRunner(connection, postId);
         const attendTimeOver = await postingDao.getAttendTimeOver(
           connection,
@@ -462,12 +442,7 @@ exports.getMyPage2 = async function (userId) {
       for (i = 0; i < myRunning.length; i++) {
         myRunning[i].DISTANCE = null;
         const postId = myRunning[i].postId;
-        let body;
-        try {
-          body = await userDao.getProfileUrl(connection, postId);
-        } catch (err) {
-          body = null;
-        }
+        const body = await userDao.getProfileUrl(connection, postId);
         myRunning[i].profileUrlList = body;
       }
     }
@@ -494,12 +469,7 @@ exports.getRecord = async function (userId) {
       for (i = 0; i < myRecord.length; i++) {
         myRecord[i].DISTANCE = null;
         const postId = myRecord[i].postId;
-        let body;
-        try {
-          body = await userDao.getProfileUrl(connection, postId);
-        } catch (err) {
-          body = null;
-        }
+        const body = await userDao.getProfileUrl(connection, postId);
         myRecord[i].profileUrlList = body;
       }
     }
