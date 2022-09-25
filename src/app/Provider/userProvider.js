@@ -318,7 +318,12 @@ exports.getMain2 = async function (
         getMainResult[i].bookMark = null;
         getMainResult[i].attendance = null;
         const postId = getMainResult[i].postId;
-        const body = await userDao.getProfileUrl(connection, postId) ?? "";
+        let body;
+        try {
+          body = await userDao.getProfileUrl(connection, postId);
+        } catch (err) {
+          body = null;
+        }
         getMainResult[i].profileUrlList = body;
       }
     }
@@ -368,7 +373,12 @@ exports.getMain2Login = async function (
         getMainResult[i].userId = null;
         getMainResult[i].attendance = null;
         const postId = getMainResult[i].postId;    
-        const body = await userDao.getProfileUrl(connection, postId) ?? "";
+        let body;
+        try {
+          body = await userDao.getProfileUrl(connection, postId);
+        } catch (err) {
+          body = null;
+        }
         getMainResult[i].profileUrlList = body;
       }
     }
@@ -395,7 +405,12 @@ exports.getBM2 = async function (userId) {
         bookMarkList[i].DISTANCE = null;
         bookMarkList[i].attendance = null;
         const postId = bookMarkList[i].postId;
-        const body = await userDao.getProfileUrl(connection, postId) ?? "";
+        let body;
+        try {
+          body = await userDao.getProfileUrl(connection, postId);
+        } catch (err) {
+          body = null;
+        }
         bookMarkList[i].profileUrlList = body;
       }
     }
@@ -442,7 +457,12 @@ exports.getMyPage2 = async function (userId) {
       for (i = 0; i < myRunning.length; i++) {
         myRunning[i].DISTANCE = null;
         const postId = myRunning[i].postId;
-        const body = await userDao.getProfileUrl(connection, postId) ?? "";
+        let body;
+        try {
+          body = await userDao.getProfileUrl(connection, postId);
+        } catch (err) {
+          body = null;
+        }
         myRunning[i].profileUrlList = body;
       }
     }
@@ -469,7 +489,12 @@ exports.getRecord = async function (userId) {
       for (i = 0; i < myRecord.length; i++) {
         myRecord[i].DISTANCE = null;
         const postId = myRecord[i].postId;
-        const body = await userDao.getProfileUrl(connection, postId) ?? "";
+        let body;
+        try {
+          body = await userDao.getProfileUrl(connection, postId);
+        } catch (err) {
+          body = null;
+        }
         myRecord[i].profileUrlList = body;
       }
     }
