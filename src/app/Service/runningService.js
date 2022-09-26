@@ -7,16 +7,7 @@ const runningDao = require("../Dao/runningDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
-
-//푸시알림
-const { initializeApp } = require("firebase-admin/app");
-const admin = require("firebase-admin");
-let serAccount = require("../../../config/runnerbe-f1986-firebase-adminsdk-frfin-c125099a1f.json");
-if (admin.apps.length === 0) {
-  admin.initializeApp({
-    credential: admin.credential.cert(serAccount),
-  });
-}
+const admin = require('../utils/fcm');
 
 // 참여 요청 보내기
 exports.sendRequest = async function (postId, userId) {
