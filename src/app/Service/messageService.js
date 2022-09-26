@@ -27,7 +27,7 @@ exports.sendMessage = async function (roomId, userId, content) {
     //수신자에게 푸쉬알림 전송
     //0. 수신자 확인(반장 이외 인원 확인)
     const userCount = await runningDao.getUserCount(connection, roomId);
-    console.log(userCount);
+
     if (userCount !== 1){
         //1. deviceToken array 생성
       let deviceToken  = [];
