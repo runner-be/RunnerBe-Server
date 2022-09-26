@@ -134,6 +134,16 @@ async function savePushalarm(connection, repUserId, titleInstance, content) {
 
   return row;
 }
+
+async function getUserCount(connection, roomId) {
+  const query = `
+  select count(roomId) as count from Room where roomId = ?;
+                          `;
+
+  const row = await connection.query(query, roomId);
+
+  return row[0][0]['count'];
+}
 module.exports = {
   sendRequest,
   handleRequest,
@@ -146,4 +156,5 @@ module.exports = {
   getRoomInfo,
   checkPushOn,
   savePushalarm,
+  getUserCount
 };

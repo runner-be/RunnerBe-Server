@@ -8,7 +8,7 @@ const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
 const schedule = require("node-schedule");
-
+const admin = require('../utils/fcm');
 // 게시글 생성
 exports.createPosting = async function (
   userId,

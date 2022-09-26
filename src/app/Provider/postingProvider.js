@@ -198,7 +198,12 @@ exports.getPostingWriter2 = async function (postId) {
     const body = await userDao.getProfileUrl(connection, postId);
     postingInfo[0].profileUrlList = body;
 
-    const roomId = await postingDao.getRoomId(connection, postId);
+    let roomId;
+    try {
+      roomId = await postingDao.getRoomId(connection, postId);
+    } catch (err) {
+      roomId = null;
+    }
 
     const runnerInfo = getRunnerResult;
     const waitingRunnerInfo = getWaitingRunnerResult[0];
