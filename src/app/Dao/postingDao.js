@@ -188,10 +188,12 @@ async function getWaitingRunner(connection, postId) {
 // 마감하기
 async function closePosting(connection, postId) {
   const closePostingQuery = `
-  UPDATE Running SET whetherEnd = 'Y'
-  WHERE postId = ?;
+  UPDATE Running as R, Posting as P
+  SET R.whetherEnd = 'Y',
+      P.status = 'C'
+  WHERE P.postId = ${postId} AND R.postId = ${postId};
                  `;
-  const closePostingRow = await connection.query(closePostingQuery, postId);
+  const closePostingRow = await connection.query(closePostingQuery);
 
   return closePostingRow;
 }
