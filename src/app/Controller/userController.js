@@ -1127,7 +1127,7 @@ exports.getMyAlarms = async function (req, res) {
  * Header : jwt
  */
 exports.getRecord = async function (req, res) {
-  const userId = req.verifiedToken.userId;
+  const userId = req.params.userId;
 
   // 인증 대기 회원 확인
   // const checkUserAuth = await userProvider.checkUserAuth(userId);
