@@ -619,7 +619,7 @@ async function getMain2(
                               cos(radians(gatherLongitude) - radians(${userLongitude})) +
                               sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
     on D.postId = P.postId
-    WHERE runningTag = "${runningTag}" ${distanceCondition}
+    WHERE P.status != 'D' and runningTag = "${runningTag}" ${distanceCondition}
     ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition}
     and U.status != 'R'
     ORDER BY "${sortCondition}"
@@ -671,7 +671,7 @@ async function getMain2Login(
                               cos(radians(gatherLongitude) - radians(${userLongitude})) +
                               sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
     on D.postId = P.postId
-    WHERE runningTag = "${runningTag}" ${distanceCondition}
+    WHERE P.status != 'D' and runningTag = "${runningTag}" ${distanceCondition}
     ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition}
     and U.status != 'R'
     ORDER BY "${sortCondition}"
@@ -703,7 +703,7 @@ async function getBM2(connection, userId) {
   inner join User U on RP.userId = U.userId
   group by postId) J on J.postId = P.postId
   LEFT OUTER JOIN Bookmarks B on P.postId = B.postId
-  WHERE B.userId = ? AND whetherEnd != 'D';
+  WHERE P.status != 'D' and B.userId = ? AND whetherEnd != 'D';
                   `;
   const [getBMRows] = await connection.query(getBMQuery, userId);
   return getBMRows;
@@ -732,7 +732,7 @@ async function getMyPosting2(connection, userId) {
   inner join Running R on RP.gatheringId = R.gatheringId
   inner join User U on RP.userId = U.userId
   group by postId) J on J.postId = P.postId
-  WHERE postUserId = ?;
+  WHERE P.status != 'D' and postUserId = ?;
                   `;
 
   const row = await connection.query(query, userId);
@@ -763,7 +763,7 @@ inner join Running R on RP.gatheringId = R.gatheringId
 inner join User U on RP.userId = U.userId
 group by postId) J on J.postId = P.postId
 INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId
-WHERE postUserId != ${userId};
+WHERE P.status != 'D' and postUserId != ${userId} ;
                   `;
   const [Rows] = await connection.query(Query, userId);
   return Rows;
