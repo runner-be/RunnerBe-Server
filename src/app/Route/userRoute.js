@@ -72,7 +72,7 @@ module.exports = function (app) {
   app.get("/users/alarms", jwtMiddleware, user.getMyAlarms);
 
   // 42. 활동 기록 조회 API
-  app.get("/users/records", jwtMiddleware, user.getRecord);
+  app.get("/users/:userId/records", jwtMiddleware, user.getRecord);
 
   //43. 새로운 푸쉬 알람 메시지 여부 조회 API
   app.get("/users/whether-new-alarms", jwtMiddleware, user.getWhetherNewAlarms);
