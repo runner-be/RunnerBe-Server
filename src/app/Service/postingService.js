@@ -96,7 +96,7 @@ exports.createPosting = async function (
           userId
         );
         if (getDeviceTokenRows.length === 0)
-          return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
+          return response(baseResponse.DEVICE_TOKEN_EMPTY);
 
         //title, body 설정
         const titleInstance = "RunnerBe : 출석 체크 요청";
@@ -126,7 +126,7 @@ exports.createPosting = async function (
           })
           .catch(function (err) {
             console.log("Error Sending message!!! : ", err);
-            return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+            return response(baseResponse.ERROR_SEND_MESSAGE);
           });
 
         //메시지 저장

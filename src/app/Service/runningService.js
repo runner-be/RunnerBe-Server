@@ -34,7 +34,7 @@ exports.sendRequest = async function (postId, userId) {
         repUserId
       );
       if (getDeviceTokenRows.length === 0)
-        return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
+        return response(baseResponse.DEVICE_TOKEN_EMPTY);
 
       //title, body 설정
       const titleInstance = "RunnerBe : 모임 참여 요청 전달";
@@ -64,7 +64,7 @@ exports.sendRequest = async function (postId, userId) {
         })
         .catch(function (err) {
           console.log("Error Sending message!!! : ", err);
-          return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+          return response(baseResponse.ERROR_SEND_MESSAGE);
         });
 
       //메시지 저장
@@ -114,7 +114,7 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
         applicantId
       );
       if (getDeviceTokenRows.length === 0)
-        return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
+        return response(baseResponse.DEVICE_TOKEN_EMPTY);
 
       //수락 push alarm
       if (whetherAccept == "Y") {
@@ -145,7 +145,7 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
           })
           .catch(function (err) {
             console.log("Error Sending message!!! : ", err);
-            return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+            return response(baseResponse.ERROR_SEND_MESSAGE);
           });
 
         //메시지 저장
@@ -187,7 +187,7 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
           })
           .catch(function (err) {
             console.log("Error Sending message!!! : ", err);
-            return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+            return response(baseResponse.ERROR_SEND_MESSAGE);
           });
 
         //메시지 저장
@@ -235,7 +235,7 @@ exports.attend = async function (postId, userId, whetherAttend) {
           userId
         );
         if (getDeviceTokenRows.length === 0)
-          return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
+          return response(baseResponse.DEVICE_TOKEN_EMPTY);
 
         //title, body 설정
         const titleInstance = "RunnerBe : 출석 완료";
@@ -264,7 +264,7 @@ exports.attend = async function (postId, userId, whetherAttend) {
           })
           .catch(function (err) {
             console.log("Error Sending message!!! : ", err);
-            return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+            return response(baseResponse.ERROR_SEND_MESSAGE);
           });
 
         //메시지 저장
@@ -288,7 +288,7 @@ exports.attend = async function (postId, userId, whetherAttend) {
           userId
         );
         if (getDeviceTokenRows.length === 0)
-          return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
+          return response(baseResponse.DEVICE_TOKEN_EMPTY);
 
         //title, body 설정
         const titleInstance = "RunnerBe : 출석 미완료";
@@ -317,7 +317,7 @@ exports.attend = async function (postId, userId, whetherAttend) {
           })
           .catch(function (err) {
             console.log("Error Sending message!!! : ", err);
-            return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+            return response(baseResponse.ERROR_SEND_MESSAGE);
           });
 
         //메시지 저장
