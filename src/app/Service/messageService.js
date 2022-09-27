@@ -65,7 +65,7 @@ exports.sendMessage = async function (roomId, userId, content) {
         })
         .catch(function (err) {
           console.log("Error Sending message!!! : ", err);
-          return res.send(response(baseResponse.ERROR_SEND_MESSAGE));
+          return response(baseResponse.ERROR_SEND_MESSAGE);
         });
 
       //메시지 저장
