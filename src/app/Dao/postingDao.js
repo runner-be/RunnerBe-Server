@@ -329,17 +329,17 @@ async function checkPostId(connection, postId) {
 // 출석 관리 시간 마감 확인 : gatheringTime + runningTime + 3시간 > 현재 시간  ---> 마감
 async function getAttendTimeOver(connection, postId) {
   const Query = `  
-    select
-           case when
-           TIMESTAMPDIFF(SECOND, 
-              DATE_ADD(DATE_FORMAT(gatheringTime+runningTime, '%Y-%m-%d %H:%i:%S'), INTERVAL 3 HOUR),
-              now()) 
-              > 0
-               then 'Y'
-               else 'N'
-               end as attendTimeOver
+  select 
+    case when
+      TIMESTAMPDIFF(SECOND,
+      DATE_ADD(ADDTIME(gatheringTime, runningTime), INTERVAL 3 HOUR),
+      now())
+      > 0
+      then 'Y'
+      else 'N'
+      end as attendTimeOver
     from Posting
-    where postId = ?;
+  where postId = ?;
     `;
   const Row = await connection.query(Query, postId);
 
