@@ -262,7 +262,7 @@ async function checkBookMark(connection, checkBookMarkParams) {
 // 신고하기
 async function reportPosting(connection, Params) {
   const Query = `
-  INSERT INTO AdminReport(postId, reporterId) VALUES (?,?);
+  INSERT INTO PostingReport(postId, reporterId) VALUES (?,?);
                  `;
   const Row = await connection.query(Query, Params);
 
