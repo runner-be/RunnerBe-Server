@@ -9,5 +9,6 @@ src/app/Admin/adminRoute.js
 src/app/Admin/adminController.js
 src/app/Admin/adminDao.js
 src/app/Admin/hi.html
+src/app/Admin/message.html
 src/app/Admin/scss
 src/app/Admin/vendor
