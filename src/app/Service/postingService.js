@@ -121,11 +121,11 @@ exports.createPosting = async function (
           .messaging()
           .send(message)
           .then(function (id) {
-            console.log("Successfully sent message: : ", id);
+            logger.info(`successfully sent message : ${id}`)
             return 0;
           })
           .catch(function (err) {
-            console.log("Error Sending message!!! : ", err);
+            logger.error(`Error Sending message : ${err}, ${err.toString()}`);
             return response(baseResponse.ERROR_SEND_MESSAGE);
           });
 
