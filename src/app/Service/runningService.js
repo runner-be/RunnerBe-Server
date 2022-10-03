@@ -53,17 +53,17 @@ exports.sendRequest = async function (postId, userId) {
         },
         token: getDeviceTokenRows[0].deviceToken,
       };
-
+      
       //푸쉬알림 발송
       await admin
         .messaging()
         .send(message)
         .then(function (id) {
-          console.log("Successfully sent message: : ", id);
+          logger.info(`successfully sent message : ${id}`)
           return 0;
         })
         .catch(function (err) {
-          console.log("Error Sending message!!! : ", err);
+          logger.error(`Error Sending message : ${err}, ${err.toString()}`);
           return response(baseResponse.ERROR_SEND_MESSAGE);
         });
 
@@ -140,11 +140,11 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
           .messaging()
           .send(message)
           .then(function (id) {
-            console.log("Successfully sent message: : ", id);
+            logger.info(`successfully sent message : ${id}`)
             return 0;
           })
           .catch(function (err) {
-            console.log("Error Sending message!!! : ", err);
+            logger.error(`Error Sending message : ${err}, ${err.toString()}`);
             return response(baseResponse.ERROR_SEND_MESSAGE);
           });
 
@@ -182,11 +182,11 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
           .messaging()
           .send(message)
           .then(function (id) {
-            console.log("Successfully sent message: : ", id);
+            logger.info(`successfully sent message : ${id}`)
             return 0;
           })
           .catch(function (err) {
-            console.log("Error Sending message!!! : ", err);
+            logger.error(`Error Sending message : ${err}, ${err.toString()}`);
             return response(baseResponse.ERROR_SEND_MESSAGE);
           });
 
@@ -259,11 +259,11 @@ exports.attend = async function (postId, userId, whetherAttend) {
           .messaging()
           .send(message)
           .then(function (id) {
-            console.log("Successfully sent message: : ", id);
+            logger.info(`successfully sent message : ${id}`)
             return 0;
           })
           .catch(function (err) {
-            console.log("Error Sending message!!! : ", err);
+            logger.error(`Error Sending message : ${err}, ${err.toString()}`);
             return response(baseResponse.ERROR_SEND_MESSAGE);
           });
 
@@ -312,11 +312,11 @@ exports.attend = async function (postId, userId, whetherAttend) {
           .messaging()
           .send(message)
           .then(function (id) {
-            console.log("Successfully sent message: : ", id);
+            logger.info(`successfully sent message : ${id}`)
             return 0;
           })
           .catch(function (err) {
-            console.log("Error Sending message!!! : ", err);
+            logger.error(`Error Sending message : ${err}, ${err.toString()}`);
             return response(baseResponse.ERROR_SEND_MESSAGE);
           });
 
