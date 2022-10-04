@@ -102,13 +102,13 @@ async function getTitleAndSenderName(connection, roomId, userId) {
   const query = `
   select title, nickName from Posting P
   inner join Room R on P.postId = R.postId
-  join (select nickName from User where userId = ?) u
-  where R.roomId = ?;
+  join (select nickName from User where userId = ${userId}) u
+  where R.roomId = ${roomId};
                           `;
 
-  const [row] = await connection.query(query, roomId);
+  const [row] = await connection.query(query);
 
-  return row[0].title;
+  return row[0];
 }
 //푸쉬알림 수신 여부 확인
 async function checkPushOn(connection, userId) {
