@@ -137,7 +137,7 @@ async function savePushalarm(connection, repUserId, titleInstance, content) {
 
 async function getUserCount(connection, roomId) {
   const query = `
-  select count(roomId) as count from Room where roomId = ?;
+  select count(roomId) as count from UserPerRoom where roomId = ?;
                           `;
 
   const row = await connection.query(query, roomId);
