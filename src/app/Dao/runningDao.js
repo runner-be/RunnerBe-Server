@@ -98,11 +98,11 @@ async function getTitle(connection, postId) {
   return row[0].title;
 }
 
-async function getRoomInfo(connection, roomId) {
+async function getTitleAndSenderName(connection, roomId, userId) {
   const query = `
   select title, nickName from Posting P
   inner join Room R on P.postId = R.postId
-  inner join User U on P.postUserId = U.userId
+  join (select nickName from User where userId = ?) u
   where R.roomId = ?;
                           `;
 
@@ -153,7 +153,7 @@ module.exports = {
   updateRPN,
   updateU,
   getTitle,
-  getRoomInfo,
+  getTitleAndSenderName,
   checkPushOn,
   savePushalarm,
   getUserCount

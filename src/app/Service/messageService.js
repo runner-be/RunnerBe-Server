@@ -39,9 +39,9 @@ exports.sendMessage = async function (roomId, userId, content) {
 
       //2. 푸쉬알림 전송
       //title, body 설정
-      const roomInfo = await runningDao.getRoomInfo(connection, roomId);
+      const info = await runningDao.getTitleAndSenderName(connection, roomId, userId);
       const titleInstance = "RunnerBe : 메세지 도착";
-      const pushContent = `[${roomInfo.title}] ${roomInfo.nickName} 러너에게서 메시지가 도착했어요! 메세지 목록 페이지에서 확인해 볼까요?`
+      const pushContent = `[${info.title}] ${info.nickName} 러너에게서 메시지가 도착했어요! 메세지 목록 페이지에서 확인해 볼까요?`
       //푸쉬알림 메시지 설정
       for(let token of deviceToken){
         let message = {
