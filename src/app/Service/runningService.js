@@ -104,6 +104,15 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
       whetherAccept
     );
 
+    //수락 시 인원 꽉 차면 자동 마감 처리
+    if(whetherAccept == 'Y'){
+      const checkFullPeople = await runningDao.checkFullPeople(connection,postId);
+      if (checkFullPeople){
+        //마감 처리
+        await postingDao.closePosting(connection, postId);
+      }
+    }
+
     //수신 여부 확인
     const pushOn = await runningDao.checkPushOn(connection, applicantId);
     if (pushOn == "Y") {
