@@ -144,6 +144,22 @@ async function getUserCount(connection, roomId) {
 
   return row[0][0]['count'];
 }
+
+async function checkFullPeople(connection, postId) {
+  const query = `
+  select curPeopleNum from 
+  (
+    select count(userId) as curPeopleNum, peopleNum as max from RunningPeople
+      inner join Running R on RunningPeople.gatheringId = R.gatheringId
+      inner join Posting P on R.postId = P.postId
+    where P.postId = ?
+  ) M where curPeopleNum = max;
+                          `;
+
+  const row = await connection.query(query, postId);
+
+  return row[0][0];
+}
 module.exports = {
   sendRequest,
   handleRequest,
@@ -156,5 +172,6 @@ module.exports = {
   getTitleAndSenderName,
   checkPushOn,
   savePushalarm,
-  getUserCount
+  getUserCount,
+  checkFullPeople
 };

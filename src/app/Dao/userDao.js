@@ -877,9 +877,8 @@ async function getUserGender(connection, userId) {
 async function getDeviceTokenList(connection, userId, roomId) {
   const Query = `
   select deviceToken from User U
-inner join UserPerRoom UPR on U.userId = UPR.userId
-inner join Room R on UPR.roomId = R.roomId
-where U.userId != ${userId} and R.roomId = ${roomId};
+  inner join Message M on U.userId = M.userId
+  where U.userId != ${userId} and roomId = ${roomId};
                   `;
   const [Rows] = await connection.query(Query);
   return Rows;
