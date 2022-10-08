@@ -215,7 +215,7 @@ async function getMain(
 //       when job = 'SAF' then '영업/제휴'
 //       when job = 'MED' then '의료'
 //       when job = 'HUR' then '인사'
-//       when job = 'ACC' then '제무/회계'
+//       when job = 'ACC' then '재무/회계'
 //       when job = 'CUS' then 'CS'
 //       end as job
 //   FROM RunningPeople RP
@@ -406,7 +406,7 @@ async function getmyInfo(connection, userId) {
             when job = 'SAF' then '영업/제휴'
             when job = 'MED' then '의료'
             when job = 'HUR' then '인사'
-            when job = 'ACC' then '제무/회계'
+            when job = 'ACC' then '재무/회계'
             when job = 'CUS' then 'CS'
         end as job
         ,profileImageUrl, pushOn, nameChanged,
@@ -452,7 +452,7 @@ async function getmyInfoSimple(connection, userId) {
       when job = 'SAF' then '영업/제휴'
       when job = 'MED' then '의료'
       when job = 'HUR' then '인사'
-      when job = 'ACC' then '제무/회계'
+      when job = 'ACC' then '재무/회계'
       when job = 'CUS' then 'CS'
       end as job
       ,profileImageUrl  FROM User U
