@@ -4,6 +4,7 @@ const runningProvider = require("../Provider/runningProvider");
 const messageProvider = require("../Provider/messageProvider");
 const messageDao = require("../Dao/messageDao");
 const runningDao = require("../Dao/runningDao");
+const postingDao = require("../Dao/postingDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
