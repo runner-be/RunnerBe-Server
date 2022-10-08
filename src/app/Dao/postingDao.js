@@ -126,7 +126,7 @@ async function getRunner(connection, postId) {
           when job = 'SAF' then '영업/제휴'
           when job = 'MED' then '의료'
           when job = 'HUR' then '인사'
-          when job = 'ACC' then '제무/회계'
+          when job = 'ACC' then '재무/회계'
           when job = 'CUS' then 'CS'
       end as job
       ,profileImageUrl, whetherCheck, attendance,
@@ -173,7 +173,7 @@ async function getWaitingRunner(connection, postId) {
           when job = 'SAF' then '영업/제휴'
           when job = 'MED' then '의료'
           when job = 'HUR' then '인사'
-          when job = 'ACC' then '제무/회계'
+          when job = 'ACC' then '재무/회계'
           when job = 'CUS' then 'CS'
       end as job
       ,profileImageUrl FROM User U
