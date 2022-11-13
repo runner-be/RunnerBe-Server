@@ -732,7 +732,7 @@ async function getMyPosting2(connection, userId) {
   inner join Running R on RP.gatheringId = R.gatheringId
   inner join User U on RP.userId = U.userId
   group by postId) J on J.postId = P.postId
-  WHERE P.status != 'D' and postUserId = ?;
+  WHERE postUserId = ?;
                   `;
 
   const row = await connection.query(query, userId);
@@ -763,7 +763,7 @@ inner join Running R on RP.gatheringId = R.gatheringId
 inner join User U on RP.userId = U.userId
 group by postId) J on J.postId = P.postId
 INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId
-WHERE P.status != 'D' and postUserId != ${userId} ;
+WHERE postUserId != ${userId} ;
                   `;
   const [Rows] = await connection.query(Query, userId);
   return Rows;
