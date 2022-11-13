@@ -5,6 +5,7 @@ const messageProvider = require("../Provider/messageProvider");
 const messageDao = require("../Dao/messageDao");
 const runningDao = require("../Dao/runningDao");
 const postingDao = require("../Dao/postingDao");
+const userDao = require("../Dao/userDao");
 const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
@@ -236,6 +237,9 @@ exports.attend = async function (postId, userId, whetherAttend) {
       //update RP if user attend
       await runningDao.updateRPY(connection, updateParams);
 
+      // 성실도 1점 추가
+      await userDao.increaseDilegence(connection, userId);
+
       //수신 여부 확인
       const pushOn = await runningDao.checkPushOn(connection, userId);
       if (pushOn == "Y") {
@@ -288,6 +292,9 @@ exports.attend = async function (postId, userId, whetherAttend) {
     } else {
       //update RP if user didn't attend
       await runningDao.updateRPN(connection, updateParams);
+
+      //성실도 1점 감점
+      await userDao.decreaseDilegence(connection, userId);
 
       //수신 여부 확인
       const pushOn = await runningDao.checkPushOn(connection, userId);
