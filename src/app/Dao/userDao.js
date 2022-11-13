@@ -387,13 +387,15 @@ async function getmyInfo(connection, userId) {
             when 6<(DATE_FORMAT(now(),'%Y')-birthday)%10 and (DATE_FORMAT(now(),'%Y')-birthday)%10<=9
             then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 후반')
         end as age,
-       case when  U.diligence <= 32
+        case when isBeginner = 'Y'
+           then '초보 러너'
+        else case when  U.diligence <= 32
            then '불량 러너'
         else case when 32< U.diligence AND U.diligence<= 66
             then '노력 러너'
         else case when 66< U.diligence
             then '성실 러너'
-        end end end as diligence,
+        end end end end as diligence,
        case when job = 'PSV' then '공무원'
            when job = 'EDU' then '교육'
             when job = 'DEV' then '개발'
@@ -433,13 +435,15 @@ async function getmyInfoSimple(connection, userId) {
       when 6<(DATE_FORMAT(now(),'%Y')-birthday)%10 and (DATE_FORMAT(now(),'%Y')-birthday)%10<=9
       then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 후반')
       end as age,
-      case when  U.diligence <= 32
+      case when isBeginner = 'Y'
+      then '초보 러너'
+   else case when  U.diligence <= 32
       then '불량 러너'
-      else case when 32< U.diligence AND U.diligence<= 66
-      then '노력 러너'
-      else case when 66< U.diligence
-      then '성실 러너'
-      end end end as diligence,
+   else case when 32< U.diligence AND U.diligence<= 66
+       then '노력 러너'
+   else case when 66< U.diligence
+       then '성실 러너'
+   end end end end as diligence,
       case when job = 'PSV' then '공무원'
       when job = 'EDU' then '교육'
       when job = 'DEV' then '개발'
@@ -732,7 +736,7 @@ async function getMyPosting2(connection, userId) {
   inner join Running R on RP.gatheringId = R.gatheringId
   inner join User U on RP.userId = U.userId
   group by postId) J on J.postId = P.postId
-  WHERE P.status != 'D' and postUserId = ?;
+  WHERE postUserId = ?;
                   `;
 
   const row = await connection.query(query, userId);
@@ -763,7 +767,7 @@ inner join Running R on RP.gatheringId = R.gatheringId
 inner join User U on RP.userId = U.userId
 group by postId) J on J.postId = P.postId
 INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId
-WHERE P.status != 'D' and postUserId != ${userId} ;
+WHERE postUserId != ${userId} ;
                   `;
   const [Rows] = await connection.query(Query, userId);
   return Rows;
@@ -894,6 +898,24 @@ async function getOtherId(connection, userId, roomId) {
   const [Rows] = await connection.query(Query);
   return Rows;
 }
+
+// 성실도 1점 증가
+async function increaseDilegence(connection, userId) {
+  const Query = `
+  update User set diligence = diligence + 1 where userId = ${userId};
+                  `;
+  const [Rows] = await connection.query(Query);
+  return Rows;
+}
+
+// 성실도 1점 감소
+async function decreaseDilegence(connection, userId) {
+  const Query = `
+  update User set diligence = diligence - 1 where userId = ${userId};
+                  `;
+  const [Rows] = await connection.query(Query);
+  return Rows;
+}
 module.exports = {
   selectUser,
   deleteUser,
@@ -942,5 +964,7 @@ module.exports = {
   getWhetherNewAlarms,
   getUserGender,
   getDeviceTokenList,
-  getOtherId
+  getOtherId,
+  increaseDilegence,
+  decreaseDilegence
 };
