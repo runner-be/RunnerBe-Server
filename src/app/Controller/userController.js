@@ -990,6 +990,8 @@ exports.getBM2 = async function (req, res) {
 exports.getMyPage2 = async function (req, res) {
   const userId = req.params.userId;
   const userIdFromJWT = req.verifiedToken.userId;
+  const mobileType = req.header('MobileType');
+  const appVersion = req.header('AppVersion');
 
   // 빈 값 체크
   if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
@@ -1005,7 +1007,7 @@ exports.getMyPage2 = async function (req, res) {
     // if (checkUserAuth.length === 0) {
     //   return res.send(response(baseResponse.USER_NON_AUTH));
     // }
-    const getMyPageResult = await userProvider.getMyPage2(userId);
+    const getMyPageResult = await userProvider.getMyPage2(userId, mobileType, appVersion);
     return res.send(response(baseResponse.SUCCESS, getMyPageResult));
   }
 };
