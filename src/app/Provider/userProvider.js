@@ -413,10 +413,15 @@ exports.getBM2 = async function (userId) {
 };
 
 // 마이페이지 v2
-exports.getMyPage2 = async function (userId) {
+exports.getMyPage2 = async function (userId, mobileType, appVersion) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
-    const myInfo = await userDao.getmyInfo(connection, userId);
+    let myInfo;
+    if (!mobileType) {
+      myInfo = await userDao.getmyInfo(connection, userId);
+    } else {
+      myInfo = await userDao.getmyInfoV2(connection, userId);
+    }
     // const runningInfo = await userDao.getRunningInfo(connection, userId);
     const myPosting = await userDao.getMyPosting2(connection, userId);
     const myRunning = await userDao.getMyRunning2(connection, userId);
