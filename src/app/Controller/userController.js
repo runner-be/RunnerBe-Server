@@ -12,26 +12,6 @@ const jwt = require("jsonwebtoken");
 const regexEmail = require("regex-email");
 
 /**
- * API No. 0
- * API Name : 테스트용 jwt 발급 API
- * [GET] /jwtTest/:userId
- */
-exports.getJwt = async function (req, res) {
-  const jwtuserId = req.params.userId;
-  let token = await jwt.sign(
-    {
-      userId: jwtuserId,
-    },
-    secret.jwtsecret,
-    {
-      expiresIn: "365d",
-      subject: "userInfo",
-    }
-  );
-  return res.send(response(baseResponse.SUCCESS, token));
-};
-
-/**
  * API No. 1
  * API Name : 카카오 로그인 API
  * [POST] /users/kakao-login
