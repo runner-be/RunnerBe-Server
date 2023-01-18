@@ -188,7 +188,7 @@ exports.changeApply = async function (roomId) {
 exports.checkUserInRoom = async function (roomId, userId) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
-    const checkUserInRoomParams = [roomId, userId, userId];
+    const checkUserInRoomParams = [roomId, userId];
     const checkUserInRoom = await messageDao.checkUserInRoom(
       connection,
       checkUserInRoomParams
