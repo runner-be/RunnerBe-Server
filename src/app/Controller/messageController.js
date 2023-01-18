@@ -69,6 +69,10 @@ exports.sendMessage = async function (req, res) {
   if (content.length > 300)
     return res.send(response(baseResponse.CONTENT_LENGTH));
 
+  const checkJoinRoom = await messageProvider.checkUserInRoom(roomId, userId);
+  if (checkJoinRoom.length == 0) {
+    await messageService.joinRoom(roomId, userId);
+  }
   await messageService.sendMessage(roomId, userId, content);
 
   return res.send(response(baseResponse.SUCCESS));

@@ -114,3 +114,27 @@ exports.reportMessage = async function (messageId, userId) {
     await connection.release();
   }
 };
+
+// 방에 유저 추가
+exports.joinRoom = async function (roomId, userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    //start Transaction
+    await connection.beginTransaction();
+
+    //메시지 신고
+    await messageDao.joinRoom(connection, [roomId, userId]);
+
+    //commit
+    await connection.commit();
+
+    return 0;
+  } catch (err) {
+    //rollback
+    await connection.rollback();
+    await logger.error(`App - joinRoom Service error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    await connection.release();
+  }
+};
