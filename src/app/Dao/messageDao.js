@@ -229,7 +229,7 @@ async function changeApply(connection, roomId) {
 // 방에 있는지 확인
 async function checkUserInRoom(connection, checkUserInRoomParams) {
   const query = `
-   SELECT roomId FROM Room WHERE roomId = ? AND (senderId = ? OR receiverId = ?);
+   SELECT roomId FROM UserPerRoom WHERE roomId = ? AND userId = ?;
                                     `;
   const row = await connection.query(query, checkUserInRoomParams);
 
@@ -302,6 +302,15 @@ async function getMessageId(connection, messageId) {
 
   return row[0];
 }
+
+async function joinRoom(connection, [roomId, userId]) {
+  const query = `
+        INSERT INTO UserPerRoom (roomId, userId) VALUES (?,?);
+                                        `;
+  const row = await connection.query(query, [roomId, userId]);
+
+  return row[0];
+}
 module.exports = {
   getRepUserId,
   createRoom,
@@ -329,4 +338,5 @@ module.exports = {
   getMessageList,
   reportMessage,
   getMessageId,
+  joinRoom
 };
