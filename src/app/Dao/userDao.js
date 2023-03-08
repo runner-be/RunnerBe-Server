@@ -813,8 +813,7 @@ FROM RunningPeople RP
 inner join Running R on RP.gatheringId = R.gatheringId
 inner join User U on RP.userId = U.userId
 group by postId) J on J.postId = P.postId
-INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId
-WHERE postUserId != ${userId} ;
+INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId;
                   `;
   const [Rows] = await connection.query(Query, userId);
   return Rows;
