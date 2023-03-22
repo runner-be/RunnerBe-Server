@@ -105,14 +105,18 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
       sendRequestParams,
       whetherAccept
     );
+    
 
-    //수락 시 인원 꽉 차면 자동 마감 처리
+    //수락 시 인원 꽉 차면 자동 마감 처리 and 대화방에 초대
     if(whetherAccept == 'Y'){
       const checkFullPeople = await runningDao.checkFullPeople(connection,postId);
       if (checkFullPeople){
         //마감 처리
         await postingDao.closePosting(connection, postId);
       }
+      //대화방에 초대
+      const roomId = await messageDao.getRoomId(connection, postId);
+      await messageDao.insertUserPerRoom(connection, [roomId, applicantId]);
     }
 
     //수신 여부 확인
@@ -166,10 +170,6 @@ exports.handleRequest = async function (postId, applicantId, whetherAccept) {
           titleInstance,
           content
         );
-
-        //대화방에 초대
-        const roomId = await messageDao.getRoomId(connection, postId);
-        await messageDao.insertUserPerRoom(connection, [roomId, applicantId]);
       } else {
         //title, body 설정
         const titleInstance = "RunnerBe : 모임 신청 거절";
@@ -288,10 +288,6 @@ exports.attend = async function (postId, userId, whetherAttend) {
           titleInstance,
           content
         );
-
-        // room에 추가
-        const roomId = await runningDao.getRoomId(connection, postId);
-        await messageDao.insertUserPerRoom(connection, [roomId, userId])
       }
     } else {
       //update RP if user didn't attend
