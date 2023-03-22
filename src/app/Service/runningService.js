@@ -288,6 +288,10 @@ exports.attend = async function (postId, userId, whetherAttend) {
           titleInstance,
           content
         );
+
+        // room에 추가
+        const roomId = await runningDao.getRoomId(connection, postId);
+        await messageDao.insertUserPerRoom(connection, [roomId, userId])
       }
     } else {
       //update RP if user didn't attend
