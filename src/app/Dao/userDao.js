@@ -804,7 +804,8 @@ async function getMyRunning2(connection, userId) {
  case when runnerGender='F' then '여성'
   end end end as gender, whetherEnd, J.job, peopleNum, contents, ${userId} as userId,
 EXISTS (SELECT bookmarkId FROM Bookmarks
-        WHERE userId = ${userId} AND postId = P.postId) as bookMark,attendance, whetherCheck
+        WHERE userId = ${userId} AND postId = P.postId) as bookMark,attendance,
+       W.whetherCheck as whetherCheck
 FROM Posting P
 INNER JOIN User U on U.userId = P.postUserId
 INNER JOIN Running R on R.postId = P.postId
@@ -813,7 +814,9 @@ FROM RunningPeople RP
 inner join Running R on RP.gatheringId = R.gatheringId
 inner join User U on RP.userId = U.userId
 group by postId) J on J.postId = P.postId
-INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId;
+INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId
+INNER JOIN (select R.gatheringId, IF(COUNT(*) = SUM(IF(whetherCheck = 'Y', 1, 0)), 'Yes', 'No') as whetherCheck from RunningPeople
+inner join Running R on RunningPeople.gatheringId = R.gatheringId group by R.gatheringId) W on W.gatheringId = RPP.gatheringId;
                   `;
   const [Rows] = await connection.query(Query, userId);
   return Rows;
