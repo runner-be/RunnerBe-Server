@@ -2,7 +2,10 @@ const express = require("./config/express");
 const { logger } = require("./config/winston");
 
 const port = 3000;
-express().listen(port);
+const server = express().listen(port);
+
+server.keepAliveTimeout = 61 * 1000;
+server.headersTimeout = 65 * 1000;
 // let server = express().listen(port, () => {
 //   process.send("ready"); //ready 전달
 // });
