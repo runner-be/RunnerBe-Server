@@ -13,7 +13,7 @@ const { connect } = require("http2");
 // 유저 생성
 exports.createUser = async function (
   uuid,
-  nickName,
+  // nickname,
   birthday,
   gender,
   job,
@@ -30,9 +30,17 @@ exports.createUser = async function (
     const uuidRows = await userProvider.uuidCheck(uuid);
     if (uuidRows.length > 0)
       return errResponse(baseResponse.SIGNUP_REDUNDANT_UUID);
+    
+    // 닉네임 생성
+    const randomNumber = (min, max) => {
+      const numberTemp = Math.floor(Math.random() * (max - min + 1)) + min;
+      return numberTemp;
+    }
 
+    const randomNickname = "Runner" + randomNumber(1000, 9999);
+    
     //nickName 중복 확인
-    const nickNameRows = await userProvider.nickNameCheck(nickName);
+    const nickNameRows = await userProvider.nickNameCheck(randomNickname);
     if (nickNameRows.length > 0)
       return errResponse(baseResponse.SIGNUP_REDUNDANT_NICKNAME);
 
@@ -53,7 +61,7 @@ exports.createUser = async function (
         return errResponse(baseResponse.SIGNUP_REDUNDANT_EMAIL);
       const insertUserInfoParams = [
         uuid,
-        nickName,
+        randomNickname,
         birthday,
         gender,
         job,
@@ -89,7 +97,7 @@ exports.createUser = async function (
       const hashedEmail = officeEmail;
       const insertUserInfoParams = [
         uuid,
-        nickName,
+        randomNickname,
         birthday,
         gender,
         job,
