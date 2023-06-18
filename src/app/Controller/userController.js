@@ -1001,7 +1001,7 @@ exports.postUsersV2 = async function (req, res) {
   /**
    * Body: uuid, nickName, birthday, gender, job, deviceToken
    */
-  const { uuid, nickName, birthday, gender, job, deviceToken } = req.body;
+  const { uuid, birthday, gender, job, deviceToken } = req.body;
 
   // 필수 값 : 빈 값 체크
   if (!uuid) return res.send(response(baseResponse.SIGNUP_UUID_EMPTY));
