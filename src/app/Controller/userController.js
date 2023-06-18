@@ -1005,15 +1005,15 @@ exports.postUsersV2 = async function (req, res) {
 
   // 필수 값 : 빈 값 체크
   if (!uuid) return res.send(response(baseResponse.SIGNUP_UUID_EMPTY));
-  if (!nickName) return res.send(response(baseResponse.SIGNUP_NICKNAME_EMPTY));
+  // if (!nickName) return res.send(response(baseResponse.SIGNUP_NICKNAME_EMPTY));
   if (!birthday) return res.send(response(baseResponse.SIGNUP_BIRTHDAY_EMPTY));
   if (!gender) return res.send(response(baseResponse.SIGNUP_GENDER_EMPTY));
   if (!job) return res.send(response(baseResponse.SIGNUP_JOB_EMPTY));
   if (!deviceToken) return res.send(response(baseResponse.DEVICE_TOKEN_EMPTY));
 
   // 길이 체크
-  if (nickName.length > 10)
-    return res.send(response(baseResponse.SIGNUP_NICKNAME_LENGTH));
+  // if (nickName.length > 10)
+  //   return res.send(response(baseResponse.SIGNUP_NICKNAME_LENGTH));
   if (gender.length != 1)
     return res.send(response(baseResponse.SIGNUP_GENDER_LENGTH));
   if (job.length != 3)
@@ -1021,7 +1021,7 @@ exports.postUsersV2 = async function (req, res) {
 
   const signUpResponse = await userService.createUserV2(
     uuid,
-    nickName,
+    // nickName,
     birthday,
     gender,
     job,

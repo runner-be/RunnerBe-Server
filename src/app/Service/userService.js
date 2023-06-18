@@ -290,7 +290,7 @@ exports.deleteUser = async function (userId) {
 // 유저 생성 v2 - 원래는 createUser 하나로 가야하지만, 이후 v1 삭제하고 v2를 기본으로 설정할 것이라 따로 나눔
 exports.createUserV2 = async function (
   uuid,
-  nickName,
+  // nickName,
   birthday,
   gender,
   job,
@@ -305,9 +305,17 @@ exports.createUserV2 = async function (
     const uuidRows = await userProvider.uuidCheck(uuid);
     if (uuidRows.length > 0)
       return errResponse(baseResponse.SIGNUP_REDUNDANT_UUID);
+    
+    // 닉네임 생성
+    const randomNumber = (min, max) => {
+      const numberTemp = Math.floor(Math.random() * (max - min + 1)) + min;
+      return numberTemp;
+    }
+    
+    const randomNickname = "Runner" + randomNumber(1000, 9999);
 
     //nickName 중복 확인
-    const nickNameRows = await userProvider.nickNameCheck(nickName);
+    const nickNameRows = await userProvider.nickNameCheck(randomNickname);
     if (nickNameRows.length > 0)
       return errResponse(baseResponse.SIGNUP_REDUNDANT_NICKNAME);
 
@@ -318,7 +326,7 @@ exports.createUserV2 = async function (
 
     const insertUserInfoParams = [
       uuid,
-      nickName,
+      randomNickname,
       birthday,
       gender,
       job,
