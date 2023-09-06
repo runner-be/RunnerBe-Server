@@ -770,8 +770,7 @@ exports.deleteUser = async function (req, res) {
  *                ageFilterMin(N, 숫자)
  */
 exports.main2 = async function (req, res) {
-  // Path variable 값
-  const runningTag = req.params.runningTag;
+
   // Query String 값
   const userLongitude = req.query.userLongitude;
   const userLatitude = req.query.userLatitude;
@@ -784,11 +783,11 @@ exports.main2 = async function (req, res) {
   const ageFilterMax = req.query.ageFilterMax; // N : 필터 x, 그 외 최대 연령대
   const keywordSearch = req.query.keywordSearch; // N : 필터 x, 그 외 키워드 검색
   const userId = req.query.userId;
+  const runningTag = req.query.runningTag;
 
   // 빈 값 체크
   if (!userLongitude) return res.send(response(baseResponse.LONGITUDE_EMPTY));
   if (!userLatitude) return res.send(response(baseResponse.LATITUDE_EMPTY));
-  if (!runningTag) return res.send(response(baseResponse.RUNNONGTAG_EMPTY));
   if (!whetherEnd) return res.send(response(baseResponse.WHETHEREND_EMPTY));
   if (!filter) return res.send(response(baseResponse.FILTER_EMPTY));
   if (!distanceFilter)
@@ -807,7 +806,7 @@ exports.main2 = async function (req, res) {
     return res.send(response(baseResponse.KEY_WORD_LENGTH));
 
   // 유효성 검사
-  const runningTagList = ["A", "B", "H"];
+  const runningTagList = ["", "A", "B", "H"];
   const whetherEndList = ["Y", "N"];
   const filterList = ["D", "R"];
   const genderFilterList = ["A", "F", "M"];
@@ -827,7 +826,7 @@ exports.main2 = async function (req, res) {
     "ACC",
     "CUS",
   ];
-  if (!runningTag.includes(runningTag))
+  if (!runningTagList.includes(runningTag))
     return res.send(response(baseResponse.RUNNONGTAG_IS_NOT_VALID));
   if (!whetherEndList.includes(whetherEnd))
     return res.send(response(baseResponse.END_IS_NOT_VALID));
@@ -890,27 +889,22 @@ exports.main2 = async function (req, res) {
     keywordCondition += `AND INSTR(P.title, '${keywordSearch}') > 0 OR INSTR(P.contents, '${keywordSearch}') > 0`;
   }
 
+  let runningTagCondition = "";
+  if (runningTag === "A") {
+    runningTagCondition += `AND runningTag = 'A'`;
+  } else if (runningTag === "B") {
+    runningTagCondition += `AND runningTag = 'B'`;
+  } else if (runningTag === "H") {
+    runningTagCondition += `AND runningTag = 'H'`;
+  } else {
+    runningTagCondition += ``;
+  }
+
   if (!userId) {
     // 둘러보기
     const mainResult = await userProvider.getMain2(
       userLongitude,
       userLatitude,
-      runningTag,
-      whetherEndCondition,
-      sortCondition,
-      distanceCondition,
-      genderCondition,
-      jobCondition,
-      ageCondition,
-      keywordCondition
-    );
-    return res.send(response(baseResponse.SUCCESS, mainResult));
-  } else {
-    // 로그인 -> 북마크 여부 추가
-    const mainResult = await userProvider.getMain2Login(
-      userLongitude,
-      userLatitude,
-      runningTag,
       whetherEndCondition,
       sortCondition,
       distanceCondition,
@@ -918,6 +912,22 @@ exports.main2 = async function (req, res) {
       jobCondition,
       ageCondition,
       keywordCondition,
+      runningTagCondition
+    );
+    return res.send(response(baseResponse.SUCCESS, mainResult));
+  } else {
+    // 로그인 -> 북마크 여부 추가
+    const mainResult = await userProvider.getMain2Login(
+      userLongitude,
+      userLatitude,
+      whetherEndCondition,
+      sortCondition,
+      distanceCondition,
+      genderCondition,
+      jobCondition,
+      ageCondition,
+      keywordCondition,
+      runningTagCondition,
       userId
     );
     return res.send(response(baseResponse.SUCCESS, mainResult));

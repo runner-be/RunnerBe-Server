@@ -287,14 +287,14 @@ exports.checkTerm = async function (userId) {
 exports.getMain2 = async function (
   userLongitude,
   userLatitude,
-  runningTag,
   whetherEndCondition,
   sortCondition,
   distanceCondition,
   genderCondition,
   jobCondition,
   ageCondition,
-  keywordCondition
+  keywordCondition,
+  runningTagCondition
 ) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
@@ -302,14 +302,14 @@ exports.getMain2 = async function (
       connection,
       userLongitude,
       userLatitude,
-      runningTag,
       whetherEndCondition,
       sortCondition,
       distanceCondition,
       genderCondition,
       jobCondition,
       ageCondition,
-      keywordCondition
+      keywordCondition,
+      runningTagCondition
     );
 
     if (getMainResult.length !== 0) {
@@ -336,7 +336,6 @@ exports.getMain2 = async function (
 exports.getMain2Login = async function (
   userLongitude,
   userLatitude,
-  runningTag,
   whetherEndCondition,
   sortCondition,
   distanceCondition,
@@ -344,6 +343,7 @@ exports.getMain2Login = async function (
   jobCondition,
   ageCondition,
   keywordCondition,
+  runningTagCondition,
   userId
 ) {
   const connection = await pool.getConnection(async (conn) => conn);
@@ -352,7 +352,6 @@ exports.getMain2Login = async function (
       connection,
       userLongitude,
       userLatitude,
-      runningTag,
       whetherEndCondition,
       sortCondition,
       distanceCondition,
@@ -360,6 +359,7 @@ exports.getMain2Login = async function (
       jobCondition,
       ageCondition,
       keywordCondition,
+      runningTagCondition,
       userId
     );
 

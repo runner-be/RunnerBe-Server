@@ -636,14 +636,14 @@ async function getMain2(
   connection,
   userLongitude,
   userLatitude,
-  runningTag,
   whetherEndCondition,
   sortCondition,
   distanceCondition,
   genderCondition,
   jobCondition,
   ageCondition,
-  keywordCondition
+  keywordCondition,
+  runningTagCondition
 ) {
   const getMainQuery = `
     SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
@@ -670,8 +670,7 @@ async function getMain2(
                               cos(radians(gatherLongitude) - radians(${userLongitude})) +
                               sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
     on D.postId = P.postId
-    WHERE P.status != 'D' and runningTag = "${runningTag}" ${distanceCondition}
-    ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition}
+    WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
     and U.status != 'R'
     ORDER BY "${sortCondition}"
     LIMIT 10;
@@ -685,7 +684,6 @@ async function getMain2Login(
   connection,
   userLongitude,
   userLatitude,
-  runningTag,
   whetherEndCondition,
   sortCondition,
   distanceCondition,
@@ -693,6 +691,7 @@ async function getMain2Login(
   jobCondition,
   ageCondition,
   keywordCondition,
+  runningTagCondition,
   userId
 ) {
   const getMainQuery = `
@@ -722,8 +721,7 @@ async function getMain2Login(
                               cos(radians(gatherLongitude) - radians(${userLongitude})) +
                               sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
     on D.postId = P.postId
-    WHERE P.status != 'D' and runningTag = "${runningTag}" ${distanceCondition}
-    ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition}
+    WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
     and U.status != 'R'
     ORDER BY "${sortCondition}"
     LIMIT 10;

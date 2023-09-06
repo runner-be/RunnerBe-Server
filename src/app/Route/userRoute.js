@@ -17,8 +17,8 @@ module.exports = function (app) {
   // 5. (최초 1회만 가능) 닉네임 변경 API
   app.patch("/users/:userId/name", jwtMiddleware, user.patchUserName);
 
-  // 7. 메인페이지 API
-  app.get("/users/main/:runningTag", user.main);
+  // // 7. 메인페이지 API
+  // app.get("/users/main/:runningTag", user.main);
 
   // 9. 앱 실행시 jwt 유효성 및 유저 정지 여부 확인 API
   app.get("/users/auth", jwtMiddleware, user.authCheck);
@@ -45,7 +45,7 @@ module.exports = function (app) {
   app.delete("/users/:userId", user.deleteUser);
 
   // 30. 메인페이지 API v2
-  app.get("/users/main/v2/:runningTag", user.main2);
+  app.get("/users/main/v2", user.main2);
 
   // 32. 찜 목록 조회 API v2
   app.get("/users/:userId/bookmarks/v2", jwtMiddleware, user.getBM2);
