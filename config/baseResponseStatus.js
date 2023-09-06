@@ -343,7 +343,7 @@ module.exports = {
   RUNNONGTAG_IS_NOT_VALID: {
     isSuccess: false,
     code: 2040,
-    message: "runningTag는 A, B, H 중 하나로 입력해주세요.",
+    message: "runningTag는 A, B, H, 빈 칸 중 하나로 입력해주세요.",
   },
 
   POSTID_EMPTY: {
