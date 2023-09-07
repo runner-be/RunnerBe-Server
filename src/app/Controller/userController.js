@@ -759,15 +759,15 @@ exports.deleteUser = async function (req, res) {
 /**
  * API No. 30
  * API Name : 메인페이지 API v2
- * [GET] /users/main2/:runningTag
+ * [GET] /users/main2
  * Body : userId
- * Path variable : runningTag
  * Query string : userLongitude, userLatitude
  *                whetherEnd(Y, N), filter(D,R,B) 거리순 : D, 최신순 : R, 찜많은순 : B
  *                distanceFilter(N, 거리값)
  *                genderFilter(A,F,M) A : 전체, F : 여성, M : 남성
  *                ageFilterMax(N, 숫자)
  *                ageFilterMin(N, 숫자)
+ *                runningTag(A : 퇴근 후, B : 출근 전, H : 휴일, W : 전체)
  */
 exports.main2 = async function (req, res) {
 
@@ -800,13 +800,14 @@ exports.main2 = async function (req, res) {
   if (!ageFilterMax)
     return res.send(response(baseResponse.AGE_MAX_FILTER_EMPTY));
   if (!keywordSearch) return res.send(response(baseResponse.KEY_WORD_EMPTY));
+  if (!runningTag) return res.send(response(baseResponse.RUNNONGTAG_EMPTY));
 
   // 길이 체크
   if (keywordSearch.length > 10)
     return res.send(response(baseResponse.KEY_WORD_LENGTH));
 
   // 유효성 검사
-  const runningTagList = ["", "A", "B", "H"];
+  const runningTagList = ["A", "B", "H", "W"];
   const whetherEndList = ["Y", "N"];
   const filterList = ["D", "R"];
   const genderFilterList = ["A", "F", "M"];
