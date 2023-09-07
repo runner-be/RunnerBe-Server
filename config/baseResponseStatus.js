@@ -283,7 +283,7 @@ module.exports = {
     isSuccess: false,
     code: 2030,
     message:
-      "runningTag는 (A : 퇴근 후, B : 출근 전, H : 휴일)로 입력해주세요.",
+      "runningTag는 (A : 퇴근 후, B : 출근 전, H : 휴일, W : 전체)로 입력해주세요.",
   },
 
   GENDER_IS_NOT_VALID: {
@@ -343,7 +343,7 @@ module.exports = {
   RUNNONGTAG_IS_NOT_VALID: {
     isSuccess: false,
     code: 2040,
-    message: "runningTag는 A, B, H, 빈 칸 중 하나로 입력해주세요.",
+    message: "runningTag는 A, B, H, W 중 하나로 입력해주세요.",
   },
 
   POSTID_EMPTY: {
