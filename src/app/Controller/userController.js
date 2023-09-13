@@ -767,7 +767,9 @@ exports.deleteUser = async function (req, res) {
  *                genderFilter(A,F,M) A : 전체, F : 여성, M : 남성
  *                ageFilterMax(N, 숫자)
  *                ageFilterMin(N, 숫자)
- *                runningTag(A : 퇴근 후, B : 출근 전, H : 휴일, W : 전체)
+ *                runningTag(A : 퇴근 후, B : 출근 전, H : 휴일, W : 전체),
+ *                page(현재 페이지 위치),
+ *                pageSize(한 페이지 당 출력 갯수)
  */
 exports.main2 = async function (req, res) {
 
@@ -784,6 +786,8 @@ exports.main2 = async function (req, res) {
   const keywordSearch = req.query.keywordSearch; // N : 필터 x, 그 외 키워드 검색
   const userId = req.query.userId;
   const runningTag = req.query.runningTag;
+  const page = req.query.page;
+  const pageSize = req.query.pageSize;
 
   // 빈 값 체크
   if (!userLongitude) return res.send(response(baseResponse.LONGITUDE_EMPTY));
@@ -801,6 +805,8 @@ exports.main2 = async function (req, res) {
     return res.send(response(baseResponse.AGE_MAX_FILTER_EMPTY));
   if (!keywordSearch) return res.send(response(baseResponse.KEY_WORD_EMPTY));
   if (!runningTag) return res.send(response(baseResponse.RUNNONGTAG_EMPTY));
+  if (!page) return res.send(response(baseResponse.PAGE_EMPTY));
+  if (!pageSize) return res.send(response(baseResponse.PAGE_SIZE_EMPTY));
 
   // 길이 체크
   if (keywordSearch.length > 10)
@@ -913,7 +919,9 @@ exports.main2 = async function (req, res) {
       jobCondition,
       ageCondition,
       keywordCondition,
-      runningTagCondition
+      runningTagCondition,
+      page,
+      pageSize
     );
     return res.send(response(baseResponse.SUCCESS, mainResult));
   } else {
@@ -929,7 +937,9 @@ exports.main2 = async function (req, res) {
       ageCondition,
       keywordCondition,
       runningTagCondition,
-      userId
+      userId,
+      page,
+      pageSize
     );
     return res.send(response(baseResponse.SUCCESS, mainResult));
   }

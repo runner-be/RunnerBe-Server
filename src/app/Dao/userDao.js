@@ -643,7 +643,9 @@ async function getMain2(
   jobCondition,
   ageCondition,
   keywordCondition,
-  runningTagCondition
+  runningTagCondition,
+  page,
+  pageSize
 ) {
   const getMainQuery = `
     SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
@@ -673,8 +675,8 @@ async function getMain2(
     WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
     and U.status != 'R'
     ORDER BY "${sortCondition}"
-    LIMIT 10;
-                  `;
+    LIMIT ${(page - 1) * pageSize}, ${pageSize};
+    `;
   const [mainRows] = await connection.query(getMainQuery);
   return mainRows;
 }
@@ -692,7 +694,9 @@ async function getMain2Login(
   ageCondition,
   keywordCondition,
   runningTagCondition,
-  userId
+  userId,
+  page,
+  pageSize
 ) {
   const getMainQuery = `
     SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
@@ -724,8 +728,8 @@ async function getMain2Login(
     WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
     and U.status != 'R'
     ORDER BY "${sortCondition}"
-    LIMIT 10;
-                  `;
+    LIMIT ${(page - 1) * pageSize}, ${pageSize};
+    `;
   const [mainRows] = await connection.query(getMainQuery);
   return mainRows;
 }
