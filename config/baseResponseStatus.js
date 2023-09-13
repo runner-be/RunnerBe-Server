@@ -686,9 +686,22 @@ module.exports = {
   
   GENDER_NOT_ALLOWED: {
     isSuccess: false,
-    code: 2095,
+    code: 2096,
     message: "자신과 다른 성별의 글을 게시할 수 없습니다.",
   },
+
+  PAGE_EMPTY: {
+    isSuccess: false,
+    code: 2097,
+    message: "페이지를 입력해주세요.",
+  },
+
+  PAGE_SIZE_EMPTY: {
+    isSuccess: false,
+    code: 2098,
+    message: "페이지 사이즈를 입력해주세요.",
+  },
+
   // ----------------------------
 
   // Response error
