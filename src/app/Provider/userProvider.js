@@ -295,8 +295,8 @@ exports.getMain2 = async function (
   ageCondition,
   keywordCondition,
   runningTagCondition,
-  page,
-  pageSize
+  // page,
+  // pageSize
 ) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
@@ -312,8 +312,8 @@ exports.getMain2 = async function (
       ageCondition,
       keywordCondition,
       runningTagCondition,
-      page,
-      pageSize
+      // page,
+      // pageSize
     );
 
     if (getMainResult.length !== 0) {
@@ -349,8 +349,8 @@ exports.getMain2Login = async function (
   keywordCondition,
   runningTagCondition,
   userId,
-  page,
-  pageSize
+  // page,
+  // pageSize
 ) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
@@ -367,8 +367,8 @@ exports.getMain2Login = async function (
       keywordCondition,
       runningTagCondition,
       userId,
-      page,
-      pageSize
+      // page,
+      // pageSize
     );
 
     if (getMainResult.length !== 0) {
