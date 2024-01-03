@@ -388,13 +388,13 @@ async function getmyInfo(connection, userId) {
             then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 후반')
         end as age,
         case when isBeginner = 'Y'
-           then '초보 러너'
+           then '초보 출석'
         else case when  U.diligence <= 32
-           then '불량 러너'
+           then '불량 출석'
         else case when 32< U.diligence AND U.diligence<= 66
-            then '노력 러너'
+            then '노력 출석'
         else case when 66< U.diligence
-            then '성실 러너'
+            then '성실 출석'
         end end end end as diligence,
        case when job = 'PSV' then '공무원'
            when job = 'EDU' then '교육'
@@ -435,13 +435,13 @@ async function getmyInfoV2(connection, userId) {
             then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 후반')
         end as age,
         case when isBeginner = 'Y'
-           then '초보 러너'
+           then '초보 출석'
         else case when  U.diligence <= 32
-           then '불량 러너'
+           then '불량 출석'
         else case when 32< U.diligence AND U.diligence<= 66
-            then '노력 러너'
+            then '노력 출석'
         else case when 66< U.diligence
-            then '성실 러너'
+            then '성실 출석'
         end end end end as diligence,
        case when job = 'PSV' then '공무원'
            when job = 'EDU' then '교육'
@@ -483,13 +483,13 @@ async function getmyInfoSimple(connection, userId) {
       then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 후반')
       end as age,
       case when isBeginner = 'Y'
-      then '초보 러너'
+      then '초보 출석'
    else case when  U.diligence <= 32
-      then '불량 러너'
+      then '불량 출석'
    else case when 32< U.diligence AND U.diligence<= 66
-       then '노력 러너'
+       then '노력 출석'
    else case when 66< U.diligence
-       then '성실 러너'
+       then '성실 출석'
    end end end end as diligence,
       case when job = 'PSV' then '공무원'
       when job = 'EDU' then '교육'
