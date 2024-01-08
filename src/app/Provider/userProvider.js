@@ -295,8 +295,8 @@ exports.getMain2 = async function (
   ageCondition,
   keywordCondition,
   runningTagCondition,
-  // page,
-  // pageSize
+  page,
+  pageSize
 ) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
@@ -312,8 +312,8 @@ exports.getMain2 = async function (
       ageCondition,
       keywordCondition,
       runningTagCondition,
-      // page,
-      // pageSize
+      page,
+      pageSize
     );
 
     if (getMainResult.length !== 0) {
@@ -349,8 +349,8 @@ exports.getMain2Login = async function (
   keywordCondition,
   runningTagCondition,
   userId,
-  // page,
-  // pageSize
+  page,
+  pageSize
 ) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
@@ -367,15 +367,15 @@ exports.getMain2Login = async function (
       keywordCondition,
       runningTagCondition,
       userId,
-      // page,
-      // pageSize
+      page,
+      pageSize
     );
 
     if (getMainResult.length !== 0) {
       for (i = 0; i < getMainResult.length; i++) {
         getMainResult[i].userId = null;
         getMainResult[i].attendance = null;
-        const postId = getMainResult[i].postId;    
+        const postId = getMainResult[i].postId;
         const body = await userDao.getProfileUrl(connection, postId);
         getMainResult[i].profileUrlList = body;
       }
@@ -535,7 +535,6 @@ exports.getWhetherNewAlarms = async function (userId) {
   }
 };
 
-
 // 유저 이용 제한 상태 확인
 exports.getUserGender = async function (userId) {
   const connection = await pool.getConnection(async (conn) => conn);
@@ -544,9 +543,7 @@ exports.getUserGender = async function (userId) {
 
     return result;
   } catch (err) {
-    await logger.error(
-      `User-getUserGender Provider error: ${err.message}`
-    );
+    await logger.error(`User-getUserGender Provider error: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
     await connection.release();

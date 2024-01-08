@@ -68,6 +68,12 @@ module.exports = function (app) {
   // 42. 활동 기록 조회 API
   app.get("/users/:userId/records", jwtMiddleware, user.getRecord);
 
-  //43. 새로운 푸쉬 알람 메시지 여부 조회 API
+  // 43. 새로운 푸쉬 알람 메시지 여부 조회 API
   app.get("/users/whether-new-alarms", jwtMiddleware, user.getWhetherNewAlarms);
+
+  // // 44. 러닝 페이스 등록 API
+  // app.post("/users/pace", jwtMiddleware, user.postRunningPace);
+
+  // // 45. 러닝 페이스 수정 API
+  // app.patch("/users/pace", jwtMiddleware, user.updateRunningPace);
 };

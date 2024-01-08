@@ -772,7 +772,6 @@ exports.deleteUser = async function (req, res) {
  *                pageSize(한 페이지 당 출력 갯수)
  */
 exports.main2 = async function (req, res) {
-
   // Query String 값
   const userLongitude = req.query.userLongitude;
   const userLatitude = req.query.userLatitude;
@@ -786,8 +785,8 @@ exports.main2 = async function (req, res) {
   const keywordSearch = req.query.keywordSearch; // N : 필터 x, 그 외 키워드 검색
   const userId = req.query.userId;
   const runningTag = req.query.runningTag;
-  // const page = req.query.page;
-  // const pageSize = req.query.pageSize;
+  const page = req.query.page;
+  const pageSize = req.query.pageSize;
 
   // 빈 값 체크
   if (!userLongitude) return res.send(response(baseResponse.LONGITUDE_EMPTY));
@@ -805,8 +804,8 @@ exports.main2 = async function (req, res) {
     return res.send(response(baseResponse.AGE_MAX_FILTER_EMPTY));
   if (!keywordSearch) return res.send(response(baseResponse.KEY_WORD_EMPTY));
   if (!runningTag) return res.send(response(baseResponse.RUNNONGTAG_EMPTY));
-  // if (!page) return res.send(response(baseResponse.PAGE_EMPTY));
-  // if (!pageSize) return res.send(response(baseResponse.PAGE_SIZE_EMPTY));
+  if (!page) return res.send(response(baseResponse.PAGE_EMPTY));
+  if (!pageSize) return res.send(response(baseResponse.PAGE_SIZE_EMPTY));
 
   // 길이 체크
   if (keywordSearch.length > 10)
@@ -920,8 +919,8 @@ exports.main2 = async function (req, res) {
       ageCondition,
       keywordCondition,
       runningTagCondition,
-      // page,
-      // pageSize
+      page,
+      pageSize
     );
     return res.send(response(baseResponse.SUCCESS, mainResult));
   } else {
@@ -938,8 +937,8 @@ exports.main2 = async function (req, res) {
       keywordCondition,
       runningTagCondition,
       userId,
-      // page,
-      // pageSize
+      page,
+      pageSize
     );
     return res.send(response(baseResponse.SUCCESS, mainResult));
   }
@@ -991,8 +990,8 @@ exports.getBM2 = async function (req, res) {
 exports.getMyPage2 = async function (req, res) {
   const userId = req.params.userId;
   const userIdFromJWT = req.verifiedToken.userId;
-  const mobileType = req.header('MobileType');
-  const appVersion = req.header('AppVersion');
+  const mobileType = req.header("MobileType");
+  const appVersion = req.header("AppVersion");
 
   // 빈 값 체크
   if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
@@ -1008,7 +1007,11 @@ exports.getMyPage2 = async function (req, res) {
     // if (checkUserAuth.length === 0) {
     //   return res.send(response(baseResponse.USER_NON_AUTH));
     // }
-    const getMyPageResult = await userProvider.getMyPage2(userId, mobileType, appVersion);
+    const getMyPageResult = await userProvider.getMyPage2(
+      userId,
+      mobileType,
+      appVersion
+    );
     return res.send(response(baseResponse.SUCCESS, getMyPageResult));
   }
 };

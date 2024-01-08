@@ -644,8 +644,8 @@ async function getMain2(
   ageCondition,
   keywordCondition,
   runningTagCondition,
-  // page,
-  // pageSize
+  page,
+  pageSize
 ) {
   const getMainQuery = `
     SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
@@ -675,9 +675,9 @@ async function getMain2(
     WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
     and U.status != 'R'
     ORDER BY "${sortCondition}"
-    LIMIT 10
+    LIMIT ${(page - 1) * pageSize}, ${pageSize};
     `;
-    // LIMIT ${(page - 1) * pageSize}, ${pageSize};
+
   const [mainRows] = await connection.query(getMainQuery);
   return mainRows;
 }
@@ -696,8 +696,8 @@ async function getMain2Login(
   keywordCondition,
   runningTagCondition,
   userId,
-  // page,
-  // pageSize
+  page,
+  pageSize
 ) {
   const getMainQuery = `
     SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
@@ -729,9 +729,9 @@ async function getMain2Login(
     WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
     and U.status != 'R'
     ORDER BY "${sortCondition}"
-    LIMIT 10
+    LIMIT ${(page - 1) * pageSize}, ${pageSize};
     `;
-    // LIMIT ${(page - 1) * pageSize}, ${pageSize};
+
   const [mainRows] = await connection.query(getMainQuery);
   return mainRows;
 }
@@ -920,7 +920,6 @@ async function getWhetherNewAlarms(connection, userId) {
   return Rows[0]["whetherNewAlarm"];
 }
 
-
 // 유저 성별 조회
 async function getUserGender(connection, userId) {
   const Query = `
@@ -1020,5 +1019,5 @@ module.exports = {
   getDeviceTokenList,
   getOtherId,
   increaseDilegence,
-  decreaseDilegence
+  decreaseDilegence,
 };
