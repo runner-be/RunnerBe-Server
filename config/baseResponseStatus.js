@@ -683,7 +683,7 @@ module.exports = {
     code: 2095,
     message: "해당 postId는 존재하지 않습니다.",
   },
-  
+
   GENDER_NOT_ALLOWED: {
     isSuccess: false,
     code: 2096,
@@ -700,6 +700,24 @@ module.exports = {
     isSuccess: false,
     code: 2098,
     message: "페이지 사이즈를 입력해주세요.",
+  },
+
+  USER_PACE_EMPTY: {
+    isSuccess: false,
+    code: 2099,
+    message: "유저의 페이스를 입력해주세요.",
+  },
+
+  USER_PACE_NOTNUM: {
+    isSuccess: false,
+    code: 2100,
+    message: "유저의 페이스는 숫자로 입력해주세요.",
+  },
+
+  PACE_IS_NOT_VALID: {
+    isSuccess: false,
+    code: 2101,
+    message: "페이스는 1 ~ 4 범위만 입력 가능합니다.",
   },
 
   // ----------------------------
