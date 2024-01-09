@@ -30,15 +30,15 @@ exports.createUser = async function (
     const uuidRows = await userProvider.uuidCheck(uuid);
     if (uuidRows.length > 0)
       return errResponse(baseResponse.SIGNUP_REDUNDANT_UUID);
-    
+
     // 닉네임 생성
     const randomNumber = (min, max) => {
       const numberTemp = Math.floor(Math.random() * (max - min + 1)) + min;
       return numberTemp;
-    }
+    };
 
     const randomNickname = "Runner" + randomNumber(1000, 9999);
-    
+
     //nickName 중복 확인
     const nickNameRows = await userProvider.nickNameCheck(randomNickname);
     if (nickNameRows.length > 0)
@@ -305,13 +305,13 @@ exports.createUserV2 = async function (
     const uuidRows = await userProvider.uuidCheck(uuid);
     if (uuidRows.length > 0)
       return errResponse(baseResponse.SIGNUP_REDUNDANT_UUID);
-    
+
     // 닉네임 생성
     const randomNumber = (min, max) => {
       const numberTemp = Math.floor(Math.random() * (max - min + 1)) + min;
       return numberTemp;
-    }
-    
+    };
+
     const randomNickname = "Runner" + randomNumber(1000, 9999);
 
     //nickName 중복 확인
@@ -438,6 +438,19 @@ exports.getMyAlarms = async function (userId) {
     //rollback
     await connection.rollback();
     await logger.error(`App - getMyAlarms Provider error\n: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    await connection.release();
+  }
+};
+
+// 유저 러닝페이스 등록 & 수정
+exports.addPace = async function (pace, userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const addBMResult = await userDao.addUserPace(connection, pace, userId);
+  } catch (err) {
+    await logger.error(`App - addPace Service error\n: ${err.message}`);
     return errResponse(baseResponse.DB_ERROR);
   } finally {
     await connection.release();

@@ -71,9 +71,6 @@ module.exports = function (app) {
   // 43. 새로운 푸쉬 알람 메시지 여부 조회 API
   app.get("/users/whether-new-alarms", jwtMiddleware, user.getWhetherNewAlarms);
 
-  // // 44. 러닝 페이스 등록 API
-  // app.post("/users/pace", jwtMiddleware, user.postRunningPace);
-
-  // // 45. 러닝 페이스 수정 API
-  // app.patch("/users/pace", jwtMiddleware, user.updateRunningPace);
+  // 44. 러닝 페이스 등록 & 수정 API
+  app.patch("/users/:userId/pace", jwtMiddleware, user.postRunningPace);
 };

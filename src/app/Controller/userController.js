@@ -1165,3 +1165,44 @@ exports.getWhetherNewAlarms = async function (req, res) {
   );
   return res.send(response(baseResponse.SUCCESS, getWhetherNewAlarmsResult));
 };
+
+/**
+ * API No. 44
+ * API Name : 러닝 페이스 등록 & 수정 API
+ * [PATCH] /users/:userId/pace
+ */
+exports.postRunningPace = async function (req, res) {
+  /**
+   * Header : jwt
+   * Path Variable : userId
+   * Request Body : pace
+   */
+
+  const userIdFromJWT = req.verifiedToken.userId;
+  const userId = req.params.userId;
+  const pace = req.body.pace;
+
+  // 필수 값 : 빈 값 체크 (text를 제외한 나머지)
+  if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+  if (!pace) return res.send(response(baseResponse.USER_PACE_EMPTY));
+
+  // 숫자 확인
+  if (isNaN(userId) === true)
+    return res.send(response(baseResponse.USER_USERID_NOTNUM));
+  if (isNaN(pace) === true)
+    return res.send(response(baseResponse.USER_PACE_NOTNUM));
+
+  // 유효성 검사
+  const paceList = [1, 2, 3, 4];
+  if (!paceList.includes(pace))
+    return res.send(response(baseResponse.PACE_IS_NOT_VALID));
+
+  //jwt로 userId 확인
+  if (userIdFromJWT != userId) {
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+  } else {
+    const Response = await userService.addPace(pace, userId);
+
+    return res.send(response(baseResponse.SUCCESS));
+  }
+};

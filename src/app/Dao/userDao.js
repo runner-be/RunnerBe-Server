@@ -424,27 +424,27 @@ async function getmyInfo(connection, userId) {
 async function getmyInfoV2(connection, userId) {
   const Query = `
     SELECT U.userId, nickName,
-               case when gender='M' then '남성'
-                    else case when gender='F' then '여성'
-                        end end as gender,
-               case when 0<= (DATE_FORMAT(now(),'%Y')-birthday)%10 and (DATE_FORMAT(now(),'%Y')-birthday)%10 <=3
+            case when gender='M' then '남성'
+              else case when gender='F' then '여성'
+              end end as gender,
+            case when 0<= (DATE_FORMAT(now(),'%Y')-birthday)%10 and (DATE_FORMAT(now(),'%Y')-birthday)%10 <=3
             then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 초반')
             when 3< (DATE_FORMAT(now(),'%Y')-birthday)%10 and (DATE_FORMAT(now(),'%Y')-birthday)%10<=6
             then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 중반')
             when 6<(DATE_FORMAT(now(),'%Y')-birthday)%10 and (DATE_FORMAT(now(),'%Y')-birthday)%10<=9
             then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 후반')
-        end as age,
-        case when isBeginner = 'Y'
-           then '초보 출석'
-        else case when  U.diligence <= 32
-           then '불량 출석'
-        else case when 32< U.diligence AND U.diligence<= 66
+            end as age,
+            case when isBeginner = 'Y'
+            then '초보 출석'
+            else case when  U.diligence <= 32
+            then '불량 출석'
+            else case when 32< U.diligence AND U.diligence<= 66
             then '노력 출석'
-        else case when 66< U.diligence
+            else case when 66< U.diligence
             then '성실 출석'
-        end end end end as diligence,
-       case when job = 'PSV' then '공무원'
-           when job = 'EDU' then '교육'
+            end end end end as diligence,
+            case when job = 'PSV' then '공무원'
+            when job = 'EDU' then '교육'
             when job = 'DEV' then '개발'
             when job = 'PSM' then '기획/전략/경영'
             when job = 'DES' then '디자인'
@@ -457,14 +457,13 @@ async function getmyInfoV2(connection, userId) {
             when job = 'HUR' then '인사'
             when job = 'ACC' then '재무/회계'
             when job = 'CUS' then 'CS'
-        end as job
-        ,profileImageUrl, pushOn, nameChanged,
-       case when DATEDIFF(DATE_FORMAT(now(),'%Y-%m-%d'), jobChanged) > 90
-           then 'Y'
-        else 'N' end as jobChangePossible
-      FROM User U
-      WHERE U.userId = ?;
-                  `;
+            end as job, profileImageUrl, pushOn, nameChanged,
+            case when DATEDIFF(DATE_FORMAT(now(),'%Y-%m-%d'), jobChanged) > 90
+            then 'Y'
+            else 'N' end as jobChangePossible, pace
+            FROM User U
+            WHERE U.userId = ?;
+      `;
   const [Rows] = await connection.query(Query, userId);
   return Rows[0];
 }
@@ -472,10 +471,10 @@ async function getmyInfoV2(connection, userId) {
 async function getmyInfoSimple(connection, userId) {
   const Query = `
   SELECT U.userId, nickName,
-  case when gender='M' then '남성'
-       else case when gender='F' then '여성'
-           end end as gender,
-        case when 0<= (DATE_FORMAT(now(),'%Y')-birthday)%10 and (DATE_FORMAT(now(),'%Y')-birthday)%10 <=3
+    case when gender='M' then '남성'
+      else case when gender='F' then '여성'
+        end end as gender,
+      case when 0<= (DATE_FORMAT(now(),'%Y')-birthday)%10 and (DATE_FORMAT(now(),'%Y')-birthday)%10 <=3
       then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 초반')
       when 3< (DATE_FORMAT(now(),'%Y')-birthday)%10 and (DATE_FORMAT(now(),'%Y')-birthday)%10<=6
       then CONCAT((DATE_FORMAT(now(),'%Y')-birthday) - (DATE_FORMAT(now(),'%Y')-birthday)%10,'대 중반')
@@ -484,13 +483,13 @@ async function getmyInfoSimple(connection, userId) {
       end as age,
       case when isBeginner = 'Y'
       then '초보 출석'
-   else case when  U.diligence <= 32
+      else case when  U.diligence <= 32
       then '불량 출석'
-   else case when 32< U.diligence AND U.diligence<= 66
-       then '노력 출석'
-   else case when 66< U.diligence
-       then '성실 출석'
-   end end end end as diligence,
+      else case when 32< U.diligence AND U.diligence<= 66
+      then '노력 출석'
+      else case when 66< U.diligence
+      then '성실 출석'
+      end end end end as diligence,
       case when job = 'PSV' then '공무원'
       when job = 'EDU' then '교육'
       when job = 'DEV' then '개발'
@@ -505,8 +504,8 @@ async function getmyInfoSimple(connection, userId) {
       when job = 'HUR' then '인사'
       when job = 'ACC' then '재무/회계'
       when job = 'CUS' then 'CS'
-      end as job
-      ,profileImageUrl  FROM User U
+      end as job, profileImageUrl, pace
+      FROM User U
       WHERE U.userId = ?;
                         `;
   const [Rows] = await connection.query(Query, userId);
@@ -532,7 +531,7 @@ async function getRunningInfo(connection, userId) {
 // 마이페이지 참여한 러닝
 async function getMyRunning(connection, userId) {
   const Query = `
-    SELECT P.postId,postUserId, U.nickName, U.profileImageUrl, title,
+    SELECT P.postId, postUserId, U.nickName, U.profileImageUrl, U.pace, title,
     runningTime,
     gatheringTime,
    locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
@@ -561,7 +560,7 @@ async function getMyRunning(connection, userId) {
 // 마이페이지 내가 쓴 글
 async function getMyPosting(connection, userId) {
   const query1 = `
-    SELECT P.postId,postUserId, U.nickName, U.profileImageUrl, title,
+    SELECT P.postId,postUserId, U.nickName, U.profileImageUrl, U.pace, title,
     runningTime,
     gatheringTime,
    locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
@@ -767,7 +766,7 @@ async function getBM2(connection, userId) {
 // 마이페이지 내가 쓴 글 v2
 async function getMyPosting2(connection, userId) {
   const query = `
-  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
+  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, U.pace, title,
   runningTime,
   gatheringTime, gatherLongitude, gatherLatitude,
   locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
@@ -797,7 +796,7 @@ async function getMyPosting2(connection, userId) {
 // 마이페이지 참여한 러닝
 async function getMyRunning2(connection, userId) {
   const Query = `
-  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
+  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, U.pace, title,
   runningTime,
   gatheringTime, gatherLongitude, gatherLatitude,
  locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
@@ -968,6 +967,14 @@ async function decreaseDilegence(connection, userId) {
   const [Rows] = await connection.query(Query);
   return Rows;
 }
+
+// 유저 러닝 페이스 정보 업데이트
+async function addUserPace(connection, pace, userId) {
+  const Query = `update User set pace = ? where userId = ?;`;
+  const [Rows] = await connection.query(Query, [pace, userId]);
+  return Rows;
+}
+
 module.exports = {
   selectUser,
   deleteUser,
@@ -1020,4 +1027,5 @@ module.exports = {
   getOtherId,
   increaseDilegence,
   decreaseDilegence,
+  addUserPace,
 };
