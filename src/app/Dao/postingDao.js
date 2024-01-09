@@ -131,7 +131,7 @@ async function getRunner(connection, postId) {
           when job = 'ACC' then '재무/회계'
           when job = 'CUS' then 'CS'
       end as job
-      ,profileImageUrl, whetherCheck, attendance,
+      ,profileImageUrl, whetherCheck, attendance, pace,
       case when repUserId = U.userId then 'Y' else 'N' end as 'whetherPostUser' 
       FROM User U
       inner join RunningPeople RP on U.userId = RP.userId
