@@ -531,7 +531,7 @@ async function getRunningInfo(connection, userId) {
 // 마이페이지 참여한 러닝
 async function getMyRunning(connection, userId) {
   const Query = `
-    SELECT P.postId, postUserId, U.nickName, U.profileImageUrl, U.pace, title,
+    SELECT P.postId, postUserId, U.nickName, U.profileImageUrl, title,
     runningTime,
     gatheringTime,
    locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
@@ -560,7 +560,7 @@ async function getMyRunning(connection, userId) {
 // 마이페이지 내가 쓴 글
 async function getMyPosting(connection, userId) {
   const query1 = `
-    SELECT P.postId,postUserId, U.nickName, U.profileImageUrl, U.pace, title,
+    SELECT P.postId,postUserId, U.nickName, U.profileImageUrl, title,
     runningTime,
     gatheringTime,
    locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
@@ -766,7 +766,7 @@ async function getBM2(connection, userId) {
 // 마이페이지 내가 쓴 글 v2
 async function getMyPosting2(connection, userId) {
   const query = `
-  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, U.pace, title,
+  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
   runningTime,
   gatheringTime, gatherLongitude, gatherLatitude,
   locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
@@ -796,7 +796,7 @@ async function getMyPosting2(connection, userId) {
 // 마이페이지 참여한 러닝
 async function getMyRunning2(connection, userId) {
   const Query = `
-  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, U.pace, title,
+  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
   runningTime,
   gatheringTime, gatherLongitude, gatherLatitude,
  locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
