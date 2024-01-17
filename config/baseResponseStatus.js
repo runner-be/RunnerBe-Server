@@ -708,16 +708,28 @@ module.exports = {
     message: "유저의 페이스를 입력해주세요.",
   },
 
-  USER_PACE_NOTNUM: {
-    isSuccess: false,
-    code: 2100,
-    message: "유저의 페이스는 숫자로 입력해주세요.",
-  },
-
   PACE_IS_NOT_VALID: {
     isSuccess: false,
-    code: 2101,
-    message: "페이스는 1 ~ 4 범위만 입력 가능합니다.",
+    code: 2100,
+    message: "페이스는 beginner, average, high, master 범주만 입력 가능합니다.",
+  },
+
+  POSTING_PACE_EMPTY: {
+    isSuccess: false,
+    code: 2102,
+    message: "러닝모임의 페이스를 입력해주세요.",
+  },
+
+  POSTING_AFTERPARTY_EMPTY: {
+    isSuccess: false,
+    code: 2103,
+    message: "러닝모임의 뒷풀이 여부를 입력해주세요.",
+  },
+
+  POSTING_AFTERPARTY_NOTNUM: {
+    isSuccess: false,
+    code: 2104,
+    message: "러닝모임의 뒷풀이 여부는 숫자로 입력해주세요.",
   },
 
   // ----------------------------
