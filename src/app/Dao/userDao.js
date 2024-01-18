@@ -531,18 +531,16 @@ async function getRunningInfo(connection, userId) {
 // 마이페이지 참여한 러닝
 async function getMyRunning(connection, userId) {
   const Query = `
-    SELECT P.postId, postUserId, U.nickName, U.profileImageUrl, title,
-    runningTime,
-    gatheringTime,
-   locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
-   case when runnerGender='A' then '전체'
-   else
-   case when runnerGender='M' then '남성'
-   else
-   case when runnerGender='F' then '여성'
-    end end end as gender, whetherEnd, J.job,
-  EXISTS (SELECT bookmarkId FROM Bookmarks
-          WHERE userId = ${userId} AND postId = P.postId) as bookMark,attendance
+    SELECT P.postId, postUserId, U.nickName, U.profileImageUrl, title, runningTime, 
+    gatheringTime, locationInfo, runningTag, concat(ageMin,'-',ageMax) as age, pace, afterParty,
+    case when runnerGender='A' then '전체'
+      else
+    case when runnerGender='M' then '남성'
+      else
+    case when runnerGender='F' then '여성'
+      end end end as gender, whetherEnd, J.job,
+    EXISTS (SELECT bookmarkId FROM Bookmarks
+    WHERE userId = ${userId} AND postId = P.postId) as bookMark, attendance
   FROM Posting P
   INNER JOIN User U on U.userId = P.postUserId
   INNER JOIN Running R on R.postId = P.postId
@@ -560,16 +558,14 @@ async function getMyRunning(connection, userId) {
 // 마이페이지 내가 쓴 글
 async function getMyPosting(connection, userId) {
   const query1 = `
-    SELECT P.postId,postUserId, U.nickName, U.profileImageUrl, title,
-    runningTime,
-    gatheringTime,
-   locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
-   case when runnerGender='A' then '전체'
-   else
-   case when runnerGender='M' then '남성'
-   else
-   case when runnerGender='F' then '여성'
-    end end end as gender, whetherEnd, J.job
+    SELECT P.postId, postUserId, U.nickName, U.profileImageUrl, title, runningTime, gatheringTime,
+    locationInfo, runningTag,concat(ageMin,'-',ageMax) as age, pace, afterParty,
+    case when runnerGender='A' then '전체'
+      else
+    case when runnerGender='M' then '남성'
+      else
+    case when runnerGender='F' then '여성'
+      end end end as gender, whetherEnd, J.job
     FROM Posting P
   INNER JOIN User U on U.userId = P.postUserId
   INNER JOIN Running R on R.postId = P.postId
@@ -647,18 +643,15 @@ async function getMain2(
   pageSize
 ) {
   const getMainQuery = `
-    SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
-            runningTime,
-            gatheringTime,
-           gatherLongitude, gatherLatitude, locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
-           case when runnerGender='A' then '전체'
-           else
-           case when runnerGender='M' then '남성'
-           else
-           case when runnerGender='F' then '여성'
-            end end end as gender,
-            DISTANCE,
-           whetherEnd, J.job, peopleNum, contents
+    SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title, runningTime,
+    gatheringTime, gatherLongitude, gatherLatitude, locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
+    case when runnerGender='A' then '전체'
+      else
+    case when runnerGender='M' then '남성'
+      else
+    case when runnerGender='F' then '여성'
+      end end end as gender,
+    DISTANCE, whetherEnd, J.job, peopleNum, contents, pace, afterParty
     FROM Posting P
     INNER JOIN User U on U.userId = P.postUserId
     INNER JOIN Running R on R.postId = P.postId
@@ -699,20 +692,16 @@ async function getMain2Login(
   pageSize
 ) {
   const getMainQuery = `
-    SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
-            runningTime,
-            gatheringTime,
-           gatherLongitude, gatherLatitude, locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
-           case when runnerGender='A' then '전체'
-           else
-           case when runnerGender='M' then '남성'
-           else
-           case when runnerGender='F' then '여성'
-            end end end as gender,
-            DISTANCE,
-           whetherEnd, J.job, peopleNum, contents,
-           EXISTS (SELECT bookmarkId FROM Bookmarks
-            WHERE userId = ${userId} AND postId = P.postId) as bookMark
+    SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title, runningTime,
+    gatheringTime, gatherLongitude, gatherLatitude, locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
+    case when runnerGender='A' then '전체'
+      else
+    case when runnerGender='M' then '남성'
+      else
+    case when runnerGender='F' then '여성'
+      end end end as gender,
+    DISTANCE, whetherEnd, J.job, peopleNum, contents, pace, afterParty,
+    EXISTS (SELECT bookmarkId FROM Bookmarks WHERE userId = ${userId} AND postId = P.postId) as bookMark
     FROM Posting P
     INNER JOIN User U on U.userId = P.postUserId
     INNER JOIN Running R on R.postId = P.postId
@@ -766,16 +755,14 @@ async function getBM2(connection, userId) {
 // 마이페이지 내가 쓴 글 v2
 async function getMyPosting2(connection, userId) {
   const query = `
-  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
-  runningTime,
-  gatheringTime, gatherLongitude, gatherLatitude,
-  locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
+  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title, runningTime,
+  gatheringTime, gatherLongitude, gatherLatitude, locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
   case when runnerGender='A' then '전체'
-  else
+    else
   case when runnerGender='M' then '남성'
-  else
+    else
   case when runnerGender='F' then '여성'
-  end end end as gender, whetherEnd, J.job, peopleNum, contents, ${userId} as userId,
+  end end end as gender, whetherEnd, J.job, peopleNum, contents, pace, afterParty, ${userId} as userId,
   EXISTS (SELECT bookmarkId FROM Bookmarks
   WHERE userId = ${userId} AND postId = P.postId) as bookMark
   FROM Posting P
@@ -787,8 +774,7 @@ async function getMyPosting2(connection, userId) {
   inner join User U on RP.userId = U.userId
   group by postId) J on J.postId = P.postId
   WHERE postUserId = ?;
-                  `;
-
+  `;
   const row = await connection.query(query, userId);
   return row[0];
 }
@@ -796,31 +782,28 @@ async function getMyPosting2(connection, userId) {
 // 마이페이지 참여한 러닝
 async function getMyRunning2(connection, userId) {
   const Query = `
-  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title,
-  runningTime,
-  gatheringTime, gatherLongitude, gatherLatitude,
- locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
- case when runnerGender='A' then '전체'
- else
- case when runnerGender='M' then '남성'
- else
- case when runnerGender='F' then '여성'
-  end end end as gender, whetherEnd, J.job, peopleNum, contents, ${userId} as userId,
-EXISTS (SELECT bookmarkId FROM Bookmarks
-        WHERE userId = ${userId} AND postId = P.postId) as bookMark,attendance,
-       W.whetherCheck as whetherCheck
-FROM Posting P
-INNER JOIN User U on U.userId = P.postUserId
-INNER JOIN Running R on R.postId = P.postId
-INNER JOIN (SELECT DISTINCT postId, GROUP_CONCAT(distinct(job)) as job
-FROM RunningPeople RP
-inner join Running R on RP.gatheringId = R.gatheringId
-inner join User U on RP.userId = U.userId
-group by postId) J on J.postId = P.postId
-INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId
-INNER JOIN (select R.gatheringId, IF(COUNT(*) = SUM(IF(whetherCheck = 'Y', 1, 0)), 'Y', 'N') as whetherCheck from RunningPeople
-inner join Running R on RunningPeople.gatheringId = R.gatheringId group by R.gatheringId) W on W.gatheringId = RPP.gatheringId;
-                  `;
+  SELECT P.postId, P.createdAt as postingTime, postUserId, U.nickName, U.profileImageUrl, title, runningTime,
+  gatheringTime, gatherLongitude, gatherLatitude, locationInfo, runningTag,concat(ageMin,'-',ageMax) as age,
+  case when runnerGender='A' then '전체'
+    else
+  case when runnerGender='M' then '남성'
+    else
+  case when runnerGender='F' then '여성'
+    end end end as gender, whetherEnd, J.job, peopleNum, contents, pace, afterParty, ${userId} as userId,
+  EXISTS (SELECT bookmarkId FROM Bookmarks WHERE userId = ${userId} AND postId = P.postId) as bookMark, attendance,
+  W.whetherCheck as whetherCheck
+  FROM Posting P
+  INNER JOIN User U on U.userId = P.postUserId
+  INNER JOIN Running R on R.postId = P.postId
+  INNER JOIN (SELECT DISTINCT postId, GROUP_CONCAT(distinct(job)) as job
+  FROM RunningPeople RP
+  inner join Running R on RP.gatheringId = R.gatheringId
+  inner join User U on RP.userId = U.userId
+  group by postId) J on J.postId = P.postId
+  INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId
+  INNER JOIN (select R.gatheringId, IF(COUNT(*) = SUM(IF(whetherCheck = 'Y', 1, 0)), 'Y', 'N') as whetherCheck from RunningPeople
+  inner join Running R on RunningPeople.gatheringId = R.gatheringId group by R.gatheringId) W on W.gatheringId = RPP.gatheringId;
+  `;
   const [Rows] = await connection.query(Query, userId);
   return Rows;
 }

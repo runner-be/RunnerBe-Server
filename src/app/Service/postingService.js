@@ -8,7 +8,7 @@ const baseResponse = require("../../../config/baseResponseStatus");
 const { response } = require("../../../config/response");
 const { errResponse } = require("../../../config/response");
 const schedule = require("node-schedule");
-const admin = require('../utils/fcm');
+const admin = require("../utils/fcm");
 // 게시글 생성
 exports.createPosting = async function (
   userId,
@@ -23,7 +23,9 @@ exports.createPosting = async function (
   ageMax,
   peopleNum,
   contents,
-  runnerGender
+  runnerGender,
+  paceGrade,
+  afterParty
 ) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
@@ -49,6 +51,8 @@ exports.createPosting = async function (
       peopleNum,
       contents,
       runnerGender,
+      paceGrade,
+      afterParty,
     ];
     // 게시글 생성
     const createPostingResult = await postingDao.createPosting(
@@ -100,8 +104,7 @@ exports.createPosting = async function (
 
         //title, body 설정
         const titleInstance = "RunnerBe : 출석 체크 요청";
-        const content =
-          `${getDeviceTokenRows[0].nickName} 님, 작성한 [${title}] 모임이 시작됐어요! 다들 모였다면 마이페이지에서 출석 체크를 진행해 볼까요?`;
+        const content = `${getDeviceTokenRows[0].nickName} 님, 작성한 [${title}] 모임이 시작됐어요! 다들 모였다면 마이페이지에서 출석 체크를 진행해 볼까요?`;
 
         //푸쉬알림 메시지 설정
         let message = {
@@ -121,7 +124,7 @@ exports.createPosting = async function (
           .messaging()
           .send(message)
           .then(function (id) {
-            logger.info(`successfully sent message : ${id}`)
+            logger.info(`successfully sent message : ${id}`);
             return 0;
           })
           .catch(function (err) {
@@ -166,6 +169,8 @@ exports.patchPosting = async function (
   peopleNum,
   contents,
   runnerGender,
+  paceGrade,
+  afterParty,
   postId
 ) {
   const connection = await pool.getConnection(async (conn) => conn);
@@ -185,6 +190,8 @@ exports.patchPosting = async function (
       peopleNum,
       contents,
       runnerGender,
+      paceGrade,
+      afterParty,
       postId,
     ];
     //게시글 있는지 확인

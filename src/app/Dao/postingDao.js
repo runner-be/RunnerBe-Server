@@ -1,8 +1,8 @@
 // 게시글 생성
 async function createPosting(connection, insertPostingParams) {
   const insertPostingQuery = `
-INSERT INTO Posting(postUserId, title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO Posting(postUserId, title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender, pace, afterParty)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
                `;
   const insertPostingRow = await connection.query(
     insertPostingQuery,
@@ -179,8 +179,7 @@ async function getWaitingRunner(connection, postId) {
           when job = 'HUR' then '인사'
           when job = 'ACC' then '재무/회계'
           when job = 'CUS' then 'CS'
-      end as job
-      ,profileImageUrl FROM User U
+      end as job, profileImageUrl, pace FROM User U
       inner join RunningPeople RP on U.userId = RP.userId
       inner join Running R on RP.gatheringId = R.gatheringId
       WHERE postId = ? AND whetherAccept = 'N';
@@ -206,7 +205,7 @@ async function closePosting(connection, postId) {
 async function patchPosting(connection, patchPostingParams) {
   const patchPostingQuery = `
   UPDATE Posting SET title = ?, gatheringTime = ?, runningTime = ?, gatherLongitude = ?, gatherLatitude = ?, locationInfo = ?, runningTag = ?, ageMin = ?, ageMax = ?, 
-                   peopleNum = ?, contents = ?, runnerGender = ?
+                   peopleNum = ?, contents = ?, runnerGender = ?, pace = ?, afterParty = ?
   WHERE postId = ?;
                  `;
   const patchPostingRow = await connection.query(
@@ -291,8 +290,7 @@ async function getPosting2(connection, postId) {
        else case when runnerGender='F' then '여성'
         end end end as gender,
         whetherEnd, J.job,
-       peopleNum,
-       contents
+       peopleNum, contents
   FROM Posting P
   INNER JOIN User U on U.userId = P.postUserId
   INNER JOIN Running R on R.postId = P.postId

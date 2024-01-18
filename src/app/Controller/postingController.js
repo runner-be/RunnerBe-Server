@@ -16,7 +16,7 @@ const { emit } = require("nodemon");
 exports.createPosting = async function (req, res) {
   /**
    * Header : jwt
-   * Body: title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender
+   * Body: title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender, paceGrade, afterParty
    */
   const userId = req.params.userId;
   const userIdFromJWT = req.verifiedToken.userId;
@@ -33,6 +33,8 @@ exports.createPosting = async function (req, res) {
     peopleNum,
     contents,
     runnerGender,
+    paceGrade,
+    afterParty,
   } = req.body; //구조분해 순서 유의할 것... 삽질
 
   // 필수 값 : 빈 값 체크 (text를 제외한 나머지)
@@ -55,6 +57,9 @@ exports.createPosting = async function (req, res) {
     return res.send(response(baseResponse.POSTING_PEOPLENUM_EMPTY));
   if (!runnerGender)
     return res.send(response(baseResponse.POSTING_GENDER_EMPTY));
+  if (!paceGrade) return res.send(response(baseResponse.POSTING_PACE_EMPTY));
+  if (!afterParty)
+    return res.send(response(baseResponse.POSTING_AFTERPARTY_EMPTY));
 
   // 길이 체크
   if (title.length > 30)
@@ -73,19 +78,24 @@ exports.createPosting = async function (req, res) {
     return res.send(response(baseResponse.USER_AGEMAX_NOTNUM));
   if (isNaN(peopleNum) === true)
     return res.send(response(baseResponse.USER_PEOPLENUM_NOTNUM));
+  if (isNaN(afterParty) === true)
+    return res.send(response(baseResponse.POSTING_AFTERPARTY_NOTNUM));
 
   // 유효성 검사
   const whenTagList = ["A", "B", "H"]; //A : 퇴근 후, B : 출근 전, H : 휴일
   const genderList = ["A", "M", "F"]; //A : 전체, M : 남성, F : 여성
+  const paceList = ["beginner", "average", "high", "master"];
   if (!whenTagList.includes(runningTag))
     return res.send(response(baseResponse.WHEN_IS_NOT_VALID));
   if (!genderList.includes(runnerGender))
     return res.send(response(baseResponse.GENDER_IS_NOT_VALID));
+  if (!paceList.includes(paceGrade))
+    return res.send(response(baseResponse.PACE_IS_NOT_VALID));
 
   // 자신과 다른 성별 게시 불가
-  if (runnerGender !== 'A'){
+  if (runnerGender !== "A") {
     const userGender = await userProvider.getUserGender(userId);
-    if (userGender !== runnerGender){
+    if (userGender !== runnerGender) {
       return res.send(response(baseResponse.GENDER_NOT_ALLOWED));
     }
   }
@@ -112,7 +122,9 @@ exports.createPosting = async function (req, res) {
       ageMax,
       peopleNum,
       contents,
-      runnerGender
+      runnerGender,
+      paceGrade,
+      afterParty
     );
     return res.send(postingResponse);
   }
@@ -248,7 +260,7 @@ exports.closePosting = async function (req, res) {
 exports.patchPosting = async function (req, res) {
   /**
    * Header : jwt
-   * Body: title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender
+   * Body: title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender, paceGrade, afterParty
    */
   const userId = req.params.userId;
   const postId = req.params.postId;
@@ -266,6 +278,8 @@ exports.patchPosting = async function (req, res) {
     peopleNum,
     contents,
     runnerGender,
+    paceGrade,
+    afterParty,
   } = req.body;
 
   // 필수 값 : 빈 값 체크 (text를 제외한 나머지)
@@ -289,6 +303,9 @@ exports.patchPosting = async function (req, res) {
     return res.send(response(baseResponse.POSTING_PEOPLENUM_EMPTY));
   if (!runnerGender)
     return res.send(response(baseResponse.POSTING_GENDER_EMPTY));
+  if (!paceGrade) return res.send(response(baseResponse.POSTING_PACE_EMPTY));
+  if (!afterParty)
+    return res.send(response(baseResponse.POSTING_AFTERPARTY_EMPTY));
 
   // 길이 체크
   if (title.length > 30)
@@ -309,14 +326,19 @@ exports.patchPosting = async function (req, res) {
     return res.send(response(baseResponse.USER_AGEMAX_NOTNUM));
   if (isNaN(peopleNum) === true)
     return res.send(response(baseResponse.USER_PEOPLENUM_NOTNUM));
+  if (isNaN(afterParty) === true)
+    return res.send(response(baseResponse.POSTING_AFTERPARTY_NOTNUM));
 
   // 유효성 검사
   const whenTagList = ["A", "B", "H"]; //A : 퇴근 후, B : 출근 전, H : 휴일
   const genderList = ["A", "M", "F"]; //A : 전체, M : 남성, F : 여성
+  const paceList = ["beginner", "average", "high", "master"];
   if (!whenTagList.includes(runningTag))
     return res.send(response(baseResponse.WHEN_IS_NOT_VALID));
   if (!genderList.includes(runnerGender))
     return res.send(response(baseResponse.GENDER_IS_NOT_VALID));
+  if (!paceList.includes(paceGrade))
+    return res.send(response(baseResponse.PACE_IS_NOT_VALID));
 
   //jwt로 들어온 userId가 작성자 id와 일치하는지 확인
   const checkWriter = await postingProvider.checkWriter(postId, userIdFromJWT);
@@ -345,6 +367,8 @@ exports.patchPosting = async function (req, res) {
         peopleNum,
         contents,
         runnerGender,
+        paceGrade,
+        afterParty,
         postId
       );
       return res.send(patchPostingResponse);
