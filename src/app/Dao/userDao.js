@@ -532,7 +532,7 @@ async function getRunningInfo(connection, userId) {
 async function getMyRunning(connection, userId) {
   const Query = `
     SELECT P.postId, postUserId, U.nickName, U.profileImageUrl, title, runningTime, 
-    gatheringTime, locationInfo, runningTag, concat(ageMin,'-',ageMax) as age, pace, afterParty,
+    gatheringTime, locationInfo, runningTag, concat(ageMin,'-',ageMax) as age, P.pace, afterParty,
     case when runnerGender='A' then '전체'
       else
     case when runnerGender='M' then '남성'
@@ -559,7 +559,7 @@ async function getMyRunning(connection, userId) {
 async function getMyPosting(connection, userId) {
   const query1 = `
     SELECT P.postId, postUserId, U.nickName, U.profileImageUrl, title, runningTime, gatheringTime,
-    locationInfo, runningTag,concat(ageMin,'-',ageMax) as age, pace, afterParty,
+    locationInfo, runningTag,concat(ageMin,'-',ageMax) as age, P.pace, afterParty,
     case when runnerGender='A' then '전체'
       else
     case when runnerGender='M' then '남성'
@@ -636,6 +636,7 @@ async function getMain2(
   distanceCondition,
   genderCondition,
   jobCondition,
+  afterCondition,
   ageCondition,
   keywordCondition,
   runningTagCondition,
@@ -651,7 +652,7 @@ async function getMain2(
       else
     case when runnerGender='F' then '여성'
       end end end as gender,
-    DISTANCE, whetherEnd, J.job, peopleNum, contents, pace, afterParty
+    DISTANCE, whetherEnd, J.job, peopleNum, contents, P.pace, afterParty
     FROM Posting P
     INNER JOIN User U on U.userId = P.postUserId
     INNER JOIN Running R on R.postId = P.postId
@@ -664,7 +665,7 @@ async function getMain2(
                               cos(radians(gatherLongitude) - radians(${userLongitude})) +
                               sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
     on D.postId = P.postId
-    WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
+    WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${afterCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
     and U.status != 'R'
     ORDER BY "${sortCondition}"
     LIMIT ${(page - 1) * pageSize}, ${pageSize};
@@ -684,6 +685,7 @@ async function getMain2Login(
   distanceCondition,
   genderCondition,
   jobCondition,
+  afterCondition,
   ageCondition,
   keywordCondition,
   runningTagCondition,
@@ -700,7 +702,7 @@ async function getMain2Login(
       else
     case when runnerGender='F' then '여성'
       end end end as gender,
-    DISTANCE, whetherEnd, J.job, peopleNum, contents, pace, afterParty,
+    DISTANCE, whetherEnd, J.job, peopleNum, contents, P.pace, afterParty,
     EXISTS (SELECT bookmarkId FROM Bookmarks WHERE userId = ${userId} AND postId = P.postId) as bookMark
     FROM Posting P
     INNER JOIN User U on U.userId = P.postUserId
@@ -714,7 +716,7 @@ async function getMain2Login(
                               cos(radians(gatherLongitude) - radians(${userLongitude})) +
                               sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
     on D.postId = P.postId
-    WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
+    WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${afterCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
     and U.status != 'R'
     ORDER BY "${sortCondition}"
     LIMIT ${(page - 1) * pageSize}, ${pageSize};
@@ -762,7 +764,7 @@ async function getMyPosting2(connection, userId) {
   case when runnerGender='M' then '남성'
     else
   case when runnerGender='F' then '여성'
-  end end end as gender, whetherEnd, J.job, peopleNum, contents, pace, afterParty, ${userId} as userId,
+  end end end as gender, whetherEnd, J.job, peopleNum, contents, P.pace, afterParty, ${userId} as userId,
   EXISTS (SELECT bookmarkId FROM Bookmarks
   WHERE userId = ${userId} AND postId = P.postId) as bookMark
   FROM Posting P
@@ -789,7 +791,7 @@ async function getMyRunning2(connection, userId) {
   case when runnerGender='M' then '남성'
     else
   case when runnerGender='F' then '여성'
-    end end end as gender, whetherEnd, J.job, peopleNum, contents, pace, afterParty, ${userId} as userId,
+    end end end as gender, whetherEnd, J.job, peopleNum, contents, P.pace, afterParty, ${userId} as userId,
   EXISTS (SELECT bookmarkId FROM Bookmarks WHERE userId = ${userId} AND postId = P.postId) as bookMark, attendance,
   W.whetherCheck as whetherCheck
   FROM Posting P

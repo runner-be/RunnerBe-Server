@@ -769,7 +769,9 @@ exports.deleteUser = async function (req, res) {
  *                ageFilterMin(N, 숫자)
  *                runningTag(A : 퇴근 후, B : 출근 전, H : 휴일, W : 전체),
  *                page(현재 페이지 위치),
- *                pageSize(한 페이지 당 출력 갯수)
+ *                pageSize(한 페이지 당 출력 갯수),
+ *                paceFilter(B : beginner, A : average, H : high, M : master),
+ *                afterPartyFilter(Y : 있음, N : 없음, A : 전체)
  */
 exports.main2 = async function (req, res) {
   // Query String 값
@@ -780,6 +782,7 @@ exports.main2 = async function (req, res) {
   const distanceFilter = req.query.distanceFilter; // (N, 거리값)
   const genderFilter = req.query.genderFilter; // A : 전체, F : 여성, M : 남성
   const jobFilter = req.query.jobFilter; // N: 필터X ,그 외 약속된 job code로 보내기
+  const afterPartyFilter = req.query.afterPartyFilter; // Y : 있음, N : 없음, A : 전체
   const ageFilterMin = req.query.ageFilterMin; // N : 필터 x, 그 외 최소 연령대
   const ageFilterMax = req.query.ageFilterMax; // N : 필터 x, 그 외 최대 연령대
   const keywordSearch = req.query.keywordSearch; // N : 필터 x, 그 외 키워드 검색
@@ -798,6 +801,8 @@ exports.main2 = async function (req, res) {
   if (!genderFilter)
     return res.send(response(baseResponse.GENDER_FILTER_EMPTY));
   if (!jobFilter) return res.send(response(baseResponse.JOB_FILTER_EMPTY));
+  if (!afterPartyFilter)
+    return res.send(response(baseResponse.AFTERPARTY_FILTER_EMPTY));
   if (!ageFilterMin)
     return res.send(response(baseResponse.AGE_MIN_FILTER_EMPTY));
   if (!ageFilterMax)
@@ -816,6 +821,7 @@ exports.main2 = async function (req, res) {
   const whetherEndList = ["Y", "N"];
   const filterList = ["D", "R"];
   const genderFilterList = ["A", "F", "M"];
+  const afterPartyFilterList = ["A", "Y", "N"];
   const jobList = [
     "PSV",
     "EDU",
@@ -840,6 +846,8 @@ exports.main2 = async function (req, res) {
     return res.send(response(baseResponse.FILTER_IS_NOT_VALID));
   if (!genderFilterList.includes(genderFilter))
     return res.send(response(baseResponse.GENDER_FILTER_IS_NOT_VALID));
+  if (!afterPartyFilterList.includes(afterPartyFilter))
+    return res.send(response(baseResponse.AFTER_FILTER_IS_NOT_VALID));
 
   if (
     (ageFilterMax != "N" && ageFilterMin === "N") ||
@@ -881,6 +889,13 @@ exports.main2 = async function (req, res) {
     jobCondition += `AND INSTR(J.job, '${jobFilter}') > 0`;
   }
 
+  let afterCondition = "";
+  if (afterPartyFilter === "Y") {
+    afterCondition += "AND afterParty = 1";
+  } else if (genderFilter === "N") {
+    afterCondition += "AND afterParty = 2";
+  }
+
   let ageCondition = "";
   if (ageFilterMax != "N" && ageFilterMin != "N") {
     if (isNaN(ageFilterMax) === true)
@@ -916,6 +931,7 @@ exports.main2 = async function (req, res) {
       distanceCondition,
       genderCondition,
       jobCondition,
+      afterCondition,
       ageCondition,
       keywordCondition,
       runningTagCondition,
@@ -933,6 +949,7 @@ exports.main2 = async function (req, res) {
       distanceCondition,
       genderCondition,
       jobCondition,
+      afterCondition,
       ageCondition,
       keywordCondition,
       runningTagCondition,
