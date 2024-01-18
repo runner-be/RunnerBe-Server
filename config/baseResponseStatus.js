@@ -732,6 +732,18 @@ module.exports = {
     message: "러닝모임의 뒷풀이 여부는 숫자로 입력해주세요.",
   },
 
+  AFTERPARTY_FILTER_EMPTY: {
+    isSuccess: false,
+    code: 2105,
+    message: "뒷풀이 필터링 조건을 입력해주세요.",
+  },
+
+  AFTER_FILTER_IS_NOT_VALID: {
+    isSuccess: false,
+    code: 2106,
+    message: "뒷풀이 필터링 조건은 Y, N, A 중 하나로 입력해주세요.",
+  },
+
   // ----------------------------
 
   // Response error
