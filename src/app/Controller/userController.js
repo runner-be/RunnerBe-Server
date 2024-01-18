@@ -1189,11 +1189,9 @@ exports.postRunningPace = async function (req, res) {
   // 숫자 확인
   if (isNaN(userId) === true)
     return res.send(response(baseResponse.USER_USERID_NOTNUM));
-  if (isNaN(pace) === true)
-    return res.send(response(baseResponse.USER_PACE_NOTNUM));
 
   // 유효성 검사
-  const paceList = [1, 2, 3, 4];
+  const paceList = ["beginner", "average", "high", "master"];
   if (!paceList.includes(pace))
     return res.send(response(baseResponse.PACE_IS_NOT_VALID));
 
