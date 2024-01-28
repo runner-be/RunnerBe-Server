@@ -113,7 +113,7 @@ async function checkReceiver(connection, senderParams) {
 // 쪽지 보내기 sendMessage
 async function sendMessage(connection, sendMessageParams) {
   const sendMessageQuery = `
-        INSERT INTO Message (userId, roomId, content) VALUES (?,?,?);
+        INSERT INTO Message (userId, roomId, content, imageUrl) VALUES (?,?,?,?);
                      `;
   await connection.query(sendMessageQuery, sendMessageParams);
   return 0;
@@ -338,5 +338,5 @@ module.exports = {
   getMessageList,
   reportMessage,
   getMessageId,
-  joinRoom
+  joinRoom,
 };

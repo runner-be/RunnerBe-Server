@@ -50,30 +50,31 @@ exports.getRoom = async function (req, res) {
  * [POST] /messages/rooms/:roomId
  * Header : jwt
  * Path Variable : roomId
- * body : content
+ * body : content or imageUrl
  */
 exports.sendMessage = async function (req, res) {
   const roomId = req.params.roomId;
   const userId = req.verifiedToken.userId;
   const content = req.body.content;
+  const imageUrl = req.body.imageUrl;
 
   // 빈 값 체크
   if (!roomId) return res.send(response(baseResponse.ROOM_ID_EMPTY));
-  if (!content) return res.send(response(baseResponse.CONTENT_EMPTY));
+  // if (!content) return res.send(response(baseResponse.CONTENT_EMPTY));
 
   // 숫자 확인
   if (isNaN(roomId) === true)
     return res.send(response(baseResponse.ROOM_ID_NOTNUM));
 
   // 길이 확인
-  if (content.length > 300)
+  if (content && content.length > 300)
     return res.send(response(baseResponse.CONTENT_LENGTH));
 
   const checkJoinRoom = await messageProvider.checkUserInRoom(roomId, userId);
   if (checkJoinRoom.length == 0) {
     await messageService.joinRoom(roomId, userId);
   }
-  await messageService.sendMessage(roomId, userId, content);
+  await messageService.sendMessage(roomId, userId, content, imageUrl);
 
   return res.send(response(baseResponse.SUCCESS));
 };
