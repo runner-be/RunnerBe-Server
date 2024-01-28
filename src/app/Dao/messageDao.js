@@ -249,7 +249,7 @@ async function checkApplyChanged(connection, roomId) {
 // 메시지 리스트 가져오기
 async function getMessageList(connection, getMessageListParams) {
   const query = `
-    SELECT messageId, content, M.createdAt, U.userId, nickName, profileImageUrl,
+    SELECT messageId, content, imageUrl, M.createdAt, U.userId, nickName, profileImageUrl,
     case when U.userId = ? then 'Me' else 'Others' end as messageFrom,
     case when U.userId = postUserId then 'Y' else 'N' end as whetherPostUser
     FROM Message M
