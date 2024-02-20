@@ -770,7 +770,7 @@ exports.deleteUser = async function (req, res) {
  *                runningTag(A : 퇴근 후, B : 출근 전, H : 휴일, W : 전체),
  *                page(현재 페이지 위치),
  *                pageSize(한 페이지 당 출력 갯수),
- *                paceFilter(B : beginner, A : average, H : high, M : master),
+ *                paceFilter(beginner, average, high, master),
  *                afterPartyFilter(Y : 있음, N : 없음, A : 전체)
  */
 exports.main2 = async function (req, res) {
@@ -782,6 +782,7 @@ exports.main2 = async function (req, res) {
   const distanceFilter = req.query.distanceFilter; // (N, 거리값)
   const genderFilter = req.query.genderFilter; // A : 전체, F : 여성, M : 남성
   const jobFilter = req.query.jobFilter; // N: 필터X ,그 외 약속된 job code로 보내기
+  const paceFilter = req.query.paceFilter; // beginner, average, high, master
   const afterPartyFilter = req.query.afterPartyFilter; // Y : 있음, N : 없음, A : 전체
   const ageFilterMin = req.query.ageFilterMin; // N : 필터 x, 그 외 최소 연령대
   const ageFilterMax = req.query.ageFilterMax; // N : 필터 x, 그 외 최대 연령대
@@ -889,6 +890,16 @@ exports.main2 = async function (req, res) {
     jobCondition += `AND INSTR(J.job, '${jobFilter}') > 0`;
   }
 
+  let paceCondition = "";
+  let arrayPaceFilter = paceFilter
+    .split(",")
+    .map((pace) => pace.trim())
+    .filter((pace) => pace !== "");
+
+  paceFilter.length > 0 && arrayPaceFilter.length > 0
+    ? (paceCondition += `AND P.pace IN ('${arrayPaceFilter.join("','")}')`)
+    : "";
+
   let afterCondition = "";
   if (afterPartyFilter === "Y") {
     afterCondition += "AND afterParty = 1";
@@ -931,6 +942,7 @@ exports.main2 = async function (req, res) {
       distanceCondition,
       genderCondition,
       jobCondition,
+      paceCondition,
       afterCondition,
       ageCondition,
       keywordCondition,
@@ -949,6 +961,7 @@ exports.main2 = async function (req, res) {
       distanceCondition,
       genderCondition,
       jobCondition,
+      paceCondition,
       afterCondition,
       ageCondition,
       keywordCondition,

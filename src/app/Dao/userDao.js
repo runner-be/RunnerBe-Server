@@ -636,6 +636,7 @@ async function getMain2(
   distanceCondition,
   genderCondition,
   jobCondition,
+  paceCondition,
   afterCondition,
   ageCondition,
   keywordCondition,
@@ -665,7 +666,7 @@ async function getMain2(
                               cos(radians(gatherLongitude) - radians(${userLongitude})) +
                               sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
     on D.postId = P.postId
-    WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${afterCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
+    WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${paceCondition} ${afterCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
     and U.status != 'R'
     ORDER BY "${sortCondition}"
     LIMIT ${(page - 1) * pageSize}, ${pageSize};
@@ -685,6 +686,7 @@ async function getMain2Login(
   distanceCondition,
   genderCondition,
   jobCondition,
+  paceCondition,
   afterCondition,
   ageCondition,
   keywordCondition,
@@ -716,7 +718,7 @@ async function getMain2Login(
                               cos(radians(gatherLongitude) - radians(${userLongitude})) +
                               sin(radians(${userLatitude})) * sin(radians(gatherLatitude)))) AS DECIMAL(10,2)) AS DISTANCE FROM Posting) D
     on D.postId = P.postId
-    WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${afterCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
+    WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${paceCondition} ${afterCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
     and U.status != 'R'
     ORDER BY "${sortCondition}"
     LIMIT ${(page - 1) * pageSize}, ${pageSize};
