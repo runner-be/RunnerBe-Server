@@ -890,15 +890,20 @@ exports.main2 = async function (req, res) {
     jobCondition += `AND INSTR(J.job, '${jobFilter}') > 0`;
   }
 
+  let arrayPaceFilter;
   let paceCondition = "";
-  let arrayPaceFilter = paceFilter
-    .split(",")
-    .map((pace) => pace.trim())
-    .filter((pace) => pace !== "");
+  if (paceFilter) {
+    arrayPaceFilter = paceFilter
+      .split(",")
+      .map((pace) => pace.trim())
+      .filter((pace) => pace !== "");
 
-  paceFilter.length > 0 && arrayPaceFilter.length > 0
-    ? (paceCondition += `AND P.pace IN ('${arrayPaceFilter.join("','")}')`)
-    : "";
+    paceFilter.length > 0 && arrayPaceFilter.length > 0
+      ? (paceCondition += `AND P.pace IN ('${arrayPaceFilter.join("','")}')`)
+      : "";
+  } else {
+    arrayPaceFilter = "";
+  }
 
   let afterCondition = "";
   if (afterPartyFilter === "Y") {
