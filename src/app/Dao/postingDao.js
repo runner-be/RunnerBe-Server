@@ -276,7 +276,8 @@ async function reportPosting(connection, Params) {
 async function getPosting2(connection, postId) {
   const getPostingQuery = `
   SELECT P.postId, P.createdAt as postingTime, postUserId, nickName, profileImageUrl,
-       title, runningTime, gatheringTime, gatherLongitude, gatherLatitude, locationInfo,
+       title, runningTime, gatheringTime, gatherLongitude, gatherLatitude, 
+       locationInfo, placeName, placeExplain, P.pace, afterParty,
        case when runningTag = 'A'
            then '퇴근 후'
         else case when runningTag = 'B'
