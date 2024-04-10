@@ -167,7 +167,7 @@ async function getRoomInfo(connection, roomId) {
     then '출근 전'
       else case when runningTag = 'H'
     then '휴일'
-    end end end as runningTag, title
+    end end end as runningTag, title, pace
     FROM Room
     INNER JOIN Posting P on Room.postId = P.postId
     WHERE roomId = ?;
