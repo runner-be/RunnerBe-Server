@@ -158,23 +158,33 @@ async function getChat(connection, getChatParams) {
   return row;
 }
 
-// 대화방 정보
+// // 대화방 정보 V1
+// async function getRoomInfo(connection, roomId) {
+//   const query = `
+//     SELECT P.postId, case when runningTag = 'A'
+//     then '퇴근 후'
+//       else case when runningTag = 'B'
+//     then '출근 전'
+//       else case when runningTag = 'H'
+//     then '휴일'
+//     end end end as runningTag, title, pace
+//     FROM Room
+//     INNER JOIN Posting P on Room.postId = P.postId
+//     WHERE roomId = ?;
+//   `;
+//   const row = await connection.query(query, roomId);
+//   return row[0];
+// }
+
+// 대화방 정보 V2
 async function getRoomInfo(connection, roomId) {
   const query = `
-    SELECT P.postId, case when runningTag = 'A'
-    then '퇴근 후'
-      else case when runningTag = 'B'
-    then '출근 전'
-      else case when runningTag = 'H'
-    then '휴일'
-    end end end as runningTag, title, pace
+    SELECT P.postId, title, pace
     FROM Room
     INNER JOIN Posting P on Room.postId = P.postId
     WHERE roomId = ?;
-                                `;
-
+  `;
   const row = await connection.query(query, roomId);
-
   return row[0];
 }
 
