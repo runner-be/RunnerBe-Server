@@ -16,7 +16,7 @@ const { emit } = require("nodemon");
 exports.createPosting = async function (req, res) {
   /**
    * Header : jwt
-   * Body: title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender, paceGrade, afterParty
+   * Body: title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, placeName, placeExplain, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender, paceGrade, afterParty
    */
   const userId = req.params.userId;
   const userIdFromJWT = req.verifiedToken.userId;
@@ -27,6 +27,8 @@ exports.createPosting = async function (req, res) {
     gatherLongitude,
     gatherLatitude,
     locationInfo,
+    placeName,
+    placeExplain,
     runningTag,
     ageMin,
     ageMax,
@@ -50,6 +52,9 @@ exports.createPosting = async function (req, res) {
     return res.send(response(baseResponse.POSTING_LATITUDE_EMPTY));
   if (!locationInfo)
     return res.send(response(baseResponse.POSTING_LOCATION_EMPTY));
+  // if (!placeName) return res.send(response(baseResponse.PLACE_NAME_EMPTY));
+  // if (!placeExplain)
+  //   return res.send(response(baseResponse.PLACE_EXPLAIN_EMPTY));
   if (!runningTag) return res.send(response(baseResponse.POSTING_WHEN_EMPTY));
   if (!ageMin) return res.send(response(baseResponse.POSTING_AGEMIN_EMPTY));
   if (!ageMax) return res.send(response(baseResponse.POSTING_AGEMAX_EMPTY));
@@ -117,6 +122,8 @@ exports.createPosting = async function (req, res) {
       gatherLongitude,
       gatherLatitude,
       locationInfo,
+      placeName,
+      placeExplain,
       runningTag,
       ageMin,
       ageMax,
@@ -260,7 +267,7 @@ exports.closePosting = async function (req, res) {
 exports.patchPosting = async function (req, res) {
   /**
    * Header : jwt
-   * Body: title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender, paceGrade, afterParty
+   * Body: title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, placeName, placeExplain, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender, paceGrade, afterParty
    */
   const userId = req.params.userId;
   const postId = req.params.postId;
@@ -272,6 +279,8 @@ exports.patchPosting = async function (req, res) {
     gatherLongitude,
     gatherLatitude,
     locationInfo,
+    placeName,
+    placeExplain,
     runningTag,
     ageMin,
     ageMax,
@@ -296,6 +305,9 @@ exports.patchPosting = async function (req, res) {
     return res.send(response(baseResponse.POSTING_LATITUDE_EMPTY));
   if (!locationInfo)
     return res.send(response(baseResponse.POSTING_LOCATION_EMPTY));
+  // if (!placeName) return res.send(response(baseResponse.PLACE_NAME_EMPTY));
+  // if (!placeExplain)
+  //   return res.send(response(baseResponse.PLACE_EXPLAIN_EMPTY));
   if (!runningTag) return res.send(response(baseResponse.POSTING_WHEN_EMPTY));
   if (!ageMin) return res.send(response(baseResponse.POSTING_AGEMIN_EMPTY));
   if (!ageMax) return res.send(response(baseResponse.POSTING_AGEMAX_EMPTY));
@@ -361,6 +373,8 @@ exports.patchPosting = async function (req, res) {
         gatherLongitude,
         gatherLatitude,
         locationInfo,
+        placeName,
+        placeExplain,
         runningTag,
         ageMin,
         ageMax,

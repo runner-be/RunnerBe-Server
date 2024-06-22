@@ -1,8 +1,8 @@
 // 게시글 생성
 async function createPosting(connection, insertPostingParams) {
   const insertPostingQuery = `
-INSERT INTO Posting(postUserId, title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender, pace, afterParty)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO Posting(postUserId, title, gatheringTime, runningTime, gatherLongitude, gatherLatitude, locationInfo, placeName, placeExplain, runningTag, ageMin, ageMax, peopleNum, contents, runnerGender, pace, afterParty)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
                `;
   const insertPostingRow = await connection.query(
     insertPostingQuery,
@@ -204,10 +204,11 @@ async function closePosting(connection, postId) {
 // 게시글 수정
 async function patchPosting(connection, patchPostingParams) {
   const patchPostingQuery = `
-  UPDATE Posting SET title = ?, gatheringTime = ?, runningTime = ?, gatherLongitude = ?, gatherLatitude = ?, locationInfo = ?, runningTag = ?, ageMin = ?, ageMax = ?, 
-                   peopleNum = ?, contents = ?, runnerGender = ?, pace = ?, afterParty = ?
+  UPDATE Posting SET title = ?, gatheringTime = ?, runningTime = ?, gatherLongitude = ?, gatherLatitude = ?,
+                     locationInfo = ?, placeName = ?, placeExplain = ?, runningTag = ?, ageMin = ?, ageMax = ?, 
+                     peopleNum = ?, contents = ?, runnerGender = ?, pace = ?, afterParty = ?
   WHERE postId = ?;
-                 `;
+  `;
   const patchPostingRow = await connection.query(
     patchPostingQuery,
     patchPostingParams
