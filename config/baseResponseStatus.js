@@ -744,6 +744,18 @@ module.exports = {
     message: "뒷풀이 필터링 조건은 Y, N, A 중 하나로 입력해주세요.",
   },
 
+  PLACE_NAME_EMPTY: {
+    isSuccess: false,
+    code: 2107,
+    message: "장소명을 입력해주세요",
+  },
+
+  PLACE_EXPLAIN_EMPTY: {
+    isSuccess: false,
+    code: 2108,
+    message: "장소 상세 설명을 입력해주세요.",
+  },
+
   // ----------------------------
 
   // Response error
