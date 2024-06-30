@@ -668,7 +668,7 @@ async function getMain2(
     on D.postId = P.postId
     WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${paceCondition} ${afterCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
     and U.status != 'R'
-    ORDER BY "${sortCondition}"
+    ORDER BY ${sortCondition}
     LIMIT ${(page - 1) * pageSize}, ${pageSize};
     `;
 
@@ -720,7 +720,7 @@ async function getMain2Login(
     on D.postId = P.postId
     WHERE P.status != 'D' ${distanceCondition} ${whetherEndCondition} ${genderCondition} ${jobCondition} ${paceCondition} ${afterCondition} ${ageCondition} ${keywordCondition} ${runningTagCondition}
     and U.status != 'R'
-    ORDER BY "${sortCondition}"
+    ORDER BY ${sortCondition}
     LIMIT ${(page - 1) * pageSize}, ${pageSize};
     `;
 

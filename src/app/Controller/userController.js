@@ -866,7 +866,7 @@ exports.main2 = async function (req, res) {
   if (filter === "D") {
     sortCondition += "DISTANCE";
   } else if (filter === "R") {
-    sortCondition += "postingTime";
+    sortCondition += "postingTime DESC";
   }
 
   let distanceCondition = "";
