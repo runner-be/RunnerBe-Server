@@ -738,7 +738,7 @@ async function getBM2(connection, userId) {
   case when runnerGender='M' then '남성'
   else
   case when runnerGender='F' then '여성'
-  end end end as gender, whetherEnd, B.userId, J.job, peopleNum, contents,
+  end end end as gender, whetherEnd, B.userId, J.job, peopleNum, contents, P.pace
   EXISTS (SELECT bookmarkId FROM Bookmarks
   WHERE userId = ${userId} AND postId = P.postId) as bookMark
   FROM Posting P
