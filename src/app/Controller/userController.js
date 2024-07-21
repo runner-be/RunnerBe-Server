@@ -1239,3 +1239,28 @@ exports.postRunningPace = async function (req, res) {
     return res.send(response(baseResponse.SUCCESS));
   }
 };
+
+/**
+ * API No. 45
+ * API Name : 타인의 마이페이지 열람 API v2
+ * [GET] /users/:userId/userPage/v2
+ * Path variable: userId
+ */
+exports.getUserPage2 = async function (req, res) {
+  const userId = req.params.userId;
+  const mobileType = req.header("MobileType");
+  const appVersion = req.header("AppVersion");
+
+  // 빈 값 체크
+  if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+  // 숫자 확인
+  if (isNaN(userId) === true)
+    return res.send(response(baseResponse.USER_USERID_NOTNUM));
+
+  const getUserPageResult = await userProvider.getUserPage2(
+    userId,
+    mobileType,
+    appVersion
+  );
+  return res.send(response(baseResponse.SUCCESS, getUserPageResult));
+};

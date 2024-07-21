@@ -73,4 +73,7 @@ module.exports = function (app) {
 
   // 44. 러닝 페이스 등록 & 수정 API
   app.patch("/users/:userId/pace", jwtMiddleware, user.postRunningPace);
+
+  // 45. 타인 마이페이지 열람 API v2
+  app.get("/users/:userId/userPage/v2", user.getUserPage2);
 };

@@ -557,3 +557,49 @@ exports.getUserGender = async function (userId) {
     await connection.release();
   }
 };
+
+// 타인의 마이페이지 열람 v2
+exports.getUserPage2 = async function (userId, mobileType, appVersion) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const userInfo = await userDao.getUserInfoV2(connection, userId);
+    // const runningInfo = await userDao.getRunningInfo(connection, userId);
+    const userPosting = await userDao.getMyPosting2(connection, userId);
+    const userRunning = await userDao.getMyRunning2(connection, userId);
+
+    if (userPosting.length !== 0) {
+      for (i = 0; i < userPosting.length; i++) {
+        userPosting[i].DISTANCE = null;
+        userPosting[i].attendance = null;
+        const postId = myPosting[i].postId;
+        const profileUrlList = await userDao.getProfileUrl(connection, postId);
+        const runnerList = await postingDao.getRunner(connection, postId);
+        const attendTimeOver = await postingDao.getAttendTimeOver(
+          connection,
+          postId
+        );
+        userPosting[i].profileUrlList = profileUrlList;
+        userPosting[i].runnerList = runnerList;
+        userPosting[i].attendTimeOver = attendTimeOver;
+      }
+    }
+
+    if (userRunning.length !== 0) {
+      for (i = 0; i < userRunning.length; i++) {
+        userRunning[i].DISTANCE = null;
+        const postId = userRunning[i].postId;
+        const body = await userDao.getProfileUrl(connection, postId);
+        userRunning[i].profileUrlList = body;
+      }
+    }
+
+    const finalResult = { userInfo, userPosting, userRunning };
+
+    return finalResult;
+  } catch (err) {
+    await logger.error(`User-getUserPage2 Provider error: ${err.message}`);
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    await connection.release();
+  }
+};
