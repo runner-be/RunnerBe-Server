@@ -19,6 +19,7 @@ module.exports = function () {
   require("../src/app/Route/postingRoute")(app);
   require("../src/app/Route/messageRoute")(app);
   require("../src/app/Route/runningRoute")(app);
+  require("../src/app/Route/runningLogRoute")(app);
   require("../src/app/Admin/adminRoute")(app);
 
   return app;
