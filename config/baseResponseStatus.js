@@ -756,6 +756,42 @@ module.exports = {
     message: "장소 상세 설명을 입력해주세요.",
   },
 
+  RUNNING_DATE_EMPTY: {
+    isSuccess: false,
+    code: 2109,
+    message: "러닝로그 날짜를 입력해주세요.",
+  },
+
+  STAMP_CODE_EMPTY: {
+    isSuccess: false,
+    code: 2110,
+    message: "러닝 스탬프 코드를 입력해주세요.",
+  },
+
+  WEATHER_DEGREE_EMPTY: {
+    isSuccess: false,
+    code: 2111,
+    message: "러닝 날씨 기온을 입력해주세요.",
+  },
+
+  RUNNING_DATE_REGEX_WRONG: {
+    isSuccess: false,
+    code: 2112,
+    message: "러닝 날짜는 YYYY-MM-DD 형태로 입력해주세요.",
+  },
+
+  RUNNINGLOG_NOT_VALID_LOGID: {
+    isSuccess: false,
+    code: 2113,
+    message: "존재하지 않는 러닝로그 ID입니다.",
+  },
+
+  LOGID_EMPTY: {
+    isSuccess: false,
+    code: 2114,
+    message: "러닝로그 ID를 입력해주세요.",
+  },
+
   // ----------------------------
 
   // Response error
