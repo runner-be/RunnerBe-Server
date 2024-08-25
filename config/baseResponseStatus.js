@@ -792,6 +792,18 @@ module.exports = {
     message: "러닝로그 ID를 입력해주세요.",
   },
 
+  YEAR_EMPTY: {
+    isSuccess: false,
+    code: 2115,
+    message: "연도를 입력해주세요.",
+  },
+
+  MONTH_EMPTY: {
+    isSuccess: false,
+    code: 2116,
+    message: "월 단위를 입력해주세요.",
+  },
+
   // ----------------------------
 
   // Response error
