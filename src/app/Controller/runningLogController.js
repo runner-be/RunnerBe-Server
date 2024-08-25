@@ -176,6 +176,37 @@ exports.deletePostingLog = async function (req, res) {
 };
 
 /**
+ * API No. 49
+ * API Name : 러닝로그 전체 조회 API
+ * [GET] /runningLogs/:userId
+ * Query string : year(연), month(월)
+ */
+exports.getRunningLog = async function (req, res) {
+  // Query String 값
+  const year = req.query.year; // year(연)
+  const month = req.query.month; // month(월)
+  const userId = req.params.userId;
+  const userIdFromJWT = req.verifiedToken.userId;
+
+  // 빈 값 체크
+  if (!year) return res.send(response(baseResponse.YEAR_EMPTY));
+  if (!month) return res.send(response(baseResponse.MONTH_EMPTY));
+  if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
+
+  // jwt로 userId 확인
+  if (userIdFromJWT != userId) {
+    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
+  } else {
+    const getWholeRunningLog = await runningLogProvider.getRunningLog(
+      year,
+      month,
+      userId
+    );
+    return res.send(response(baseResponse.SUCCESS, getWholeRunningLog));
+  }
+};
+
+/**
  * API No. 53
  * API Name : 스탬프 정보 전체 조회 API
  * [GET] /runningLogs/stamp

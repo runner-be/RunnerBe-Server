@@ -19,8 +19,8 @@ module.exports = function (app) {
     runningLog.deletePostingLog
   );
 
-  // // 49. 러닝 로그 전체 조회 API
-  // app.get("/runninglogs/:userId", jwtMiddleware, runningLog.getPostingLog);
+  // 49. 러닝 로그 전체 조회 API
+  app.get("/runninglogs/:userId", jwtMiddleware, runningLog.getRunningLog);
 
   // // 50. 러닝 로그 상세 조회 API
   // app.get(

@@ -43,6 +43,44 @@ exports.checkLogWriter = async function (logId, userId) {
   }
 };
 
+// 러닝로그 전체 조회
+exports.getRunningLog = async function (year, month, userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const groupRunningCount = await runningLogDao.getMyGroupRunningCount(
+      connection,
+      year,
+      month,
+      userId
+    );
+    const personalRunningCount = await runningLogDao.getMyPersonalRunningCount(
+      connection,
+      year,
+      month,
+      userId
+    );
+
+    const totalCount = { groupRunningCount, personalRunningCount };
+
+    const myRunningLog = await runningLogDao.getMyRunning(
+      connection,
+      year,
+      month,
+      userId
+    );
+
+    const finalResult = { totalCount, myRunningLog };
+    return finalResult;
+  } catch (err) {
+    await logger.error(
+      `RunningLog - getRunningLog Provider error: ${err.message}`
+    );
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    await connection.release();
+  }
+};
+
 // 전체 스탬프 목록 조회
 exports.viewStampList = async function () {
   const connection = await pool.getConnection(async (conn) => conn);

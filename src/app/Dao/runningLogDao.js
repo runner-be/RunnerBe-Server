@@ -61,6 +61,51 @@ async function checkPosting(connection, logId) {
   return checkPostingRow;
 }
 
+// 날짜(월)에 해당하는 크루 러닝 카운트 수집
+async function getMyGroupRunningCount(connection, year, month, userId) {
+  const selectGroupRunningCountQuery = `
+    SELECT COUNT(*) AS count
+    FROM RunningLog
+    WHERE YEAR(runnedDate) = ? AND MONTH(runnedDate) = ? AND userId = ? AND gatheringId IS NOT NULL;
+  `;
+  const [row] = await connection.query(selectGroupRunningCountQuery, [
+    year,
+    month,
+    userId,
+  ]);
+  return row[0].count;
+}
+
+// 날짜(월)에 해당하는 개인 러닝 카운트 수집
+async function getMyPersonalRunningCount(connection, year, month, userId) {
+  const selectPersonalRunningCountQuery = `
+    SELECT COUNT(*) AS count
+    FROM RunningLog
+    WHERE YEAR(runnedDate) = ? AND MONTH(runnedDate) = ? AND userId = ? AND gatheringId IS NULL;
+  `;
+  const [row] = await connection.query(selectPersonalRunningCountQuery, [
+    year,
+    month,
+    userId,
+  ]);
+  return row[0].count;
+}
+
+// 날짜(월)에 해당하는 개인 러닝 데이터 수집
+async function getMyRunning(connection, year, month, userId) {
+  const selectRunningLogQuery = `
+    SELECT runnedDate, stampCode
+    FROM RunningLog
+    WHERE YEAR(runnedDate) = ? AND MONTH(runnedDate) = ? AND userId = ?;
+  `;
+  const [row] = await connection.query(selectRunningLogQuery, [
+    year,
+    month,
+    userId,
+  ]);
+  return row;
+}
+
 // 스탬프 리스트 조회
 async function selectStampList(connection) {
   const query = `SELECT * FROM Stamp`;
@@ -74,5 +119,8 @@ module.exports = {
   deleteRunningLog,
   checkWriter,
   checkPosting,
+  getMyGroupRunningCount,
+  getMyPersonalRunningCount,
+  getMyRunning,
   selectStampList,
 };
