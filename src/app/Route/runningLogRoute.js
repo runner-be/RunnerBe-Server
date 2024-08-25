@@ -44,5 +44,5 @@ module.exports = function (app) {
   // );
 
   // 53. 스탬프 정보 전체 조회 API
-  app.get("/runninglogs/stamp", runningLog.getStampList);
+  app.get("/runninglogs/get/stamp", runningLog.getStampList);
 };
