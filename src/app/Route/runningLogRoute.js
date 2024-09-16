@@ -22,27 +22,34 @@ module.exports = function (app) {
   // 49. 러닝 로그 전체 조회 API
   app.get("/runninglogs/:userId", jwtMiddleware, runningLog.getRunningLog);
 
-  // // 50. 러닝 로그 상세 조회 API
-  // app.get(
-  //   "/runninglogs/:logId/:userId",
-  //   jwtMiddleware,
-  //   runningLog.detailPostingLog
-  // );
+  // 50. 러닝 로그 상세 조회 API
+  app.get(
+    "/runninglogs/:userId/detail/:logId",
+    jwtMiddleware,
+    runningLog.detailRunningLog
+  );
 
-  // // 51. 함께한 러너 리스트 조회 API
-  // app.get(
-  //   "/runninglogs/:userId/partners",
-  //   jwtMiddleware,
-  //   runningLog.getPartners
-  // );
+  // 51. 함께한 러너 리스트 조회 API
+  app.get(
+    "/runninglogs/:userId/partners/:logId",
+    jwtMiddleware,
+    runningLog.getRunningPartners
+  );
 
-  // // 52. 함께한 러너에게 스탬프 찍기 API
-  // app.patch(
-  //   "/runninglogs/:userId/partners",
-  //   jwtMiddleware,
-  //   runningLog.giveStampToPartners
-  // );
+  // 52. 함께한 러너에게 스탬프 찍기 API
+  app.post(
+    "/runninglogs/:userId/partners/:logId",
+    jwtMiddleware,
+    runningLog.giveStampToPartners
+  );
 
-  // 53. 스탬프 정보 전체 조회 API
+  // 53. 함께한 러너에게 스탬프 찍기 수정 API
+  app.patch(
+    "/runninglogs/:userId/partners/:logId",
+    jwtMiddleware,
+    runningLog.changeStampToPartners
+  );
+
+  // 54. 스탬프 정보 전체 조회 API
   app.get("/runninglogs/get/stamp", runningLog.getStampList);
 };
