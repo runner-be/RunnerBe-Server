@@ -804,6 +804,12 @@ module.exports = {
     message: "월 단위를 입력해주세요.",
   },
 
+  TARGET_ID_EMPTY: {
+    isSuccess: false,
+    code: 2117,
+    message: "함께한 러너 ID를 입력해주세요.",
+  },
+
   // ----------------------------
 
   // Response error
