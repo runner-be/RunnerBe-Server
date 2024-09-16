@@ -43,6 +43,26 @@ exports.checkLogWriter = async function (logId, userId) {
   }
 };
 
+// 러닝로그 아이디로 러닝모임 ID 찾기
+exports.findGatheringId = async function (logId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const findGatheringIdResult = await runningLogDao.getGatheringId(
+      connection,
+      logId
+    );
+
+    return findGatheringIdResult;
+  } catch (err) {
+    await logger.error(
+      `RunningLog-findGatheringId Provider error: ${err.message}`
+    );
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    await connection.release();
+  }
+};
+
 // 러닝로그 전체 조회
 exports.getRunningLog = async function (year, month, userId) {
   const connection = await pool.getConnection(async (conn) => conn);
@@ -74,6 +94,74 @@ exports.getRunningLog = async function (year, month, userId) {
   } catch (err) {
     await logger.error(
       `RunningLog - getRunningLog Provider error: ${err.message}`
+    );
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    await connection.release();
+  }
+};
+
+// 러닝로그 상세 조회
+exports.getDetailRunningLog = async function (userId, logId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const detailRunningLog = await runningLogDao.getDetailRunningLog(
+      connection,
+      logId
+    );
+
+    const getGatheringId = await runningLogDao.getGatheringId(
+      connection,
+      logId
+    );
+
+    let gatheringCount;
+    if (getGatheringId) {
+      gatheringCount = await runningLogDao.getPartnerRunnerCount(
+        connection,
+        getGatheringId
+      );
+    } else {
+      gatheringCount = 0;
+    }
+
+    const gotStamp = await runningLogDao.getDetailStampInfo(
+      connection,
+      userId,
+      logId
+    );
+
+    const finalResult = { detailRunningLog, gatheringCount, gotStamp };
+    return finalResult;
+  } catch (err) {
+    await logger.error(
+      `RunningLog - getDetailRunningLog Provider error: ${err.message}`
+    );
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    await connection.release();
+  }
+};
+
+// 함께한 러너 리스트 조회
+exports.getRunners = async function (userId, logId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const getGatheringId = await runningLogDao.getGatheringId(
+      connection,
+      logId
+    );
+
+    const getPartnerRunners = await runningLogDao.getPartnerRunners(
+      connection,
+      userId,
+      getGatheringId
+    );
+
+    return getPartnerRunners;
+  } catch (err) {
+    await logger.error(
+      `RunningLog - getRunners Provider error: ${err.message}`
     );
     return errResponse(baseResponse.DB_ERROR);
   } finally {

@@ -38,6 +38,35 @@ async function deleteRunningLog(connection, logId) {
   return deleteLogRow;
 }
 
+// 상대방에게 러닝로그 스탬프 찍기
+async function createRunningLogStamp(connection, insertPostingLogStampParams) {
+  const insertRunningLogStampQuery = `
+    INSERT INTO RunningLogStamp(logId, gatheringId, userId, targetId, stampCode)
+    VALUES (?, ?, ?, ?, ?);
+  `;
+  const insertRunningLogRow = await connection.query(
+    insertRunningLogStampQuery,
+    insertPostingLogStampParams
+  );
+
+  return insertRunningLogRow;
+}
+
+// 상대방에게 찍은 러닝로그 스탬프 수정
+async function changeRunningLogStamp(connection, changeLogStampParams) {
+  const changeStampQuery = `
+    UPDATE RunningLogStamp
+    SET stampCode = ?
+    WHERE logId = ? AND userId = ? AND targetId = ?;
+  `;
+
+  const changeStampRow = await connection.query(
+    changeStampQuery,
+    changeLogStampParams
+  );
+  return changeStampRow;
+}
+
 // 작성자인지 확인
 async function checkWriter(connection, checkWriterParams) {
   const checkWriterQuery = `
@@ -106,6 +135,73 @@ async function getMyRunning(connection, year, month, userId) {
   return row;
 }
 
+// 러닝로그의 gatheringId 수집
+async function getGatheringId(connection, logId) {
+  const selectGatheringIdQuery = `
+    SELECT gatheringId
+    FROM RunningLog
+    WHERE logId = ?;
+  `;
+  const [row] = await connection.query(selectGatheringIdQuery, logId);
+  return row[0].gatheringId;
+}
+
+// 함께 달린 러너 카운트 수집
+async function getPartnerRunnerCount(connection, gatheringId) {
+  const selectPartnerRunnerCountQuery = `
+    SELECT COUNT(*) AS count
+    FROM RunningPeople
+    WHERE gatheringId = ?;
+  `;
+  const [row] = await connection.query(
+    selectPartnerRunnerCountQuery,
+    gatheringId
+  );
+  return row[0].count - 1;
+}
+
+// 러닝로그 상세 조회 데이터 수집
+async function getDetailRunningLog(connection, logId) {
+  const selectDetailRunningLogQuery = `
+    SELECT status, runnedDate, userId, stampCode, contents, imageUrl, weatherDegree, weatherIcon, isOpened
+    FROM RunningLog
+    WHERE logId = ?;
+  `;
+  const [row] = await connection.query(selectDetailRunningLogQuery, logId);
+  return row;
+}
+
+// 특정인이 받은 스탬프 목록 조회
+async function getDetailStampInfo(connection, targetId, logId) {
+  const selectDetailStampInfoQuery = `
+    SELECT RS.userId, U.nickname, U.profileImageUrl, RS.stampCode
+    FROM RunningLogStamp RS
+    INNER JOIN User U on U.userId = RS.userId
+    WHERE RS.targetId = ? AND RS.logId = ?;
+  `;
+  const [row] = await connection.query(selectDetailStampInfoQuery, [
+    targetId,
+    logId,
+  ]);
+  return row;
+}
+
+// 함께한 러너 리스트 조회
+async function getPartnerRunners(connection, userId, gatheringId) {
+  const selectPartnerRunnersQuery = `
+    SELECT RS.targetId as userId, U.nickname, U.profileImageUrl, RS.stampCode, R.isOpened
+    FROM RunningLogStamp RS
+    LEFT OUTER JOIN User U on U.userId = RS.targetId
+    LEFT OUTER JOIN RunningLog R on R.userId = RS.targetId
+    WHERE RS.userId = ? AND RS.gatheringId = ?;
+  `;
+  const [row] = await connection.query(selectPartnerRunnersQuery, [
+    userId,
+    gatheringId,
+  ]);
+  return row;
+}
+
 // 스탬프 리스트 조회
 async function selectStampList(connection) {
   const query = `SELECT * FROM Stamp`;
@@ -117,10 +213,17 @@ module.exports = {
   createRunningLog,
   updateRunningLog,
   deleteRunningLog,
+  createRunningLogStamp,
+  changeRunningLogStamp,
   checkWriter,
   checkPosting,
   getMyGroupRunningCount,
   getMyPersonalRunningCount,
   getMyRunning,
+  getGatheringId,
+  getPartnerRunnerCount,
+  getDetailRunningLog,
+  getDetailStampInfo,
+  getPartnerRunners,
   selectStampList,
 };

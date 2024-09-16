@@ -136,3 +136,71 @@ exports.dropPosting = async function (logId) {
     await connection.release();
   }
 };
+
+// 함께한 러너에게 스탬프 찍기
+exports.postingStamp = async function (logId, userId, targetId, stampCode) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    //start Transaction
+    await connection.beginTransaction();
+
+    const gatheringId = await runningLogProvider.findGatheringId(logId);
+
+    const insertPostingLogStampParams = [
+      logId,
+      gatheringId,
+      userId,
+      targetId,
+      stampCode,
+    ];
+
+    await runningLogDao.createRunningLogStamp(
+      connection,
+      insertPostingLogStampParams
+    );
+
+    // commit
+    await connection.commit();
+    return response(baseResponse.SUCCESS);
+  } catch (err) {
+    // rollback
+    await connection.rollback();
+    await logger.error(
+      `App - postingRunningLogStamp Service error\n: ${err.message}`
+    );
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    await connection.release();
+  }
+};
+
+// 함께한 러너에게 찍은 스탬프 수정
+exports.changeRunningStamp = async function (
+  logId,
+  userId,
+  targetId,
+  stampCode
+) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    //start Transaction
+    await connection.beginTransaction();
+
+    const changeLogStampParams = [stampCode, logId, userId, targetId];
+
+    await runningLogDao.changeRunningLogStamp(connection, changeLogStampParams);
+
+    // commit
+    await connection.commit();
+    return response(baseResponse.SUCCESS);
+  } catch (err) {
+    // rollback
+    await connection.rollback();
+    await logger.error(
+      `App - changeRunningLogStamp Service error\n: ${err.message}`
+    );
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    await connection.release();
+  }
+};
