@@ -123,7 +123,7 @@ async function getMyPersonalRunningCount(connection, year, month, userId) {
 // 날짜(월)에 해당하는 개인 러닝 데이터 수집
 async function getMyRunning(connection, year, month, userId) {
   const selectRunningLogQuery = `
-    SELECT runnedDate, stampCode
+    SELECT logId, gatheringId, runnedDate, stampCode
     FROM RunningLog
     WHERE YEAR(runnedDate) = ? AND MONTH(runnedDate) = ? AND userId = ?;
   `;
