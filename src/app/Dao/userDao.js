@@ -841,7 +841,7 @@ async function getMyRunning2(connection, userId) {
   case when runnerGender='F' then '여성'
     end end end as gender, whetherEnd, J.job, peopleNum, contents, P.pace, afterParty, ${userId} as userId,
   EXISTS (SELECT bookmarkId FROM Bookmarks WHERE userId = ${userId} AND postId = P.postId) as bookMark, attendance,
-  W.whetherCheck as whetherCheck
+  W.whetherCheck as whetherCheck, R.gatheringId
   FROM Posting P
   INNER JOIN User U on U.userId = P.postUserId
   INNER JOIN Running R on R.postId = P.postId

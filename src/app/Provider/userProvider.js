@@ -439,25 +439,25 @@ exports.getMyPage2 = async function (userId, mobileType, appVersion) {
       myInfo = await userDao.getmyInfoV2(connection, userId);
     }
     // const runningInfo = await userDao.getRunningInfo(connection, userId);
-    const myPosting = await userDao.getMyPosting2(connection, userId);
+    // const myPosting = await userDao.getMyPosting2(connection, userId);
     const myRunning = await userDao.getMyRunning2(connection, userId);
 
-    if (myPosting.length !== 0) {
-      for (i = 0; i < myPosting.length; i++) {
-        myPosting[i].DISTANCE = null;
-        myPosting[i].attendance = null;
-        const postId = myPosting[i].postId;
-        const profileUrlList = await userDao.getProfileUrl(connection, postId);
-        const runnerList = await postingDao.getRunner(connection, postId);
-        const attendTimeOver = await postingDao.getAttendTimeOver(
-          connection,
-          postId
-        );
-        myPosting[i].profileUrlList = profileUrlList;
-        myPosting[i].runnerList = runnerList;
-        myPosting[i].attendTimeOver = attendTimeOver;
-      }
-    }
+    // if (myPosting.length !== 0) {
+    //   for (i = 0; i < myPosting.length; i++) {
+    //     myPosting[i].DISTANCE = null;
+    //     myPosting[i].attendance = null;
+    //     const postId = myPosting[i].postId;
+    //     const profileUrlList = await userDao.getProfileUrl(connection, postId);
+    //     const runnerList = await postingDao.getRunner(connection, postId);
+    //     const attendTimeOver = await postingDao.getAttendTimeOver(
+    //       connection,
+    //       postId
+    //     );
+    //     myPosting[i].profileUrlList = profileUrlList;
+    //     myPosting[i].runnerList = runnerList;
+    //     myPosting[i].attendTimeOver = attendTimeOver;
+    //   }
+    // }
 
     if (myRunning.length !== 0) {
       for (i = 0; i < myRunning.length; i++) {
@@ -468,7 +468,7 @@ exports.getMyPage2 = async function (userId, mobileType, appVersion) {
       }
     }
 
-    const finalResult = { myInfo, myPosting, myRunning };
+    const finalResult = { myInfo, myRunning };
 
     return finalResult;
   } catch (err) {
@@ -564,25 +564,25 @@ exports.getUserPage2 = async function (userId, mobileType, appVersion) {
   try {
     const userInfo = await userDao.getUserInfoV2(connection, userId);
     // const runningInfo = await userDao.getRunningInfo(connection, userId);
-    const userPosting = await userDao.getMyPosting2(connection, userId);
+    // const userPosting = await userDao.getMyPosting2(connection, userId);
     const userRunning = await userDao.getMyRunning2(connection, userId);
 
-    if (userPosting.length !== 0) {
-      for (i = 0; i < userPosting.length; i++) {
-        userPosting[i].DISTANCE = null;
-        userPosting[i].attendance = null;
-        const postId = myPosting[i].postId;
-        const profileUrlList = await userDao.getProfileUrl(connection, postId);
-        const runnerList = await postingDao.getRunner(connection, postId);
-        const attendTimeOver = await postingDao.getAttendTimeOver(
-          connection,
-          postId
-        );
-        userPosting[i].profileUrlList = profileUrlList;
-        userPosting[i].runnerList = runnerList;
-        userPosting[i].attendTimeOver = attendTimeOver;
-      }
-    }
+    // if (userPosting.length !== 0) {
+    //   for (i = 0; i < userPosting.length; i++) {
+    //     userPosting[i].DISTANCE = null;
+    //     userPosting[i].attendance = null;
+    //     const postId = userPosting[i].postId;
+    //     const profileUrlList = await userDao.getProfileUrl(connection, postId);
+    //     const runnerList = await postingDao.getRunner(connection, postId);
+    //     const attendTimeOver = await postingDao.getAttendTimeOver(
+    //       connection,
+    //       postId
+    //     );
+    //     userPosting[i].profileUrlList = profileUrlList;
+    //     userPosting[i].runnerList = runnerList;
+    //     userPosting[i].attendTimeOver = attendTimeOver;
+    //   }
+    // }
 
     if (userRunning.length !== 0) {
       for (i = 0; i < userRunning.length; i++) {
@@ -593,7 +593,7 @@ exports.getUserPage2 = async function (userId, mobileType, appVersion) {
       }
     }
 
-    const finalResult = { userInfo, userPosting, userRunning };
+    const finalResult = { userInfo, userRunning };
 
     return finalResult;
   } catch (err) {
