@@ -360,6 +360,16 @@ async function getRoomId(connection, postId) {
   return Row[0][0]["roomId"];
 }
 
+// 게시글 상세 페이지 gatheringId 가져오기
+async function getGatheringId(connection, postId) {
+  const Query = `  
+  select R.gatheringId from Running R inner join Posting P on R.postId = P.postId where P.postId = ?; 
+    `;
+  const Row = await connection.query(Query, postId);
+
+  return Row[0][0]["gatheringId"];
+}
+
 module.exports = {
   createPosting,
   userIdCheck,
@@ -380,4 +390,5 @@ module.exports = {
   checkPostId,
   getAttendTimeOver,
   getRoomId,
+  getGatheringId,
 };

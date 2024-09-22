@@ -167,8 +167,20 @@ exports.getPosting2 = async function (postId) {
       roomId = null;
     }
 
+    let gatheringId;
+    try {
+      gatheringId = await postingDao.getGatheringId(connection, postId);
+    } catch (err) {
+      gatheringId = null;
+    }
+
     const runnerInfo = getRunnerResult;
-    const getPostingFinalResult = { postingInfo, runnerInfo, roomId };
+    const getPostingFinalResult = {
+      postingInfo,
+      runnerInfo,
+      roomId,
+      gatheringId,
+    };
     return getPostingFinalResult;
   } catch (err) {
     await logger.error(`Posting-getPosting2 Provider error: ${err.message}`);
@@ -205,6 +217,13 @@ exports.getPostingWriter2 = async function (postId) {
       roomId = null;
     }
 
+    let gatheringId;
+    try {
+      gatheringId = await postingDao.getGatheringId(connection, postId);
+    } catch (err) {
+      gatheringId = null;
+    }
+
     const runnerInfo = getRunnerResult;
     const waitingRunnerInfo = getWaitingRunnerResult[0];
     const getPostingFinalResult = {
@@ -212,6 +231,7 @@ exports.getPostingWriter2 = async function (postId) {
       runnerInfo,
       waitingRunnerInfo,
       roomId,
+      gatheringId,
     };
     return getPostingFinalResult;
   } catch (err) {
