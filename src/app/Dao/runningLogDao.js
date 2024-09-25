@@ -95,7 +95,7 @@ async function getMyGroupRunningCount(connection, year, month, userId) {
   const selectGroupRunningCountQuery = `
     SELECT COUNT(*) AS count
     FROM RunningLog
-    WHERE YEAR(runnedDate) = ? AND MONTH(runnedDate) = ? AND userId = ? AND gatheringId IS NOT NULL;
+    WHERE YEAR(runnedDate) = ? AND MONTH(runnedDate) = ? AND userId = ? AND gatheringId IS NOT NULL AND status != 'D';
   `;
   const [row] = await connection.query(selectGroupRunningCountQuery, [
     year,
@@ -110,7 +110,7 @@ async function getMyPersonalRunningCount(connection, year, month, userId) {
   const selectPersonalRunningCountQuery = `
     SELECT COUNT(*) AS count
     FROM RunningLog
-    WHERE YEAR(runnedDate) = ? AND MONTH(runnedDate) = ? AND userId = ? AND gatheringId IS NULL;
+    WHERE YEAR(runnedDate) = ? AND MONTH(runnedDate) = ? AND userId = ? AND gatheringId IS NULL AND status != 'D';
   `;
   const [row] = await connection.query(selectPersonalRunningCountQuery, [
     year,
@@ -125,7 +125,7 @@ async function getMyRunning(connection, year, month, userId) {
   const selectRunningLogQuery = `
     SELECT logId, gatheringId, runnedDate, stampCode
     FROM RunningLog
-    WHERE YEAR(runnedDate) = ? AND MONTH(runnedDate) = ? AND userId = ?;
+    WHERE YEAR(runnedDate) = ? AND MONTH(runnedDate) = ? AND userId = ? AND status != 'D';
   `;
   const [row] = await connection.query(selectRunningLogQuery, [
     year,
