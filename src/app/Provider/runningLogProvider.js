@@ -127,6 +127,7 @@ exports.getDetailRunningLog = async function (userId, logId) {
 
     const gotStamp = await runningLogDao.getDetailStampInfo(
       connection,
+      getGatheringId,
       userId,
       logId
     );

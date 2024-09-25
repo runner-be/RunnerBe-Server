@@ -172,14 +172,16 @@ async function getDetailRunningLog(connection, logId) {
 }
 
 // 특정인이 받은 스탬프 목록 조회
-async function getDetailStampInfo(connection, targetId, logId) {
+async function getDetailStampInfo(connection, gatheringId, targetId, logId) {
   const selectDetailStampInfoQuery = `
-    SELECT RS.userId, U.nickname, U.profileImageUrl, RS.stampCode
+    SELECT RS.userId, R.logId, U.nickname, U.profileImageUrl, RS.stampCode
     FROM RunningLogStamp RS
     INNER JOIN User U on U.userId = RS.userId
+    LEFT OUTER JOIN RunningLog R on R.userId = RS.userId AND R.gatheringId = ?
     WHERE RS.targetId = ? AND RS.logId = ?;
   `;
   const [row] = await connection.query(selectDetailStampInfoQuery, [
+    gatheringId,
     targetId,
     logId,
   ]);
