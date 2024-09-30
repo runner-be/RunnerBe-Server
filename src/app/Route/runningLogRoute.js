@@ -31,7 +31,7 @@ module.exports = function (app) {
 
   // 51. 함께한 러너 리스트 조회 API
   app.get(
-    "/runninglogs/:userId/partners/:logId",
+    "/runninglogs/:userId/partners/:gatheringId",
     jwtMiddleware,
     runningLog.getRunningPartners
   );

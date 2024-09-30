@@ -145,18 +145,19 @@ exports.getDetailRunningLog = async function (userId, logId) {
 };
 
 // 함께한 러너 리스트 조회
-exports.getRunners = async function (userId, logId) {
+exports.getRunners = async function (userId, gatheringId) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
-    const getGatheringId = await runningLogDao.getGatheringId(
-      connection,
-      logId
-    );
+    // const getGatheringId = await runningLogDao.getGatheringId(
+    //   connection,
+    //   logId
+    // );
 
     const getPartnerRunners = await runningLogDao.getPartnerRunners(
       connection,
+      gatheringId,
       userId,
-      getGatheringId
+      gatheringId
     );
 
     return getPartnerRunners;

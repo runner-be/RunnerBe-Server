@@ -240,29 +240,29 @@ exports.detailRunningLog = async function (req, res) {
 /**
  * API No. 51
  * API Name : 함께한 러너 리스트 조회 API
- * [GET] /runninglogs/:userId/partners/:logId
+ * [GET] /runninglogs/:userId/partners/:gatheringId
  */
 exports.getRunningPartners = async function (req, res) {
   /**
    * Header : jwt
    */
   const userId = req.params.userId;
-  const logId = req.params.logId;
+  const gatheringId = req.params.gatheringId;
 
   // 빈 값 체크
   if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
-  if (!logId) return res.send(response(baseResponse.LOGID_EMPTY));
+  if (!gatheringId) return res.send(response(baseResponse.LOGID_EMPTY));
 
-  //게시글 있는지 확인
-  const checkPostingResult = await runningLogProvider.checkPosting(logId);
+  // //게시글 있는지 확인
+  // const checkPostingResult = await runningLogProvider.checkPosting(logId);
 
   // jwt로 userId 확인
-  if (checkPostingResult.length === 0) {
-    return errResponse(baseResponse.RUNNINGLOG_NOT_VALID_LOGID);
-  } else {
-    const getRunners = await runningLogProvider.getRunners(userId, logId);
-    return res.send(response(baseResponse.SUCCESS, getRunners));
-  }
+  // if (checkPostingResult.length === 0) {
+  //   return errResponse(baseResponse.RUNNINGLOG_NOT_VALID_LOGID);
+  // } else {
+  const getRunners = await runningLogProvider.getRunners(userId, gatheringId);
+  return res.send(response(baseResponse.SUCCESS, getRunners));
+  // }
 };
 
 /**

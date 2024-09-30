@@ -189,15 +189,21 @@ async function getDetailStampInfo(connection, gatheringId, targetId, logId) {
 }
 
 // 함께한 러너 리스트 조회
-async function getPartnerRunners(connection, userId, gatheringId) {
+async function getPartnerRunners(connection, gatheringId, userId, gatheringId) {
   const selectPartnerRunnersQuery = `
-    SELECT RS.targetId as userId, U.nickname, U.profileImageUrl, RS.stampCode, R.isOpened
-    FROM RunningLogStamp RS
-    LEFT OUTER JOIN User U on U.userId = RS.targetId
-    LEFT OUTER JOIN RunningLog R on R.userId = RS.targetId
-    WHERE RS.userId = ? AND RS.gatheringId = ?;
+    SELECT RP.userId, U.nickname, U.profileImageUrl, RL.isOpened, RS.stampCode
+    FROM RunningPeople RP
+    LEFT OUTER JOIN User U ON U.userId = RP.userId
+    LEFT OUTER JOIN RunningLog RL ON RL.userId = RP.userId AND RL.gatheringId = RP.gatheringId
+    LEFT OUTER JOIN (
+        SELECT targetId, stampCode
+        FROM RunningLogStamp
+        WHERE gatheringId = ?
+    ) RS ON RS.targetId = RP.userId
+    WHERE RP.userId != ? AND RP.gatheringId = ?;
   `;
   const [row] = await connection.query(selectPartnerRunnersQuery, [
+    gatheringId,
     userId,
     gatheringId,
   ]);
