@@ -163,7 +163,7 @@ async function getPartnerRunnerCount(connection, gatheringId) {
 // 러닝로그 상세 조회 데이터 수집
 async function getDetailRunningLog(connection, logId) {
   const selectDetailRunningLogQuery = `
-    SELECT status, runnedDate, userId, stampCode, contents, imageUrl, weatherDegree, weatherIcon, isOpened
+    SELECT status, runnedDate, userId, gatheringId, stampCode, contents, imageUrl, weatherDegree, weatherIcon, isOpened
     FROM RunningLog
     WHERE logId = ?;
   `;
