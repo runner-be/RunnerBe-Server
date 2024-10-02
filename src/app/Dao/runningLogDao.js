@@ -191,7 +191,7 @@ async function getDetailStampInfo(connection, gatheringId, targetId, logId) {
 // 함께한 러너 리스트 조회
 async function getPartnerRunners(connection, gatheringId, userId, gatheringId) {
   const selectPartnerRunnersQuery = `
-    SELECT RP.userId, U.nickname, U.profileImageUrl, RL.isOpened, RS.stampCode
+    SELECT RP.userId, U.nickname, U.profileImageUrl, RL.logId, RL.isOpened, RS.stampCode
     FROM RunningPeople RP
     LEFT OUTER JOIN User U ON U.userId = RP.userId
     LEFT OUTER JOIN RunningLog RL ON RL.userId = RP.userId AND RL.gatheringId = RP.gatheringId
