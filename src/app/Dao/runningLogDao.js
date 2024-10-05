@@ -163,9 +163,11 @@ async function getPartnerRunnerCount(connection, gatheringId) {
 // 러닝로그 상세 조회 데이터 수집
 async function getDetailRunningLog(connection, logId) {
   const selectDetailRunningLogQuery = `
-    SELECT status, runnedDate, userId, gatheringId, stampCode, contents, imageUrl, weatherDegree, weatherIcon, isOpened
-    FROM RunningLog
-    WHERE logId = ?;
+    SELECT R.status, R.runnedDate, R.userId, U.nickname, R.gatheringId, R.stampCode,
+           R.contents, R.imageUrl, R.weatherDegree, R.weatherIcon, R.isOpened
+    FROM RunningLog R
+    INNER JOIN User U on U.userId = R.userId
+    WHERE R.logId = ?;
   `;
   const [row] = await connection.query(selectDetailRunningLogQuery, logId);
   return row;
