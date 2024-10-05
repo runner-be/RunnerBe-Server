@@ -105,7 +105,7 @@ exports.getRunningLog = async function (year, month, userId) {
 exports.getDetailRunningLog = async function (userId, logId) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
-    const detailRunningLog = await runningLogDao.getDetailRunningLog(
+    const [detailRunningLog] = await runningLogDao.getDetailRunningLog(
       connection,
       logId
     );
