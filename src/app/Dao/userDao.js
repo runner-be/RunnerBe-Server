@@ -860,6 +860,28 @@ async function getMyRunning2(connection, userId) {
   return Rows;
 }
 
+// 타인의 마이페이지에서 타인이 참여한 러닝
+async function getUserRunning2(connection, userId) {
+  const Query = `
+  SELECT P.postId, P.createdAt as postingTime, postUserId, title,
+  gatheringTime, runningTag, concat(ageMin,'-',ageMax) as age,
+  case when runnerGender='A' then '전체'
+    else
+  case when runnerGender='M' then '남성'
+    else
+  case when runnerGender='F' then '여성'
+    end end end as gender, whetherEnd, P.pace, afterParty, ${userId} as userId, R.gatheringId, RL.logId
+  FROM Posting P
+  INNER JOIN User U on U.userId = P.postUserId
+  INNER JOIN Running R on R.postId = P.postId
+  INNER JOIN (SELECT * FROM RunningPeople WHERE userId = ?) RPP on R.gatheringId = RPP.gatheringId
+  LEFT OUTER JOIN RunningLog RL ON RL.userId = P.postUserId AND RL.gatheringId = R.gatheringId
+  ORDER BY gatheringTime;
+  `;
+  const [Rows] = await connection.query(Query, userId);
+  return Rows;
+}
+
 // 유저 생성 - v2 인증 삭제
 
 async function insertUserV2(connection, insertUserInfoParams) {
@@ -1048,6 +1070,7 @@ module.exports = {
   getBM2,
   getMyPosting2,
   getMyRunning2,
+  getUserRunning2,
   insertUserV2,
   patchUserDeviceToken,
   getProfileUrl,

@@ -149,6 +149,20 @@ async function getMyRunning(connection, year, month, userId) {
   return row;
 }
 
+// 마이페이지에서 보여주는 최근 3주간 러닝로그 데이터 수집
+async function getUserRecentLog(connection, userId) {
+  const selectRecentLogQuery = `
+    SELECT logId, gatheringId, runnedDate, stampCode
+    FROM RunningLog
+    WHERE userId = ? 
+      AND status != 'D' 
+      AND runnedDate BETWEEN DATE_SUB(CURDATE(), INTERVAL 3 WEEK) AND CURDATE()
+    ORDER BY runnedDate DESC;
+  `;
+  const [row] = await connection.query(selectRecentLogQuery, userId);
+  return row;
+}
+
 // 러닝로그의 gatheringId 수집
 async function getGatheringId(connection, logId) {
   const selectGatheringIdQuery = `
@@ -247,6 +261,7 @@ module.exports = {
   getMyGroupRunningCount,
   getMyPersonalRunningCount,
   getMyRunning,
+  getUserRecentLog,
   getGatheringId,
   getPartnerRunnerCount,
   getDetailRunningLog,

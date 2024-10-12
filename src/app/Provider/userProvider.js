@@ -4,7 +4,7 @@ const baseResponse = require("../../../config/baseResponseStatus");
 const { response, errResponse } = require("../../../config/response");
 const userDao = require("../Dao/userDao");
 const postingDao = require("../Dao/postingDao");
-const userProvider = require("./userProvider");
+const runningLogDao = require("../Dao/runningLogDao");
 
 // UUID 존재 여부
 exports.checkUuidExist = async function (uuid) {
@@ -563,37 +563,14 @@ exports.getUserPage2 = async function (userId, mobileType, appVersion) {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     const userInfo = await userDao.getUserInfoV2(connection, userId);
-    // const runningInfo = await userDao.getRunningInfo(connection, userId);
-    const userPosting = await userDao.getMyPosting2(connection, userId);
-    const userRunning = await userDao.getMyRunning2(connection, userId);
+    const userLogInfo = await runningLogDao.getUserRecentLog(
+      connection,
+      userId
+    );
+    const userRunning = await userDao.getUserRunning2(connection, userId);
+    const postTotalCount = userRunning.length;
 
-    if (userPosting.length !== 0) {
-      for (i = 0; i < userPosting.length; i++) {
-        userPosting[i].DISTANCE = null;
-        userPosting[i].attendance = null;
-        const postId = userPosting[i].postId;
-        const profileUrlList = await userDao.getProfileUrl(connection, postId);
-        const runnerList = await postingDao.getRunner(connection, postId);
-        const attendTimeOver = await postingDao.getAttendTimeOver(
-          connection,
-          postId
-        );
-        userPosting[i].profileUrlList = profileUrlList;
-        userPosting[i].runnerList = runnerList;
-        userPosting[i].attendTimeOver = attendTimeOver;
-      }
-    }
-
-    if (userRunning.length !== 0) {
-      for (i = 0; i < userRunning.length; i++) {
-        userRunning[i].DISTANCE = null;
-        const postId = userRunning[i].postId;
-        const body = await userDao.getProfileUrl(connection, postId);
-        userRunning[i].profileUrlList = body;
-      }
-    }
-
-    const finalResult = { userInfo, userPosting, userRunning };
+    const finalResult = { userInfo, userLogInfo, postTotalCount, userRunning };
 
     return finalResult;
   } catch (err) {
