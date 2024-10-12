@@ -810,6 +810,12 @@ module.exports = {
     message: "함께한 러너 ID를 입력해주세요.",
   },
 
+  RUNNED_DATE_EXISTS: {
+    isSuccess: false,
+    code: 2118,
+    message: "러닝로그를 작성하려는 날짜에 이미 로그게시물이 있습니다.",
+  },
+
   // ----------------------------
 
   // Response error
