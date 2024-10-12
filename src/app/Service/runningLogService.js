@@ -29,6 +29,16 @@ exports.createRunningLog = async function (
     if (userIdRows.length === 0)
       return errResponse(baseResponse.POSTING_NOT_VALID_USERID);
 
+    // 러닝로그 작성하려는 날짜에 기존 로그 게시물이 있는 지 확인
+    const existRunningDate = await runningLogProvider.existRunningDate(
+      runningDate,
+      userId
+    );
+
+    if (existRunningDate.length !== 0) {
+      return errResponse(baseResponse.RUNNED_DATE_EXISTS);
+    }
+
     const insertPostingParams = [
       userId,
       runningDate,

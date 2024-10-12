@@ -90,6 +90,20 @@ async function checkPosting(connection, logId) {
   return checkPostingRow;
 }
 
+// 러닝로그 작성하려는 유저가 원하는 날짜에 기존 로그 게시물이 있는 지 확인
+async function findDuplicateRunningDate(connection, runnedDate, userId) {
+  const selectDetailRunningLogQuery = `
+    SELECT logId
+    FROM RunningLog
+    WHERE runnedDate = ? AND userId = ?;
+  `;
+  const [row] = await connection.query(selectDetailRunningLogQuery, [
+    runnedDate,
+    userId,
+  ]);
+  return row;
+}
+
 // 날짜(월)에 해당하는 크루 러닝 카운트 수집
 async function getMyGroupRunningCount(connection, year, month, userId) {
   const selectGroupRunningCountQuery = `
@@ -229,6 +243,7 @@ module.exports = {
   changeRunningLogStamp,
   checkWriter,
   checkPosting,
+  findDuplicateRunningDate,
   getMyGroupRunningCount,
   getMyPersonalRunningCount,
   getMyRunning,

@@ -187,3 +187,25 @@ exports.viewStampList = async function () {
     await connection.release();
   }
 };
+
+// 러닝로그 작성하려는 날짜에 기존 로그 게시물 체크
+exports.existRunningDate = async function (runningLogDate, userId) {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const findDuplicateRunningDate =
+      await runningLogDao.findDuplicateRunningDate(
+        connection,
+        runningLogDate,
+        userId
+      );
+
+    return findDuplicateRunningDate;
+  } catch (err) {
+    await logger.error(
+      `RunningLog-existRunningDate Provider error: ${err.message}`
+    );
+    return errResponse(baseResponse.DB_ERROR);
+  } finally {
+    await connection.release();
+  }
+};
