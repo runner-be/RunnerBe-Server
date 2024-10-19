@@ -186,24 +186,18 @@ exports.getRunningLog = async function (req, res) {
   const year = req.query.year; // year(연)
   const month = req.query.month; // month(월)
   const userId = req.params.userId;
-  const userIdFromJWT = req.verifiedToken.userId;
 
   // 빈 값 체크
   if (!year) return res.send(response(baseResponse.YEAR_EMPTY));
   if (!month) return res.send(response(baseResponse.MONTH_EMPTY));
   if (!userId) return res.send(response(baseResponse.USER_USERID_EMPTY));
 
-  // jwt로 userId 확인
-  if (userIdFromJWT != userId) {
-    return res.send(errResponse(baseResponse.USER_ID_NOT_MATCH));
-  } else {
-    const getWholeRunningLog = await runningLogProvider.getRunningLog(
-      year,
-      month,
-      userId
-    );
-    return res.send(response(baseResponse.SUCCESS, getWholeRunningLog));
-  }
+  const getWholeRunningLog = await runningLogProvider.getRunningLog(
+    year,
+    month,
+    userId
+  );
+  return res.send(response(baseResponse.SUCCESS, getWholeRunningLog));
 };
 
 /**
