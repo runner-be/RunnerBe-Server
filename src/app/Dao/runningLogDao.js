@@ -152,7 +152,7 @@ async function getMyRunning(connection, year, month, userId) {
 // 마이페이지에서 보여주는 최근 3주간 러닝로그 데이터 수집
 async function getUserRecentLog(connection, userId) {
   const selectRecentLogQuery = `
-    SELECT logId, gatheringId, runnedDate, stampCode
+    SELECT logId, gatheringId, runnedDate, stampCode, isOpened
     FROM RunningLog
     WHERE userId = ? 
       AND status != 'D' 
