@@ -95,7 +95,7 @@ async function findDuplicateRunningDate(connection, runnedDate, userId) {
   const selectDetailRunningLogQuery = `
     SELECT logId
     FROM RunningLog
-    WHERE runnedDate = ? AND userId = ?;
+    WHERE runnedDate = ? AND userId = ? AND status != 'D';
   `;
   const [row] = await connection.query(selectDetailRunningLogQuery, [
     runnedDate,
