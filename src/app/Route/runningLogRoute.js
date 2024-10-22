@@ -20,7 +20,7 @@ module.exports = function (app) {
   );
 
   // 49. 러닝 로그 전체 조회 API
-  app.get("/runninglogs/:userId", jwtMiddleware, runningLog.getRunningLog);
+  app.get("/runninglogs/:userId", runningLog.getRunningLog);
 
   // 50. 러닝 로그 상세 조회 API
   app.get(
