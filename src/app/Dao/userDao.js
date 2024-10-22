@@ -864,13 +864,14 @@ async function getMyRunning2(connection, userId) {
 async function getUserRunning2(connection, userId) {
   const Query = `
   SELECT P.postId, P.createdAt as postingTime, postUserId, title,
-  gatheringTime, runningTag, concat(ageMin,'-',ageMax) as age,
+  runningTime, gatheringTime, runningTag, concat(ageMin,'-',ageMax) as age,
   case when runnerGender='A' then '전체'
     else
   case when runnerGender='M' then '남성'
     else
   case when runnerGender='F' then '여성'
-    end end end as gender, whetherEnd, P.pace, afterParty, ${userId} as userId, R.gatheringId, RL.logId
+    end end end as gender, whetherEnd, P.pace, afterParty, ${userId} as userId, R.gatheringId, RL.logId,
+    EXISTS (SELECT bookmarkId FROM Bookmarks WHERE userId = ${userId} AND postId = P.postId) as bookMark
   FROM Posting P
   INNER JOIN User U on U.userId = P.postUserId
   INNER JOIN Running R on R.postId = P.postId
