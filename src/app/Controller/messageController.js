@@ -16,7 +16,6 @@ const { emit } = require("nodemon");
  */
 exports.getRoomList = async function (req, res) {
   const userId = req.verifiedToken.userId;
-
   const getRoomListResponse = await messageProvider.getRoomList(userId);
   return res.send(response(baseResponse.SUCCESS, getRoomListResponse));
 };
