@@ -91,7 +91,7 @@ exports.reportMessage = async function (req, res) {
   const messageIdBody = req.body.messageIdList;
   const messageIdArray = messageIdBody.split(",");
   const IntMessageIdArray = messageIdArray.map((messageId) =>
-    parseInt(messageId)
+    parseInt(messageId),
   );
 
   // 빈 값 체크
